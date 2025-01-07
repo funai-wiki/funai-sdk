@@ -1,4 +1,4 @@
-export const HIRO_MAINNET_URL = 'https://api.mainnet.hiro.so';
+export const HIRO_MAINNET_URL = 'http://34.143.166.224:20443';
 export const HIRO_TESTNET_URL = 'http://localhost:20443';
 export const DEVNET_URL = 'http://localhost:3999';
 
