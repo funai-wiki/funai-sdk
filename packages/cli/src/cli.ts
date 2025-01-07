@@ -2094,7 +2094,6 @@ const COMMANDS: Record<string, CommandFunction> = {
  * CLI main entry point
  */
 export function CLIMain() {
-  console.log('Funai Stacks CLI ');
   const argv = process.argv;
   const opts = getCLIOpts(argv);
 
