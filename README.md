@@ -1,11 +1,24 @@
-# Stacks.js [![Test Action Badge](https://github.com/hirosystems/stacks.js/actions/workflows/tests.yml/badge.svg)](https://github.com/hirosystems/stacks.js/actions/workflows/tests.yml) [![Monorepo Version Label](https://img.shields.io/github/lerna-json/v/hirosystems/stacks.js?label=monorepo)](https://github.com/hirosystems/stacks.js/tree/main/packages)
+# funai-sdk [![Test Action Badge](https://github.com/hirosystems/stacks.js/actions/workflows/tests.yml/badge.svg)](https://github.com/hirosystems/stacks.js/actions/workflows/tests.yml) [![Monorepo Version Label](https://img.shields.io/github/lerna-json/v/hirosystems/stacks.js?label=monorepo)](https://github.com/hirosystems/stacks.js/tree/main/packages)
 
 > [!IMPORTANT]
 > Looking for Nakamoto updates?
 > Use version `6.16.0` or later to test the latest nakamoto changes.
 > e.g., `npm install @stacks/stacking@6.16.0`
 
-Welcome to the Stacks.js repository, your one-stop solution for working with the Stacks blockchain using JavaScript/TypeScript. This repository nests a collection of packages designed to provide you with the essential building blocks to work with the [Stacks blockchain](https://www.stacks.co/what-is-stacks) from JavaScript/TypeScript.
+The FunAI SDK is a developer-friendly toolkit designed to simplify interactions with the FunAI Infer Chain, ensuring seamless integration and efficient AI task execution.It bases on stack.js.
+
+Key Features of FunAI SDK
+	•	Task Management: Provides APIs to submit, query, and manage AI tasks on the FunAI Infer Chain. Developers can easily deploy AI computations and monitor execution progress.
+	•	Data Processing: Supports preprocessing and postprocessing of data, including format conversion and data cleaning, ensuring compatibility with the FunAI Infer Chain.
+	•	Result Retrieval: Enables fetching results from the FunAI Infer Chain, ensuring accuracy and integrity of AI task outputs.
+
+How FunAI SDK Interacts with the FunAI Infer Chain
+	1.	Task Submission: Developers use the FunAI SDK to package and submit AI tasks to the FunAI Infer Chain. The SDK handles transaction creation and ensures the task is properly formatted for blockchain processing.
+	2.	Status Monitoring: The SDK provides APIs to track task execution status on-chain, checking whether tasks are accepted, in progress, or completed.
+	3.	Result Retrieval: Once a task is completed, developers can retrieve and decode the results using the SDK, ensuring seamless integration with their applications.
+	4.	Error Handling: If errors occur during execution, the FunAI SDK captures relevant details, providing debugging tools to help developers diagnose and resolve issues.
+
+By leveraging the FunAI SDK, developers can interact with the FunAI Infer Chain efficiently, focusing on AI-driven applications without delving into blockchain complexities.
 
 ## Packages
 
