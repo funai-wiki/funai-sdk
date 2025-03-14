@@ -1,10 +1,5 @@
 # funai-sdk [![Test Action Badge](https://github.com/hirosystems/stacks.js/actions/workflows/tests.yml/badge.svg)](https://github.com/hirosystems/stacks.js/actions/workflows/tests.yml) [![Monorepo Version Label](https://img.shields.io/github/lerna-json/v/hirosystems/stacks.js?label=monorepo)](https://github.com/hirosystems/stacks.js/tree/main/packages)
 
-> [!IMPORTANT]
-> Looking for Nakamoto updates?
-> Use version `6.16.0` or later to test the latest nakamoto changes.
-> e.g., `npm install @stacks/stacking@6.16.0`
-
 The FunAI SDK is a developer-friendly toolkit designed to simplify interactions with the FunAI Infer Chain, ensuring seamless integration and efficient AI task execution.It bases on stack.js.
 
 Key Features of FunAI SDK
