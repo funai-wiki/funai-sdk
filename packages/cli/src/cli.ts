@@ -1854,7 +1854,7 @@ async function stack(_network: CLINetworkAdapter, args: string[]): Promise<strin
       const minAmount = BigInt(poxInfo.min_amount_ustx);
       const currentCycle = poxInfo.reward_cycle_id;
       const burnChainBlockHeight = coreInfo.burn_block_height;
-      const startBurnBlock = burnChainBlockHeight + 3;
+      const startBurnBlock = burnChainBlockHeight;
 
       if (minAmount > amount) {
         throw new Error(
