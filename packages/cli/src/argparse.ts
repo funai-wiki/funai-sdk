@@ -1615,7 +1615,7 @@ export const CLI_ARGS = {
         'Example:\n' +
         '\n' +
         '```console\n' +
-        '    $ stx make_keychain\n' +
+        '    $ funai-cli make_keychain\n' +
         '    {\n' +
         '      "mnemonic": "apart spin rich leader siren foil dish sausage fee pipe ethics bundle",\n' +
         '      "keyInfo": {\n' +
@@ -2496,6 +2496,12 @@ export const CLI_ARGS = {
           pattern: STACKS_ADDRESS_PATTERN,
         },
         {
+          name: 'amount',
+          type: 'string',
+          realtype: 'integer',
+          pattern: '^[0-9]+$',
+        },
+        {
           name: 'userInput',
           type: 'string',
           realtype: 'string',
@@ -2503,6 +2509,18 @@ export const CLI_ARGS = {
         },
         {
           name: 'context',
+          type: 'string',
+          realtype: 'string',
+          pattern: '^.{0,34}$',
+        },
+        {
+          name: 'nodePrincipal',
+          type: 'string',
+          realtype: 'address',
+          pattern: STACKS_ADDRESS_PATTERN,
+        },
+        {
+          name: 'modelName',
           type: 'string',
           realtype: 'string',
           pattern: '^.{0,34}$',
@@ -2526,9 +2544,14 @@ export const CLI_ARGS = {
           pattern: `${PRIVATE_KEY_PATTERN_ANY}`,
         },
       ],
-      minItems: 5,
-      maxItems: 6,
-      help: 'infer\n',
+      minItems: 8,
+      maxItems: 9,
+      help: 'infer\n' +
+        '\n' +
+        'Example:\n' +
+        '```console\n' +
+        '    $ funai-cli infer --address ST6ZMM0CX01734YMS6Q7SPJHQR9GMQPSBH6RP8RV --amount 100 --userInput "weather" --context "{}" --nodePrincipal ST6ZMM0CX01734YMS6Q7SPJHQR9GMQPSBH6RP8RV --modelName "llama3" --fee 206 --nonce 0 --payment_key <PRIVATE_KEY>\n' +
+        '```\n',
       group: 'Account Management',
     },
     stack: {

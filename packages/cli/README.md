@@ -21,13 +21,13 @@ Open the terminal to try these basic commands
 To see the usage and options for the command in general
 
 ```shell script
-stx
+funai-cli
 ```
 
 To see a list of subcommands
 
 ```shell script
-stx help
+funai-cli help
 ```
 
 ## Authentication
@@ -44,7 +44,7 @@ Example:
     export BACKUP_PHRASE="oak indicate inside poet please share dinner monitor glow hire source perfect"
     export APP_GAIA_HUB="https://1.2.3.4"
     export PROFILE_GAIA_HUB="https://hub.blockstack.org"
-    stx authenticator "$APP_GAIA_HUB" "$BACKUP_PHRASE" "$PROFILE_GAIA_HUB" 8888
+    funai-cli authenticator "$APP_GAIA_HUB" "$BACKUP_PHRASE" "$PROFILE_GAIA_HUB" 8888
     Press Ctrl+C to exit
     Authentication server started on 8888
 
@@ -59,7 +59,7 @@ Query the balance of an account.  Returns the balances of each kind of token tha
 
 Example:
     // -t for testnet address, for mainnet omit -t option
-    stx -t balance ST3PWZ5M026785YW8YKKEH316DYPE4AC7NNTD9ADN
+    funai-cli -t balance ST3PWZ5M026785YW8YKKEH316DYPE4AC7NNTD9ADN
     {
       "balance": "499986820",
       "locked": "0",
@@ -76,7 +76,7 @@ Check if specified account can stack a number of Stacks tokens for given number 
 
 Example:
     // -t for testnet address, for mainnet omit -t option
-    stx -t can_stack 100000000000 3 mvuYDknzDtPgGqm2GnbAbmGMLwiyW3AwFP ST3XKKN4RPV69NN1PHFDNX3TYKXT7XPC4N8KC1ARH
+    funai-cli -t can_stack 100000000000 3 mvuYDknzDtPgGqm2GnbAbmGMLwiyW3AwFP ST3XKKN4RPV69NN1PHFDNX3TYKXT7XPC4N8KC1ARH
     {
       "eligible": true
     }
@@ -93,7 +93,7 @@ Example:
     // Add -t option it contract on testnet
     // Replace contract_name and contract_function with actual names
     export PAYMENT="bfeffdf57f29b0cc1fab9ea197bb1413da2561fe4b83e962c7f02fbbe2b1cd5401"
-    stx call_contract_func SPBMRFRPPGCDE3F384WCJPK8PQJGZ8K9QKK7F59X contract_name contract_function 1 0 "$PAYMENT"
+    funai-cli call_contract_func SPBMRFRPPGCDE3F384WCJPK8PQJGZ8K9QKK7F59X contract_name contract_function 1 0 "$PAYMENT"
      {
        txid: '0x2e33ad647a9cedacb718ce247967dc705bc0c878db899fdba5eae2437c6fa1e1',
        transaction: 'https://explorer.hiro.so/txid/0x2e33ad647a9cedacb718ce247967dc705bc0c878db899fdba5eae2437c6fa1e1'
@@ -111,7 +111,7 @@ Example:
     // Add -t option it contract on testnet
     // Replace contract_name and contract_function with actual names
 
-    stx call_read_only_contract_func SPBMRFRPPGCDE3F384WCJPK8PQJGZ8K9QKK7F59X contract_name contract_function SPBMRFRPPGCDE3F384WCJPK8PQJGZ8K9QKK7F59X
+    funai-cli call_read_only_contract_func SPBMRFRPPGCDE3F384WCJPK8PQJGZ8K9QKK7F59X contract_name contract_function SPBMRFRPPGCDE3F384WCJPK8PQJGZ8K9QKK7F59X
      {
        txid: '0x2e33ad647a9cedacb718ce247967dc705bc0c878db899fdba5eae2437c6fa1e1',
        transaction: 'https://explorer.hiro.so/txid/0x2e33ad647a9cedacb718ce247967dc705bc0c878db899fdba5eae2437c6fa1e1'
@@ -125,21 +125,21 @@ Example:
 Convert a Bitcoin address to a Stacks address and vice versa.
 
 Example:
-    stx convert_address 12qdRgXxgNBNPnDeEChy3fYTbSHQ8nfZfD
+    funai-cli convert_address 12qdRgXxgNBNPnDeEChy3fYTbSHQ8nfZfD
     {
       "mainnet": {
         "STACKS": "SPA2MZWV9N67TBYVWTE0PSSKMJ2F6YXW7CBE6YPW",
         "BTC": "12qdRgXxgNBNPnDeEChy3fYTbSHQ8nfZfD"
       }
     }
-    stx convert_address SPA2MZWV9N67TBYVWTE0PSSKMJ2F6YXW7CBE6YPW
+    funai-cli convert_address SPA2MZWV9N67TBYVWTE0PSSKMJ2F6YXW7CBE6YPW
     {
       "mainnet": {
         "STACKS": "SPA2MZWV9N67TBYVWTE0PSSKMJ2F6YXW7CBE6YPW",
         "BTC": "12qdRgXxgNBNPnDeEChy3fYTbSHQ8nfZfD"
       }
     }
-    stx convert_address SPA2MZWV9N67TBYVWTE0PSSKMJ2F6YXW7CBE6YPW -t
+    funai-cli convert_address SPA2MZWV9N67TBYVWTE0PSSKMJ2F6YXW7CBE6YPW -t
     {
       "mainnet": {
         "STACKS": "SPA2MZWV9N67TBYVWTE0PSSKMJ2F6YXW7CBE6YPW",
@@ -150,7 +150,7 @@ Example:
         "BTC": "mhMaijcwVPcdAthFwmgLsaknTRt72GqQYo"
       }
     }
-    stx convert_address STA2MZWV9N67TBYVWTE0PSSKMJ2F6YXW7DX96QAM
+    funai-cli convert_address STA2MZWV9N67TBYVWTE0PSSKMJ2F6YXW7DX96QAM
     {
       "mainnet": {
         "STACKS": "SPA2MZWV9N67TBYVWTE0PSSKMJ2F6YXW7CBE6YPW",
@@ -173,7 +173,7 @@ If the command succeeds, it prints out a transaction ID.
 Example:
     // Specify -t for testnet. By default mainnet will be used.
     export PAYMENT="bfeffdf57f29b0cc1fab9ea197bb1413da2561fe4b83e962c7f02fbbe2b1cd5401"
-    stx deploy_contract ./my_contract.clar my_contract 1 0 "$PAYMENT"
+    funai-cli deploy_contract ./my_contract.clar my_contract 1 0 "$PAYMENT"
      {
        txid: '0x2e33ad647a9cedacb718ce247967dc705bc0c878db899fdba5eae2437c6fa1e1',
        transaction: 'https://explorer.hiro.so/txid/0x2e33ad647a9cedacb718ce247967dc705bc0c878db899fdba5eae2437c6fa1e1'
@@ -187,7 +187,7 @@ Query the history of account debits and credits over a given block range.  Retur
 
 Example:
 
-    stx -t get_account_history ST3PWZ5M026785YW8YKKEH316DYPE4AC7NNTD9ADN 0
+    funai-cli -t get_account_history ST3PWZ5M026785YW8YKKEH316DYPE4AC7NNTD9ADN 0
     [
       {
         "address": "ST3PWZ5M026785YW8YKKEH316DYPE4AC7NNTD9ADN",
@@ -227,17 +227,17 @@ Example:
     # address of the key below is SP2SC16ASH76GX549PT7J5WQZA4GHMFBKYMBQFF9V
     # Use -t option for testnet address
     export PAYMENT="bfeffdf57f29b0cc1fab9ea197bb1413da2561fe4b83e962c7f02fbbe2b1cd5401"
-    stx balance SP2SC16ASH76GX549PT7J5WQZA4GHMFBKYMBQFF9V
+    funai-cli balance SP2SC16ASH76GX549PT7J5WQZA4GHMFBKYMBQFF9V
     {
       "STACKS": "10000000"
     }
-    stx balance SP1P10PS2T517S4SQGZT5WNX8R00G1ECTRKYCPMHY
+    funai-cli balance SP1P10PS2T517S4SQGZT5WNX8R00G1ECTRKYCPMHY
     {
       "STACKS": "0"
     }
 
     # send tokens
-    stx send_tokens SP1P10PS2T517S4SQGZT5WNX8R00G1ECTRKYCPMHY 12345 1 0 "$PAYMENT"
+    funai-cli send_tokens SP1P10PS2T517S4SQGZT5WNX8R00G1ECTRKYCPMHY 12345 1 0 "$PAYMENT"
     {
        txid: '0x2e33ad647a9cedacb718ce247967dc705bc0c878db899fdba5eae2437c6fa1e1',
        transaction: 'https://explorer.hiro.so/txid/0x2e33ad647a9cedacb718ce247967dc705bc0c878db899fdba5eae2437c6fa1e1'
@@ -246,11 +246,11 @@ Example:
 
     # wait for transaction to be confirmed
 
-    stx balance SP2SC16ASH76GX549PT7J5WQZA4GHMFBKYMBQFF9V
+    funai-cli balance SP2SC16ASH76GX549PT7J5WQZA4GHMFBKYMBQFF9V
     {
       "STACKS": "9987655"
     }
-    stx balance SP1P10PS2T517S4SQGZT5WNX8R00G1ECTRKYCPMHY
+    funai-cli balance SP1P10PS2T517S4SQGZT5WNX8R00G1ECTRKYCPMHY
     {
       "STACKS": "12345"
     }
@@ -264,7 +264,7 @@ Stack the specified number of Stacks tokens for given number of cycles.
 
 Example:
     // Use -t option for testnet address
-    stx stack 10000000 20 16pm276FpJYpm7Dv3GEaRqTVvGPTdceoY4 136ff26efa5db6f06b28f9c8c7a0216a1a52598045162abfe435d13036154a1b01
+    funai-cli stack 10000000 20 16pm276FpJYpm7Dv3GEaRqTVvGPTdceoY4 136ff26efa5db6f06b28f9c8c7a0216a1a52598045162abfe435d13036154a1b01
      {
        txid: '0x2e33ad647a9cedacb718ce247967dc705bc0c878db899fdba5eae2437c6fa1e1',
        transaction: 'https://explorer.hiro.so/txid/0x2e33ad647a9cedacb718ce247967dc705bc0c878db899fdba5eae2437c6fa1e1'
@@ -278,7 +278,7 @@ Get stacking status for specified address.
 
 Example:
     // Use -t option for testnet adddress
-    stx stacking_status SPZY1V53Z4TVRHHW9Z7SFG8CZNRAG7BD8WJ6SXD0
+    funai-cli stacking_status SPZY1V53Z4TVRHHW9Z7SFG8CZNRAG7BD8WJ6SXD0
 
 ```
 
@@ -292,7 +292,7 @@ Decrypt an encrypted backup phrase with a password.  Decrypts to a 12-word backu
 Example:
 
     # password is "asdf"
-    stx decrypt_keychain "bfMDtOucUGcJXjZo6vkrZWgEzue9fzPsZ7A6Pl4LQuxLI1xsVF0VPgBkMsnSLCmYS5YHh7R3mNtMmX45Bq9sNGPfPsseQMR0fD9XaHi+tBg=
+    funai-cli decrypt_keychain "bfMDtOucUGcJXjZo6vkrZWgEzue9fzPsZ7A6Pl4LQuxLI1xsVF0VPgBkMsnSLCmYS5YHh7R3mNtMmX45Bq9sNGPfPsseQMR0fD9XaHi+tBg=
     Enter password:
     section amount spend resemble spray verify night immune tattoo best emotion parrot
 ```
@@ -305,7 +305,7 @@ Encrypt a 12-word backup phrase, which can be decrypted later with the `decrypt_
 Example:
 
      # password is "asdf"
-     stx encrypt_keychain "section amount spend resemble spray verify night immune tattoo best emotion parrot"
+     funai-cli encrypt_keychain "section amount spend resemble spray verify night immune tattoo best emotion parrot"
      Enter password:
      Enter password again:
      M+DnBHYb1fgw4N3oZ+5uTEAua5bAWkgTW/SjmmBhGGbJtjOtqVV+RrLJEJOgT35hBon4WKdGWye2vTdgqDo7+HIobwJwkQtN2YF9g3zPsKk=
@@ -318,7 +318,7 @@ Provide free Stacks Token (STX) on testnet for the specified address
 
 Example:
 
-      stx faucet ST3PWZ5M026785YW8YKKEH316DYPE4AC7NNTD9ADN
+      funai-cli faucet ST3PWZ5M026785YW8YKKEH316DYPE4AC7NNTD9ADN
       {
         txid: '0xd33672dd4dbb0b88f733bc67b938359843123ca3be550ca87d487d067bd1b3c3',
         transaction: 'https://explorer.hiro.so/txid/0xd33672dd4dbb0b88f733bc67b938359843123ca3be550ca87d487d067bd1b3c3?chain=testnet'
@@ -332,12 +332,12 @@ Get the address of a private key or multisig private key bundle.  Gives the BTC 
 
 Example:
 
-    stx get_address f5185b9ca93bdcb5753fded3b097dab8547a8b47d2be578412d0687a9a0184cb01
+    funai-cli get_address f5185b9ca93bdcb5753fded3b097dab8547a8b47d2be578412d0687a9a0184cb01
     {
       "BTC": "1JFhWyVPpZQjbPcXFtpGtTmU22u4fhBVmq",
       "STACKS": "SP2YM3J4KQK09V670TD6ZZ1XYNYCNGCWCVVKSDFWQ"
     }
-    stx get_address 1,f5185b9ca93bdcb5753fded3b097dab8547a8b47d2be578412d0687a9a0184cb01,ff2ff4f4e7f8a1979ffad4fc869def1657fd5d48fc9cf40c1924725ead60942c01
+    funai-cli get_address 1,f5185b9ca93bdcb5753fded3b097dab8547a8b47d2be578412d0687a9a0184cb01,ff2ff4f4e7f8a1979ffad4fc869def1657fd5d48fc9cf40c1924725ead60942c01
     {
       "BTC": "363pKBhc5ipDws1k5181KFf6RSxhBZ7e3p",
       "STACKS": "SMQWZ30EXVG6XEC1K4QTDP16C1CAWSK1JSWMS0QN"
@@ -356,7 +356,7 @@ There are two derivation paths emitted by this command:  a `keyInfo` path and a 
 Example:
     // Specify -t for testnet
     export BACKUP_PHRASE="one race buffalo dynamic icon drip width lake extra forest fee kit"
-    stx get_app_keys "$BACKUP_PHRASE" example.id.blockstack https://my.cool.dapp
+    funai-cli get_app_keys "$BACKUP_PHRASE" example.id.blockstack https://my.cool.dapp
     {
       "keyInfo": {
         "privateKey": "TODO",
@@ -380,7 +380,7 @@ Example:
     # get the first 3 owner keys and addresses for a backup phrase
     // Specify -t for testnet
     export BACKUP_PHRASE="soap fog wealth upon actual blossom neither timber phone exile monkey vocal"
-    stx get_owner_keys "$BACKUP_PHRASE" 3
+    funai-cli get_owner_keys "$BACKUP_PHRASE" 3
     [
       {
         "privateKey": "14b0811d5cd3486d47279d8f3a97008647c64586b121e99862c18863e2a4183501",
@@ -412,7 +412,7 @@ Get the payment private key from a 12-word backup phrase.  If you provide an enc
 
 Example
     // Specify -t for testnet
-    stx get_payment_key "soap fog wealth upon actual blossom neither timber phone exile monkey vocal"
+    funai-cli get_payment_key "soap fog wealth upon actual blossom neither timber phone exile monkey vocal"
     [
       {
         "privateKey": "4023435e33da4aff0775f33e7b258f257fb20ecff039c919b5782313ab73afb401",
@@ -433,7 +433,7 @@ Get the payment private key from a 24-word backup phrase used by the Stacks wall
 
 Example
     // Specify -t for testnet
-    stx get_stacks_wallet_key "toast canal educate tissue express melody produce later gospel victory meadow outdoor hollow catch liberty annual gasp hat hello april equip thank neck cruise"
+    funai-cli get_stacks_wallet_key "toast canal educate tissue express melody produce later gospel victory meadow outdoor hollow catch liberty annual gasp hat hello april equip thank neck cruise"
     [
       {
         "privateKey": "a25cea8d310ce656c6d427068c77bad58327334f73e39c296508b06589bc4fa201",
@@ -454,7 +454,7 @@ Generate the owner and payment private keys, optionally from a given 12-word bac
 
 Example:
     // Specify -t for testnet
-    stx make_keychain
+    funai-cli make_keychain
     {
       "mnemonic": "apart spin rich leader siren foil dish sausage fee pipe ethics bundle",
       "keyInfo": {
@@ -486,7 +486,7 @@ Download the contents of a Gaia hub bucket to a given directory.  The `GAIA_HUB`
 Example:
 
     export BACKUP_PHRASE="section amount spend resemble spray verify night immune tattoo best emotion parrot
-    stx gaia_dump_bucket hello.id.blockstack https://sample.app https://hub.blockstack.org "$BACKUP_PHRASE" ./backups
+    funai-cli gaia_dump_bucket hello.id.blockstack https://sample.app https://hub.blockstack.org "$BACKUP_PHRASE" ./backups
     Download 3 files...
     Download hello_world to ./backups/hello_world
     Download dir/format to ./backups/dir\x2fformat
@@ -505,17 +505,17 @@ Gaia is a key-value store, so it does not have any built-in notion of directorie
 Example without encryption:
 
     # Get an unencrypted, unsigned file
-    stx gaia_getfile ryan.id http://public.ykliao.com statuses.json
+    funai-cli gaia_getfile ryan.id http://public.ykliao.com statuses.json
     [{"id":0,"text":"Hello, Blockstack!","created_at":1515786983492}]
 
 Example with encryption:
 
     # Get an encrypted file without decrypting
-    stx gaia_getfile ryan.id https://app.graphitedocs.com documentscollection.json
+    funai-cli gaia_getfile ryan.id https://app.graphitedocs.com documentscollection.json
         # Get an encrypted file, and decrypt it
     # Tip: You can obtain the app key with the get_app_keys command
     export APP_KEY="3ac770e8c3d88b1003bf4a0a148ceb920a6172bdade8e0325a1ed1480ab4fb19"
-    stx gaia_getfile ryan.id https://app.graphitedocs.com documentscollection.json "$APP_KEY" 1 0
+    funai-cli gaia_getfile ryan.id https://app.graphitedocs.com documentscollection.json "$APP_KEY" 1 0
 
 ```
 
@@ -531,19 +531,19 @@ Example:
     # Store 4 versions of a file: plaintext, encrypted, signed, and encrypted+signed
     # Tip: You can obtain the app key with the get_app_keys command.
     export APP_KEY="3ac770e8c3d88b1003bf4a0a148ceb920a6172bdade8e0325a1ed1480ab4fb19"
-    stx gaia_putfile https://hub.blockstack.org "$APP_KEY" /path/to/file.txt file.txt
+    funai-cli gaia_putfile https://hub.blockstack.org "$APP_KEY" /path/to/file.txt file.txt
     {
        "urls": "https://gaia.blockstack.org/hub/19KAzYp4kSKozeAGMUsnuqkEGdgQQLEvwo/file.txt"
     }
-    stx gaia_putfile https://hub.blockstack.org "$APP_KEY" /path/to/file.txt file-encrypted.txt 1
+    funai-cli gaia_putfile https://hub.blockstack.org "$APP_KEY" /path/to/file.txt file-encrypted.txt 1
     {
        "urls": "https://gaia.blockstack.org/hub/19KAzYp4kSKozeAGMUsnuqkEGdgQQLEvwo/file-encrypted.txt"
     }
-    stx gaia_putfile https://hub.blockstack.org "$APP_KEY" /path/to/file.txt file-signed.txt 0 1
+    funai-cli gaia_putfile https://hub.blockstack.org "$APP_KEY" /path/to/file.txt file-signed.txt 0 1
     {
        "urls": "https://gaia.blockstack.org/hub/19KAzYp4kSKozeAGMUsnuqkEGdgQQLEvwo/file-signed.txt"
     }
-    stx gaia_putfile https://hub.blockstack.org "$APP_KEY" /path/to/file.txt file-encrypted-signed.txt 1 1
+    funai-cli gaia_putfile https://hub.blockstack.org "$APP_KEY" /path/to/file.txt file-encrypted-signed.txt 1 1
     {
        "urls": "https://gaia.blockstack.org/hub/19KAzYp4kSKozeAGMUsnuqkEGdgQQLEvwo/file-encrypted-signed.txt"
     }
@@ -558,7 +558,7 @@ Example:
 
     # Tip: You can obtain the app key with the get_app_keys command.
     export APP_KEY="3ac770e8c3d88b1003bf4a0a148ceb920a6172bdade8e0325a1ed1480ab4fb19"
-    stx gaia_deletefile https://hub.blockstack.org "$APP_KEY" file.txt false
+    funai-cli gaia_deletefile https://hub.blockstack.org "$APP_KEY" file.txt false
     ok
 ```
 
@@ -571,7 +571,7 @@ Example:
 
     # Tip: You can obtain the app key with the get_app_keys command.
     export APP_KEY="3ac770e8c3d88b1003bf4a0a148ceb920a6172bdade8e0325a1ed1480ab4fb19"
-    stx gaia_listfiles "https://hub.blockstack.org" "$APP_KEY"
+    funai-cli gaia_listfiles "https://hub.blockstack.org" "$APP_KEY"
     hello_world
     dir/format
     /.dotfile
@@ -587,7 +587,7 @@ Upload the contents of a previously-dumped Gaia bucket to a new Gaia hub.  The `
 Example:
 
     export BACKUP_PHRASE="section amount spend resemble spray verify night immune tattoo best emotion parrot"
-    stx gaia_restore_bucket hello.id.blockstack https://sample.app https://new.gaia.hub "$BACKUP_PHRASE" ./backups
+    funai-cli gaia_restore_bucket hello.id.blockstack https://sample.app https://new.gaia.hub "$BACKUP_PHRASE" ./backups
     Uploaded ./backups/hello_world to https://new.gaia.hub/hub/1Lr8ggSgdmfcb4764woYutUfFqQMjEoKHc/hello_world
     Uploaded ./backups/dir\x2fformat to https://new.gaia.hub/hub/1Lr8ggSgdmfcb4764woYutUfFqQMjEoKHc/dir/format
     Uploaded ./backups/\x2f.dotfile to https://new.gaia.hub/hub/1Lr8ggSgdmfcb4764woYutUfFqQMjEoKHc//.dotfile
@@ -607,7 +607,7 @@ Your 12-word phrase (in either raw or encrypted form) is required to re-sign and
 Example:
 
     export BACKUP_PHRASE="soap fog wealth upon actual blossom neither timber phone exile monkey vocal"
-    stx gaia_sethub hello_world.id https://hub.blockstack.org https://my.cool.app https://my.app.gaia.hub "$BACKUP_PHRASE"
+    funai-cli gaia_sethub hello_world.id https://hub.blockstack.org https://my.cool.app https://my.app.gaia.hub "$BACKUP_PHRASE"
     {
       "profileUrls": {
         "error": null,
@@ -636,7 +636,7 @@ Sign a profile on disk with a given owner private key.  Print out the signed pro
 Example:
 
     # Tip: you can get the owner key from your 12-word backup phrase using the get_owner_keys command
-    stx profile_sign /path/to/profile.json 0ffd299af9c257173be8486ef54a4dd1373407d0629ca25ca68ff24a76be09fb01
+    funai-cli profile_sign /path/to/profile.json 0ffd299af9c257173be8486ef54a4dd1373407d0629ca25ca68ff24a76be09fb01
 
 
 ```
@@ -657,6 +657,6 @@ Example:
     # get the raw profile JWT
     curl -sL https://raw.githubusercontent.com/jcnelson/profile/master/judecn.id > /tmp/judecn.id.jwt
     # Tip: you can get the ID-address for a name with the "whois" command
-    stx profile_verify /tmp/judecn.id.jwt ID-16EMaNw3pkn3v6f2BgnSSs53zAKH4Q8YJg
+    funai-cli profile_verify /tmp/judecn.id.jwt ID-16EMaNw3pkn3v6f2BgnSSs53zAKH4Q8YJg
 
 ```

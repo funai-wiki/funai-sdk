@@ -671,18 +671,24 @@ function getAccountHistory(_network: CLINetworkAdapter, args: string[]): Promise
 
 async function infer(_network: CLINetworkAdapter, args: string[]): Promise<string> {
   const inferUserAddress = args[0];
-  const userInput = args[1];
-  const context = args[2];
-  const fee = BigInt(args[3]);
-  const nonce = BigInt(args[4]);
-  const privateKey = args[5];
+  const amount = BigInt(args[1]);
+  const userInput = args[2];
+  const context = args[3];
+  const nodePrincipal = args[4];
+  const modelName = args[5];
+  const fee = BigInt(args[6]);
+  const nonce = BigInt(args[7]);
+  const privateKey = args[8];
 
   const network = _network.isMainnet()? STACKS_MAINNET: STACKS_TESTNET;
 
   const options: SignedInferOptions = {
     inferUserAddress: inferUserAddress,
+    amount: amount,
     userInput: userInput,
     context: context,
+    nodePrincipal: nodePrincipal,
+    modelName: modelName,
     senderKey: privateKey,
     fee,
     nonce,
@@ -2094,7 +2100,6 @@ const COMMANDS: Record<string, CommandFunction> = {
  * CLI main entry point
  */
 export function CLIMain() {
-  console.log('Funai Stacks CLI ');
   const argv = process.argv;
   const opts = getCLIOpts(argv);
 
