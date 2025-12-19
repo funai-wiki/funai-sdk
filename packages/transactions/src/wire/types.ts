@@ -102,8 +102,11 @@ export interface InferPayloadWire {
   readonly type: StacksWireType.Payload;
   readonly payloadType: PayloadType.Infer;
   readonly inferUserAddress: PrincipalCV;
+  readonly amount: bigint;
   readonly userInput: LengthPrefixedStringWire;
   readonly context : LengthPrefixedStringWire;
+  readonly nodePrincipal: PrincipalCV;
+  readonly modelName: LengthPrefixedStringWire;
 }
 
 export type PayloadInput =

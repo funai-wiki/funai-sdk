@@ -105,10 +105,16 @@ export interface SignedTokenTransferOptions extends TokenTransferOptions {
 export type InferOptions = {
   /** the address of the sender of the infer tx */
   inferUserAddress: string;
+  /** the amount to be transfered */
+  amount: IntegerType;
   /** the input of the infer tx */
   userInput: string;
   /** the context of the infer tx */
   context: string;
+  /** the node principal */
+  nodePrincipal: string;
+  /** the model name */
+  modelName: string;
   /** the transaction fee in microstacks */
   fee?: IntegerType;
   /** the transaction nonce, which must be increased monotonically with each new transaction */
@@ -144,8 +150,11 @@ export async function makeUnsignedInfer(
 
   const payload = createInferPayload(
     options.inferUserAddress,
+    options.amount,
     options.userInput,
-    options.context
+    options.context,
+    options.nodePrincipal,
+    options.modelName
   );
 
   let spendingCondition: SpendingCondition | null = null;

@@ -79,8 +79,11 @@ export function createMessageSignature(signature: string): MessageSignatureWire 
 
 export function createInferPayload(
   inferUserAddress: string | PrincipalCV,
+  amount: IntegerType,
   userInput: string | LengthPrefixedStringWire,
   context: string | LengthPrefixedStringWire,
+  nodePrincipal: string | PrincipalCV,
+  modelName: string | LengthPrefixedStringWire,
 ): InferPayloadWire {
   if (typeof inferUserAddress === 'string') {
     inferUserAddress = principalCV(inferUserAddress);
@@ -91,12 +94,21 @@ export function createInferPayload(
   if (typeof context === 'string') {
     context = createLPString(context);
   }
+  if (typeof nodePrincipal === 'string') {
+    nodePrincipal = principalCV(nodePrincipal);
+  }
+  if (typeof modelName === 'string') {
+    modelName = createLPString(modelName);
+  }
   return {
     type: StacksWireType.Payload,
     payloadType: PayloadType.Infer,
     inferUserAddress,
+    amount: intToBigInt(amount),
     userInput,
     context,
+    nodePrincipal,
+    modelName,
   };
 }
 

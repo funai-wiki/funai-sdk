@@ -436,8 +436,11 @@ export function serializePayloadBytes(payload: PayloadInput): Uint8Array {
       break;
     case PayloadType.Infer:
       bytesArray.push(serializeCVBytes(payload.inferUserAddress));
+      bytesArray.push(intToBytes(payload.amount, 8));
       bytesArray.push(serializeStacksWireBytes(payload.userInput));
       bytesArray.push(serializeStacksWireBytes(payload.context));
+      bytesArray.push(serializeCVBytes(payload.nodePrincipal));
+      bytesArray.push(serializeStacksWireBytes(payload.modelName));
       break;
     case PayloadType.ContractCall:
       bytesArray.push(serializeStacksWireBytes(payload.contractAddress));
@@ -498,16 +501,21 @@ export function deserializePayload(serialized: string | Uint8Array | BytesReader
   });
 
   switch (payloadType) {
-    case PayloadType.TokenTransfer:
+    case PayloadType.TokenTransfer: {
       const recipient = deserializeCV(bytesReader) as PrincipalCV;
       const amount = intToBigInt(bytesReader.readBytes(8));
       const memo = deserializeMemoString(bytesReader);
       return createTokenTransferPayload(recipient, amount, memo);
-    case PayloadType.Infer:
+    }
+    case PayloadType.Infer: {
       const inferUserAddress = deserializeCV(bytesReader) as PrincipalCV;
+      const amount = intToBigInt(bytesReader.readBytes(8));
       const userInput = deserializeLPString(bytesReader);
       const context = deserializeLPString(bytesReader);
-      return createInferPayload(inferUserAddress, userInput, context);
+      const nodePrincipal = deserializeCV(bytesReader) as PrincipalCV;
+      const modelName = deserializeLPString(bytesReader);
+      return createInferPayload(inferUserAddress, amount, userInput, context, nodePrincipal, modelName);
+    }
     case PayloadType.ContractCall:
       const contractAddress = deserializeAddress(bytesReader);
       const contractCallName = deserializeLPString(bytesReader);
