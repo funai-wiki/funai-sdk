@@ -35,9 +35,9 @@ export enum TransactionVersion {
 }
 
 /**
- * Address versions for identifying address types in an encoded Stacks address.
+ * Address versions for identifying address types in an encoded Funai address.
  * The address version is a single byte, indicating the address type.
- * Every Stacks address starts with `S` followed by a single character indicating the address version.
+ * Every Funai address starts with `F` or `S` followed by a single character indicating the address version.
  * The second character is the c32-encoded AddressVersion byte.
  */
 export enum AddressVersion {

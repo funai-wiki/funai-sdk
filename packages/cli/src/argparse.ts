@@ -97,9 +97,9 @@ const CONFIG_LOCALNET_DEFAULTS = {
 };
 
 const CONFIG_TESTNET_DEFAULTS = {
-  blockstackAPIUrl: `https://api.testnet.hiro.so`,
-  blockstackNodeUrl: `https://api.testnet.hiro.so`,
-  broadcastServiceUrl: `https://api.testnet.hiro.so/v2/transactions`,
+  blockstackAPIUrl: `http://34.87.21.99:20443`,
+  blockstackNodeUrl: `http://34.87.21.99:20443`,
+  broadcastServiceUrl: `http://34.87.21.99:20443/v2/transactions`,
   utxoServiceUrl: `https://blockchain.info`, // todo: this likely doesn't work anymore
   logConfig: Object.assign({}, LOG_CONFIG_DEFAULTS, { level: 'debug' }),
 };

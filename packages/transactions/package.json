@@ -1,7 +1,7 @@
 {
-  "name": "@stacks/transactions",
+  "name": "@funai/transactions",
   "version": "7.0.3",
-  "description": "Javascript library for constructing transactions on the Stacks blockchain.",
+  "description": "Javascript library for constructing transactions on the Funai blockchain.",
   "license": "MIT",
   "author": "Hiro Systems PBC (https://hiro.so)",
   "contributors": [
@@ -27,8 +27,8 @@
   "dependencies": {
     "@noble/hashes": "1.1.5",
     "@noble/secp256k1": "1.7.1",
-    "@stacks/common": "^7.0.2",
-    "@stacks/network": "^7.0.2",
+    "@funai/common": "^7.0.2",
+    "@funai/network": "^7.0.2",
     "c32check": "^2.0.0",
     "lodash.clonedeep": "^4.5.0"
   },

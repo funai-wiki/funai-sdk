@@ -1,7 +1,7 @@
 {
-  "name": "@stacks/common",
+  "name": "@funai/common",
   "version": "7.0.2",
-  "description": "Common Stacks utilities",
+  "description": "Common Funai utilities",
   "license": "MIT",
   "author": "Hiro Systems PBC (https://hiro.so)",
   "homepage": "https://hiro.so/stacks-js",

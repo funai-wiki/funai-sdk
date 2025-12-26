@@ -8,7 +8,7 @@ import {
 import { PostCondition, PostConditionModeName } from './postcondition-types';
 import {
   PostConditionWire,
-  StacksWireType,
+  FunaiWireType,
   parseAssetString,
   parsePrincipalString,
   serializePostConditionWire,
@@ -32,22 +32,22 @@ export function postConditionToWire(postcondition: PostCondition): PostCondition
   switch (postcondition.type) {
     case 'stx-postcondition':
       return {
-        type: StacksWireType.PostCondition,
+        type: FunaiWireType.PostCondition,
         conditionType: PostConditionType.STX,
         principal:
           postcondition.address === 'origin'
-            ? { type: StacksWireType.Principal, prefix: PostConditionPrincipalId.Origin }
+            ? { type: FunaiWireType.Principal, prefix: PostConditionPrincipalId.Origin }
             : parsePrincipalString(postcondition.address),
         conditionCode: FUNGIBLE_COMPARATOR_MAPPING[postcondition.condition],
         amount: BigInt(postcondition.amount),
       };
     case 'ft-postcondition':
       return {
-        type: StacksWireType.PostCondition,
+        type: FunaiWireType.PostCondition,
         conditionType: PostConditionType.Fungible,
         principal:
           postcondition.address === 'origin'
-            ? { type: StacksWireType.Principal, prefix: PostConditionPrincipalId.Origin }
+            ? { type: FunaiWireType.Principal, prefix: PostConditionPrincipalId.Origin }
             : parsePrincipalString(postcondition.address),
         conditionCode: FUNGIBLE_COMPARATOR_MAPPING[postcondition.condition],
         amount: BigInt(postcondition.amount),
@@ -55,11 +55,11 @@ export function postConditionToWire(postcondition: PostCondition): PostCondition
       };
     case 'nft-postcondition':
       return {
-        type: StacksWireType.PostCondition,
+        type: FunaiWireType.PostCondition,
         conditionType: PostConditionType.NonFungible,
         principal:
           postcondition.address === 'origin'
-            ? { type: StacksWireType.Principal, prefix: PostConditionPrincipalId.Origin }
+            ? { type: FunaiWireType.Principal, prefix: PostConditionPrincipalId.Origin }
             : parsePrincipalString(postcondition.address),
         conditionCode: NON_FUNGIBLE_COMPARATOR_MAPPING[postcondition.condition],
         asset: parseAssetString(postcondition.asset),

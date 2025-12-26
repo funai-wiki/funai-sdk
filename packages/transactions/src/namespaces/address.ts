@@ -19,7 +19,7 @@ export type AddressRepr = { hash160: string; contractName?: string } & (
 );
 
 /**
- * Parse a C32 Stacks address string to an address object.
+ * Parse a C32 Funai address string to an address object.
  * @param address - The address string to parse.
  * @example
  * ```ts
@@ -72,7 +72,7 @@ export function stringify(address: AddressRepr): string {
 }
 
 /**
- * Convert a private key to a single-sig C32 Stacks address.
+ * Convert a private key to a single-sig C32 Funai address.
  * @param privateKey - The private key to convert.
  * @returns The address string.
  *
@@ -90,7 +90,7 @@ export function stringify(address: AddressRepr): string {
 export const fromPrivateKey = privateKeyToAddress;
 
 /**
- * Convert a public key to a single-sig C32 Stacks address.
+ * Convert a public key to a single-sig C32 Funai address.
  * @param publicKey - The public key to convert.
  * @returns The address string.
  *

@@ -19,13 +19,13 @@ import {
   PublicKey,
   signatureRsvToVrs,
   signatureVrsToRsv,
-} from '@stacks/common';
-import { networkFrom, STACKS_MAINNET, StacksNetwork, StacksNetworkName } from '@stacks/network';
+} from '@funai/common';
+import { networkFrom, FUNAI_MAINNET, FunaiNetwork, FunaiNetworkName } from '@funai/network';
 import { c32address } from 'c32check';
 import { addressHashModeToVersion } from './address';
 import { AddressHashMode, AddressVersion, PubKeyEncoding } from './constants';
 import { hash160, hashP2PKH } from './utils';
-import { addressFromVersionHash, addressToString, PublicKeyWire, StacksWireType } from './wire';
+import { addressFromVersionHash, addressToString, PublicKeyWire, FunaiWireType } from './wire';
 
 /**
  * To use secp256k1.signSync set utils.hmacSha256Sync to a function using noble-hashes
@@ -44,7 +44,7 @@ utils.hmacSha256Sync = (key: Uint8Array, ...msgs: Uint8Array[]) => {
 export function getAddressFromPrivateKey(
   /** Private key bytes or hex string */
   privateKey: PrivateKey,
-  network: StacksNetworkName | StacksNetwork = 'mainnet'
+  network: FunaiNetworkName | FunaiNetwork = 'mainnet'
 ): string {
   network = networkFrom(network);
   const publicKey = privateKeyToPublic(privateKey);
@@ -55,7 +55,7 @@ export function getAddressFromPrivateKey(
 export function getAddressFromPublicKey(
   /** Public key bytes or hex string */
   publicKey: PublicKey,
-  network: StacksNetworkName | StacksNetwork = 'mainnet'
+  network: FunaiNetworkName | FunaiNetwork = 'mainnet'
 ): string {
   network = networkFrom(network);
   publicKey = typeof publicKey === 'string' ? hexToBytes(publicKey) : publicKey;
@@ -65,10 +65,10 @@ export function getAddressFromPublicKey(
   return addrString;
 }
 
-export function createStacksPublicKey(publicKey: PublicKey): PublicKeyWire {
+export function createFunaiPublicKey(publicKey: PublicKey): PublicKeyWire {
   publicKey = typeof publicKey === 'string' ? hexToBytes(publicKey) : publicKey;
   return {
-    type: StacksWireType.PublicKey,
+    type: FunaiWireType.PublicKey,
     data: publicKey,
   };
 }
@@ -233,7 +233,7 @@ export function compressPrivateKey(privateKey: PrivateKey): string {
 
 /**
  * Convert a private key to a single-sig address.
- * @returns A Stacks address string (encoded with c32check)
+ * @returns A Funai address string (encoded with c32check)
  * @example
  * ```
  * const address = privateKeyToAddress("73a2f291df5a8ce3ceb668a25ac7af45639513af7596d710ddf59f64f484fd2801");
@@ -242,7 +242,7 @@ export function compressPrivateKey(privateKey: PrivateKey): string {
  */
 export function privateKeyToAddress(
   privateKey: PrivateKey,
-  network?: StacksNetworkName | StacksNetwork
+  network?: FunaiNetworkName | FunaiNetwork
 ): string {
   const publicKey = privateKeyToPublic(privateKey);
   return publicKeyToAddressSingleSig(publicKey, network);
@@ -250,16 +250,16 @@ export function privateKeyToAddress(
 
 /**
  * Convert a public key to an address.
- * @returns A Stacks address string (encoded with c32check)
+ * @returns A Funai address string (encoded with c32check)
  * @example Public key to address
  * ```
  * const address = publicKeyToAddress("03ef788b3830c00abe8f64f62dc32fc863bc0b2cafeb073b6c8e1c7657d9c2c3ab");
- * const address = publicKeyToAddress("03ef788b3830c00abe8f64f62dc32fc863bc0b2cafeb073b6c8e1c7657d9c2c3ab", STACKS_TESTNET);
+ * const address = publicKeyToAddress("03ef788b3830c00abe8f64f62dc32fc863bc0b2cafeb073b6c8e1c7657d9c2c3ab", FUNAI_TESTNET);
  * ```
  */
 export function publicKeyToAddress(
   publicKey: PublicKey,
-  network?: StacksNetworkName | StacksNetwork
+  network?: FunaiNetworkName | FunaiNetwork
 ): string;
 export function publicKeyToAddress(version: AddressVersion, publicKey: PublicKey): string;
 export function publicKeyToAddress(
@@ -278,9 +278,9 @@ function _publicKeyToAddress(version: AddressVersion, publicKey: PublicKey): str
 /** Alias for {@link publicKeyToAddress} */
 export function publicKeyToAddressSingleSig(
   publicKey: PublicKey,
-  network?: StacksNetworkName | StacksNetwork
+  network?: FunaiNetworkName | FunaiNetwork
 ): string {
-  network = network ? networkFrom(network) : STACKS_MAINNET;
+  network = network ? networkFrom(network) : FUNAI_MAINNET;
   publicKey = typeof publicKey === 'string' ? hexToBytes(publicKey) : publicKey;
   return c32address(network.addressVersion.singleSig, bytesToHex(hash160(publicKey)));
 }

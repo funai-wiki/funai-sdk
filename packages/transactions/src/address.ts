@@ -1,10 +1,10 @@
 import {
-  STACKS_MAINNET,
-  StacksNetwork,
-  StacksNetworkName,
+  FUNAI_MAINNET,
+  FunaiNetwork,
+  FunaiNetworkName,
   TransactionVersion,
   networkFrom,
-} from '@stacks/network';
+} from '@funai/network';
 import { AddressHashMode, AddressVersion } from './constants';
 
 /**
@@ -13,9 +13,9 @@ import { AddressHashMode, AddressVersion } from './constants';
  */
 export function addressHashModeToVersion(
   hashMode: AddressHashMode,
-  network?: StacksNetworkName | StacksNetwork
+  network?: FunaiNetworkName | FunaiNetwork
 ): AddressVersion {
-  network = networkFrom(network ?? STACKS_MAINNET);
+  network = networkFrom(network ?? FUNAI_MAINNET);
   switch (hashMode) {
     case AddressHashMode.P2PKH:
       switch (network.transactionVersion) {

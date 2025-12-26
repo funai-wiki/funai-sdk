@@ -9,7 +9,7 @@ import {
 } from './postcondition-types';
 import { AddressString, AssetString, ContractIdString } from './types';
 import {} from './postcondition';
-import { parseContractId, validateStacksAddress } from './utils';
+import { parseContractId, validateFunaiAddress } from './utils';
 
 /// `Pc.` Post Condition Builder
 //
@@ -27,7 +27,7 @@ import { parseContractId, validateStacksAddress } from './utils';
  * @example
  * ```
  * import { Pc } from '@stacks/transactions';
- * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6').willSendEq(10000).ustx();
+ * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6').willSendEq(10000).ufunai();
  * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6.mycontract').willSendGte(2000).ft();
  * ```
  */
@@ -37,7 +37,7 @@ export function principal(principal: AddressString | ContractIdString) {
 
   // todo: improve validity check (and add helper methods like `isValidContractId`, `isValidAdress`,
   // token name, asset syntax, etc.) -- also deupe .split checks in codebase
-  if (!address || !validateStacksAddress(address) || (typeof name === 'string' && !name)) {
+  if (!address || !validateFunaiAddress(address) || (typeof name === 'string' && !name)) {
     throw new Error(`Invalid contract id: ${principal}`);
   }
 
@@ -51,7 +51,7 @@ export function principal(principal: AddressString | ContractIdString) {
  * @example
  * ```
  * import { Pc } from '@stacks/transactions';
- * Pc.origin().willSendEq(10000).ustx();
+ * Pc.origin().willSendEq(10000).ufunai();
  * Pc.origin().willSendGte(2000).ft();
  * ```
  */
@@ -70,7 +70,7 @@ class PartialPcWithPrincipal {
   /**
    * ### Fungible Token Post Condition
    * A post-condition sending tokens `FungibleConditionCode.Equal` (equal to) the given amount of uSTX or fungible-tokens.
-   * Finalize with the chained `.ustx()` or `.ft(…)` method.
+   * Finalize with the chained `.ufunai()` or `.ft(…)` method.
    * @example
    * ```
    * import { Pc } from '@stacks/transactions';
@@ -84,7 +84,7 @@ class PartialPcWithPrincipal {
   /**
    * ### Fungible Token Post Condition
    * A post-condition sending tokens `FungibleConditionCode.LessEqual` (less-than or equal to) the given amount of uSTX or fungible-tokens.
-   * Finalize with the chained `.ustx()` or `.ft(…)` method.
+   * Finalize with the chained `.ufunai()` or `.ft(…)` method.
    * @example
    * ```
    * import { Pc } from '@stacks/transactions';
@@ -98,7 +98,7 @@ class PartialPcWithPrincipal {
   /**
    * ### Fungible Token Post Condition
    * A post-condition sending tokens `FungibleConditionCode.Less` (less-than) the given amount of uSTX or fungible-tokens.
-   * Finalize with the chained `.ustx()` or `.ft(…)` method.
+   * Finalize with the chained `.ufunai()` or `.ft(…)` method.
    * @example
    * ```
    * import { Pc } from '@stacks/transactions';
@@ -112,7 +112,7 @@ class PartialPcWithPrincipal {
   /**
    * ### Fungible Token Post Condition
    * A post-condition sending tokens `FungibleConditionCode.GreaterEqual` (greater-than or equal to) the given amount of uSTX or fungible-tokens.
-   * Finalize with the chained `.ustx()` or `.ft(…)` method.
+   * Finalize with the chained `.ufunai()` or `.ft(…)` method.
    * @example
    * ```
    * import { Pc } from '@stacks/transactions';
@@ -126,7 +126,7 @@ class PartialPcWithPrincipal {
   /**
    * ### Fungible Token Post Condition
    * A post-condition sending tokens `FungibleConditionCode.Greater` (greater-than) the given amount of uSTX or fungible-tokens.
-   * Finalize with the chained `.ustx()` or `.ft(…)` method.
+   * Finalize with the chained `.ufunai()` or `.ft(…)` method.
    * @example
    * ```
    * import { Pc } from '@stacks/transactions';
@@ -180,7 +180,7 @@ class PartialPcFtWithCode {
    * ### STX Post Condition
    * ⚠ Amount of STX is denoted in uSTX (micro-STX)
    */
-  ustx(): StxPostCondition {
+  ufunai(): StxPostCondition {
     // todo: rename to `uSTX`?
     return {
       type: 'stx-postcondition',
@@ -198,7 +198,7 @@ class PartialPcFtWithCode {
     // todo: allow taking one arg (`Asset`) as well, overload
 
     const [address, name] = contractId.split('.');
-    if (!address || !validateStacksAddress(address) || (typeof name === 'string' && !name)) {
+    if (!address || !validateFunaiAddress(address) || (typeof name === 'string' && !name)) {
       throw new Error(`Invalid contract id: ${contractId}`);
     }
 
@@ -243,7 +243,7 @@ class PartialPcNftWithCode {
       ...(args as [any, any, any])
     );
 
-    if (!validateStacksAddress(contractAddress)) {
+    if (!validateFunaiAddress(contractAddress)) {
       throw new Error(`Invalid contract id: ${contractAddress}`);
     }
 

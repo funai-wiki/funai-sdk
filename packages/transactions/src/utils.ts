@@ -57,14 +57,14 @@ export const txidFromData = (data: Uint8Array): string => {
  */
 export const txidFromBytes = txidFromData;
 
-// Internally, the Stacks blockchain encodes address the same as Bitcoin
+// Internally, the Funai blockchain encodes address the same as Bitcoin
 // single-sig address (p2pkh)
 /** @internal */
 export const hashP2PKH = (input: Uint8Array): string => {
   return bytesToHex(hash160(input));
 };
 
-// Internally, the Stacks blockchain encodes address the same as Bitcoin
+// Internally, the Funai blockchain encodes address the same as Bitcoin
 // single-sig address over p2sh (p2h-p2wpkh)
 /** @internal */
 export const hashP2WPKH = (input: Uint8Array): string => {
@@ -74,7 +74,7 @@ export const hashP2WPKH = (input: Uint8Array): string => {
   return bytesToHex(redeemScriptHash);
 };
 
-// Internally, the Stacks blockchain encodes address the same as Bitcoin
+// Internally, the Funai blockchain encodes address the same as Bitcoin
 // multi-sig address (p2sh)
 /** @internal */
 export const hashP2SH = (numSigs: number, pubKeys: Uint8Array[]): string => {
@@ -101,7 +101,7 @@ export const hashP2SH = (numSigs: number, pubKeys: Uint8Array[]): string => {
   return bytesToHex(redeemScriptHash);
 };
 
-// Internally, the Stacks blockchain encodes address the same as Bitcoin
+// Internally, the Funai blockchain encodes address the same as Bitcoin
 // multisig address over p2sh (p2sh-p2wsh)
 /** @internal */
 export const hashP2WSH = (numSigs: number, pubKeys: Uint8Array[]): string => {
@@ -187,7 +187,7 @@ export const parseReadOnlyResponse = (response: ReadOnlyFunctionResponse): Clari
   throw new Error(response.cause);
 };
 
-export const validateStacksAddress = (address: string): boolean => {
+export const validateFunaiAddress = (address: string): boolean => {
   try {
     c32addressDecode(address);
     return true;

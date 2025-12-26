@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "@stacks/api",
+  "name": "@funai/api",
   "version": "7.0.3",
-  "description": "Javascript library for interacting with the Stacks Blockchain Node and API.",
+  "description": "Javascript library for interacting with the Funai Blockchain Node and API.",
   "license": "MIT",
   "author": "Hiro Systems PBC (https://hiro.so)",
   "contributors": [
@@ -24,10 +24,10 @@
     "typecheck:watch": "npm run typecheck -- --watch"
   },
   "dependencies": {
-    "@stacks/common": "^7.0.2",
-    "@stacks/network": "^7.0.2",
+    "@funai/common": "^7.0.2",
+    "@funai/network": "^7.0.2",
     "@stacks/stacks-blockchain-api-types": "^0.61.0",
-    "@stacks/transactions": "^7.0.3"
+    "@funai/transactions": "^7.0.3"
   },
   "devDependencies": {
     "rimraf": "^3.0.2"

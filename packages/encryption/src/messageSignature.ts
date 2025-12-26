@@ -2,9 +2,9 @@ import { sha256 } from '@noble/hashes/sha256';
 import { concatBytes, utf8ToBytes } from '@stacks/common';
 import { decode, encode, encodingLength } from './varuint';
 
-// 'Stacks Signed Message:\n'.length === 23
-// 'Stacks Signed Message:\n'.length.toString(16) === 17
-const chainPrefix = '\x17Stacks Signed Message:\n';
+// 'Funai Signed Message:\n'.length === 22
+// 'Funai Signed Message:\n'.length.toString(16) === 16
+const chainPrefix = '\x16Funai Signed Message:\n';
 
 export function hashMessage(message: string, prefix: string = chainPrefix): Uint8Array {
   return sha256(encodeMessage(message, prefix));

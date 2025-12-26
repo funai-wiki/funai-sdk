@@ -90,7 +90,7 @@ import { CLI_NETWORK_OPTS, CLINetworkAdapter, getNetwork, NameInfoType } from '.
 
 import { gaiaAuth, gaiaConnect, gaiaUploadProfileAll, getGaiaAddressFromProfile } from './data';
 
-import { defaultUrlFromNetwork, STACKS_MAINNET, STACKS_TESTNET } from '@stacks/network';
+import { defaultUrlFromNetwork, FUNAI_MAINNET, FUNAI_TESTNET } from '@stacks/network';
 import {
   generateNewAccount,
   generateWallet,
@@ -265,7 +265,7 @@ async function getAppKeys(_network: CLINetworkAdapter, args: string[]): Promise<
   const privateKey = getAppPrivateKey({ account, appDomain });
   const address = getAddressFromPrivateKey(
     privateKey,
-    _network.isMainnet() ? STACKS_MAINNET : STACKS_TESTNET
+    _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET
   );
 
   return JSON.stringify({ keyInfo: { privateKey, address } });
@@ -1995,7 +1995,7 @@ function faucetCall(_: CLINetworkAdapter, args: string[]): Promise<string> {
     .then((faucetTx: any) => {
       return JSONStringify({
         txid: faucetTx.txId!,
-        transaction: generateExplorerTxPageUrl(faucetTx.txId!.replace(/^0x/, ''), STACKS_TESTNET),
+        transaction: generateExplorerTxPageUrl(faucetTx.txId!.replace(/^0x/, ''), FUNAI_TESTNET),
       });
     })
     .catch((error: any) => error.toString());

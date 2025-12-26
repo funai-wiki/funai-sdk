@@ -11,7 +11,7 @@ import {
   utf8ToBytes,
   writeUInt32BE,
   writeUInt8,
-} from '@stacks/common';
+} from '@funai/common';
 import { BytesReader } from '../BytesReader';
 import {
   ClarityValue,
@@ -40,11 +40,11 @@ import {
   VRF_PROOF_BYTES_LENGTH,
 } from '../constants';
 import { DeserializationError, SerializationError } from '../errors';
-import { compressPublicKey, createStacksPublicKey, uncompressPublicKey } from '../keys';
+import { compressPublicKey, createFunaiPublicKey, uncompressPublicKey } from '../keys';
 import { rightPadHexToLength } from '../utils';
 import {
   createCoinbasePayload,
-  createContractCallPayload, createInferPayload,
+  createContractCallPayload, createInferPayload, createRegisterModelPayload,
   createLPList,
   createLPString,
   createMessageSignature,
@@ -69,73 +69,73 @@ import {
   PostConditionPrincipalWire,
   PostConditionWire,
   PublicKeyWire,
-  StacksWire,
-  StacksWireType,
+  FunaiWire,
+  FunaiWireType,
   StandardPrincipalWire,
   TransactionAuthFieldWire,
 } from './types';
 
-export function serializeStacksWire(wire: StacksWire): string {
-  return bytesToHex(serializeStacksWireBytes(wire));
+export function serializeFunaiWire(wire: FunaiWire): string {
+  return bytesToHex(serializeFunaiWireBytes(wire));
 }
-export function serializeStacksWireBytes(wire: StacksWire): Uint8Array {
+export function serializeFunaiWireBytes(wire: FunaiWire): Uint8Array {
   switch (wire.type) {
-    case StacksWireType.Address:
+    case FunaiWireType.Address:
       return serializeAddressBytes(wire);
-    case StacksWireType.Principal:
+    case FunaiWireType.Principal:
       return serializePrincipalBytes(wire);
-    case StacksWireType.LengthPrefixedString:
+    case FunaiWireType.LengthPrefixedString:
       return serializeLPStringBytes(wire);
-    case StacksWireType.MemoString:
+    case FunaiWireType.MemoString:
       return serializeMemoStringBytes(wire);
-    case StacksWireType.Asset:
+    case FunaiWireType.Asset:
       return serializeAssetBytes(wire);
-    case StacksWireType.PostCondition:
+    case FunaiWireType.PostCondition:
       return serializePostConditionWireBytes(wire);
-    case StacksWireType.PublicKey:
+    case FunaiWireType.PublicKey:
       return serializePublicKeyBytes(wire);
-    case StacksWireType.LengthPrefixedList:
+    case FunaiWireType.LengthPrefixedList:
       return serializeLPListBytes(wire);
-    case StacksWireType.Payload:
+    case FunaiWireType.Payload:
       return serializePayloadBytes(wire);
-    case StacksWireType.TransactionAuthField:
+    case FunaiWireType.TransactionAuthField:
       return serializeTransactionAuthFieldBytes(wire);
-    case StacksWireType.MessageSignature:
+    case FunaiWireType.MessageSignature:
       return serializeMessageSignatureBytes(wire);
   }
 }
 
-export function deserializeStacksWire(
+export function deserializeFunaiWire(
   bytesReader: string | Uint8Array | BytesReader,
-  type: StacksWireType,
-  listType?: StacksWireType
-): StacksWire {
+  type: FunaiWireType,
+  listType?: FunaiWireType
+): FunaiWire {
   switch (type) {
-    case StacksWireType.Address:
+    case FunaiWireType.Address:
       return deserializeAddress(bytesReader);
-    case StacksWireType.Principal:
+    case FunaiWireType.Principal:
       return deserializePrincipal(bytesReader);
-    case StacksWireType.LengthPrefixedString:
+    case FunaiWireType.LengthPrefixedString:
       return deserializeLPString(bytesReader);
-    case StacksWireType.MemoString:
+    case FunaiWireType.MemoString:
       return deserializeMemoString(bytesReader);
-    case StacksWireType.Asset:
+    case FunaiWireType.Asset:
       return deserializeAsset(bytesReader);
-    case StacksWireType.PostCondition:
+    case FunaiWireType.PostCondition:
       return deserializePostConditionWire(bytesReader);
-    case StacksWireType.PublicKey:
+    case FunaiWireType.PublicKey:
       return deserializePublicKey(bytesReader);
-    case StacksWireType.Payload:
+    case FunaiWireType.Payload:
       return deserializePayload(bytesReader);
-    case StacksWireType.LengthPrefixedList:
+    case FunaiWireType.LengthPrefixedList:
       if (!listType) {
         throw new DeserializationError('No list type specified');
       }
       return deserializeLPList(bytesReader, listType);
-    case StacksWireType.MessageSignature:
+    case FunaiWireType.MessageSignature:
       return deserializeMessageSignature(bytesReader);
     default:
-      throw new Error('Could not recognize StacksWireType');
+      throw new Error('Could not recognize FunaiWireType');
   }
 }
 
@@ -156,7 +156,7 @@ export function deserializeAddress(serialized: string | Uint8Array | BytesReader
   const version = hexToInt(bytesToHex(bytesReader.readBytes(1)));
   const data = bytesToHex(bytesReader.readBytes(20));
 
-  return { type: StacksWireType.Address, version, hash160: data };
+  return { type: FunaiWireType.Address, version, hash160: data };
 }
 
 export function serializePrincipal(principal: PostConditionPrincipalWire): string {
@@ -187,15 +187,15 @@ export function deserializePrincipal(
     throw new DeserializationError(`Unexpected Principal payload type: ${n}`);
   });
   if (prefix === PostConditionPrincipalId.Origin) {
-    return { type: StacksWireType.Principal, prefix } as OriginPrincipalWire;
+    return { type: FunaiWireType.Principal, prefix } as OriginPrincipalWire;
   }
   const address = deserializeAddress(bytesReader);
   if (prefix === PostConditionPrincipalId.Standard) {
-    return { type: StacksWireType.Principal, prefix, address } as StandardPrincipalWire;
+    return { type: FunaiWireType.Principal, prefix, address } as StandardPrincipalWire;
   }
   const contractName = deserializeLPString(bytesReader);
   return {
-    type: StacksWireType.Principal,
+    type: FunaiWireType.Principal,
     prefix,
     address,
     contractName,
@@ -247,7 +247,7 @@ export function deserializeMemoString(
     : new BytesReader(serialized);
   let content = bytesToUtf8(bytesReader.readBytes(MEMO_MAX_LENGTH_BYTES));
   content = content.replace(/\u0000*$/, ''); // remove all trailing unicode null characters
-  return { type: StacksWireType.MemoString, content };
+  return { type: FunaiWireType.MemoString, content };
 }
 
 export function serializeAsset(info: AssetWire): string {
@@ -266,7 +266,7 @@ export function deserializeAsset(serialized: string | Uint8Array | BytesReader):
     ? serialized
     : new BytesReader(serialized);
   return {
-    type: StacksWireType.Asset,
+    type: FunaiWireType.Asset,
     address: deserializeAddress(bytesReader),
     contractName: deserializeLPString(bytesReader),
     assetName: deserializeLPString(bytesReader),
@@ -281,14 +281,14 @@ export function serializeLPListBytes(lpList: LengthPrefixedList): Uint8Array {
   const bytesArray = [];
   bytesArray.push(hexToBytes(intToHex(list.length, lpList.lengthPrefixBytes)));
   for (const l of list) {
-    bytesArray.push(serializeStacksWireBytes(l));
+    bytesArray.push(serializeFunaiWireBytes(l));
   }
   return concatArray(bytesArray);
 }
 
 export function deserializeLPList(
   serialized: string | Uint8Array | BytesReader,
-  type: StacksWireType,
+  type: FunaiWireType,
   lengthPrefixBytes?: number
   // todo: `next` refactor for inversion of control
 ): LengthPrefixedList {
@@ -297,28 +297,28 @@ export function deserializeLPList(
     : new BytesReader(serialized);
   const length = hexToInt(bytesToHex(bytesReader.readBytes(lengthPrefixBytes || 4)));
 
-  const l: StacksWire[] = [];
+  const l: FunaiWire[] = [];
   for (let index = 0; index < length; index++) {
     switch (type) {
-      case StacksWireType.Address:
+      case FunaiWireType.Address:
         l.push(deserializeAddress(bytesReader));
         break;
-      case StacksWireType.LengthPrefixedString:
+      case FunaiWireType.LengthPrefixedString:
         l.push(deserializeLPString(bytesReader));
         break;
-      case StacksWireType.MemoString:
+      case FunaiWireType.MemoString:
         l.push(deserializeMemoString(bytesReader));
         break;
-      case StacksWireType.Asset:
+      case FunaiWireType.Asset:
         l.push(deserializeAsset(bytesReader));
         break;
-      case StacksWireType.PostCondition:
+      case FunaiWireType.PostCondition:
         l.push(deserializePostConditionWire(bytesReader));
         break;
-      case StacksWireType.PublicKey:
+      case FunaiWireType.PublicKey:
         l.push(deserializePublicKey(bytesReader));
         break;
-      case StacksWireType.TransactionAuthField:
+      case FunaiWireType.TransactionAuthField:
         l.push(deserializeTransactionAuthField(bytesReader));
         break;
     }
@@ -383,7 +383,7 @@ export function deserializePostConditionWire(
       });
       amount = BigInt(`0x${bytesToHex(bytesReader.readBytes(8))}`);
       return {
-        type: StacksWireType.PostCondition,
+        type: FunaiWireType.PostCondition,
         conditionType: PostConditionType.STX,
         principal,
         conditionCode,
@@ -396,7 +396,7 @@ export function deserializePostConditionWire(
       });
       amount = BigInt(`0x${bytesToHex(bytesReader.readBytes(8))}`);
       return {
-        type: StacksWireType.PostCondition,
+        type: FunaiWireType.PostCondition,
         conditionType: PostConditionType.Fungible,
         principal,
         conditionCode,
@@ -410,7 +410,7 @@ export function deserializePostConditionWire(
         throw new DeserializationError(`Could not read ${n} as FungibleConditionCode`);
       });
       return {
-        type: StacksWireType.PostCondition,
+        type: FunaiWireType.PostCondition,
         conditionType: PostConditionType.NonFungible,
         principal,
         conditionCode,
@@ -432,20 +432,24 @@ export function serializePayloadBytes(payload: PayloadInput): Uint8Array {
     case PayloadType.TokenTransfer:
       bytesArray.push(serializeCVBytes(payload.recipient));
       bytesArray.push(intToBytes(payload.amount, 8));
-      bytesArray.push(serializeStacksWireBytes(payload.memo));
+      bytesArray.push(serializeFunaiWireBytes(payload.memo));
       break;
     case PayloadType.Infer:
       bytesArray.push(serializeCVBytes(payload.inferUserAddress));
       bytesArray.push(intToBytes(payload.amount, 8));
-      bytesArray.push(serializeStacksWireBytes(payload.userInput));
-      bytesArray.push(serializeStacksWireBytes(payload.context));
+      bytesArray.push(serializeFunaiWireBytes(payload.userInput));
+      bytesArray.push(serializeFunaiWireBytes(payload.context));
       bytesArray.push(serializeCVBytes(payload.nodePrincipal));
-      bytesArray.push(serializeStacksWireBytes(payload.modelName));
+      bytesArray.push(serializeFunaiWireBytes(payload.modelName));
+      break;
+    case PayloadType.RegisterModel:
+      bytesArray.push(serializeFunaiWireBytes(payload.modelName));
+      bytesArray.push(serializeFunaiWireBytes(payload.modelParams));
       break;
     case PayloadType.ContractCall:
-      bytesArray.push(serializeStacksWireBytes(payload.contractAddress));
-      bytesArray.push(serializeStacksWireBytes(payload.contractName));
-      bytesArray.push(serializeStacksWireBytes(payload.functionName));
+      bytesArray.push(serializeFunaiWireBytes(payload.contractAddress));
+      bytesArray.push(serializeFunaiWireBytes(payload.contractName));
+      bytesArray.push(serializeFunaiWireBytes(payload.functionName));
       const numArgs = new Uint8Array(4);
       writeUInt32BE(numArgs, payload.functionArgs.length, 0);
       bytesArray.push(numArgs);
@@ -454,13 +458,13 @@ export function serializePayloadBytes(payload: PayloadInput): Uint8Array {
       });
       break;
     case PayloadType.SmartContract:
-      bytesArray.push(serializeStacksWireBytes(payload.contractName));
-      bytesArray.push(serializeStacksWireBytes(payload.codeBody));
+      bytesArray.push(serializeFunaiWireBytes(payload.contractName));
+      bytesArray.push(serializeFunaiWireBytes(payload.codeBody));
       break;
     case PayloadType.VersionedSmartContract:
       bytesArray.push(payload.clarityVersion);
-      bytesArray.push(serializeStacksWireBytes(payload.contractName));
-      bytesArray.push(serializeStacksWireBytes(payload.codeBody));
+      bytesArray.push(serializeFunaiWireBytes(payload.contractName));
+      bytesArray.push(serializeFunaiWireBytes(payload.codeBody));
       break;
     case PayloadType.PoisonMicroblock:
       // TODO: implement
@@ -515,6 +519,11 @@ export function deserializePayload(serialized: string | Uint8Array | BytesReader
       const nodePrincipal = deserializeCV(bytesReader) as PrincipalCV;
       const modelName = deserializeLPString(bytesReader);
       return createInferPayload(inferUserAddress, amount, userInput, context, nodePrincipal, modelName);
+    }
+    case PayloadType.RegisterModel: {
+      const modelName = deserializeLPString(bytesReader);
+      const modelParams = deserializeLPString(bytesReader);
+      return createRegisterModelPayload(modelName, modelParams);
     }
     case PayloadType.ContractCall:
       const contractAddress = deserializeAddress(bytesReader);
@@ -617,7 +626,7 @@ export function deserializeTransactionAuthField(
     case AuthFieldType.PublicKeyUncompressed:
       return createTransactionAuthField(
         PubKeyEncoding.Uncompressed,
-        createStacksPublicKey(uncompressPublicKey(deserializePublicKey(bytesReader).data))
+        createFunaiPublicKey(uncompressPublicKey(deserializePublicKey(bytesReader).data))
       );
     case AuthFieldType.SignatureCompressed:
       return createTransactionAuthField(
@@ -650,7 +659,7 @@ export function serializeTransactionAuthFieldBytes(field: TransactionAuthFieldWi
   const bytesArray = [];
 
   switch (field.contents.type) {
-    case StacksWireType.PublicKey:
+    case FunaiWireType.PublicKey:
       bytesArray.push(
         field.pubKeyEncoding === PubKeyEncoding.Compressed
           ? AuthFieldType.PublicKeyCompressed
@@ -658,7 +667,7 @@ export function serializeTransactionAuthFieldBytes(field: TransactionAuthFieldWi
       );
       bytesArray.push(hexToBytes(compressPublicKey(field.contents.data)));
       break;
-    case StacksWireType.MessageSignature:
+    case FunaiWireType.MessageSignature:
       bytesArray.push(
         field.pubKeyEncoding === PubKeyEncoding.Compressed
           ? AuthFieldType.SignatureCompressed
@@ -688,5 +697,5 @@ export function deserializePublicKey(serialized: string | Uint8Array | BytesRead
   const fieldId = bytesReader.readUInt8();
   const keyLength =
     fieldId === 4 ? UNCOMPRESSED_PUBKEY_LENGTH_BYTES : COMPRESSED_PUBKEY_LENGTH_BYTES;
-  return createStacksPublicKey(concatArray([fieldId, bytesReader.readBytes(keyLength)]));
+  return createFunaiPublicKey(concatArray([fieldId, bytesReader.readBytes(keyLength)]));
 }

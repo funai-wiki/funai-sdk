@@ -26,6 +26,7 @@ export enum PayloadType {
   TenureChange = 0x7,
   NakamotoCoinbase = 0x08,
   Infer = 0x09,
+  RegisterModel = 0x0a,
 }
 
 /**

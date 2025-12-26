@@ -9,7 +9,7 @@ import {
 import { AddressVersion, ChainId, PeerNetworkId, TransactionVersion } from './constants';
 import { ClientParam } from '@stacks/common';
 
-export type StacksNetwork = {
+export type FunaiNetwork = {
   chainId: number;
   transactionVersion: number; // todo: txVersion better?
   peerNetworkId: number;
@@ -27,12 +27,12 @@ export type StacksNetwork = {
 };
 
 export interface NetworkParam {
-  network?: StacksNetworkName | StacksNetwork;
+  network?: FunaiNetworkName | FunaiNetwork;
 }
 
 export type NetworkClientParam = NetworkParam & ClientParam;
 
-export const STACKS_MAINNET: StacksNetwork = {
+export const FUNAI_MAINNET: FunaiNetwork = {
   chainId: ChainId.Mainnet,
   transactionVersion: TransactionVersion.Mainnet,
   peerNetworkId: PeerNetworkId.Mainnet,
@@ -45,7 +45,7 @@ export const STACKS_MAINNET: StacksNetwork = {
   client: { baseUrl: HIRO_MAINNET_URL },
 };
 
-export const STACKS_TESTNET: StacksNetwork = {
+export const FUNAI_TESTNET: FunaiNetwork = {
   chainId: ChainId.Testnet,
   transactionVersion: TransactionVersion.Testnet,
   peerNetworkId: PeerNetworkId.Testnet,
@@ -58,57 +58,57 @@ export const STACKS_TESTNET: StacksNetwork = {
   client: { baseUrl: HIRO_TESTNET_URL },
 };
 
-export const STACKS_DEVNET: StacksNetwork = {
-  ...STACKS_TESTNET, // todo: ensure deep copy
-  addressVersion: { ...STACKS_TESTNET.addressVersion }, // deep copy
+export const FUNAI_DEVNET: FunaiNetwork = {
+  ...FUNAI_TESTNET, // todo: ensure deep copy
+  addressVersion: { ...FUNAI_TESTNET.addressVersion }, // deep copy
   magicBytes: 'id', // todo: comment bytes version of magic bytes
   client: { baseUrl: DEVNET_URL },
 };
 
-export const STACKS_MOCKNET: StacksNetwork = {
-  ...STACKS_DEVNET,
-  addressVersion: { ...STACKS_DEVNET.addressVersion }, // deep copy
-  client: { ...STACKS_DEVNET.client }, // deep copy
+export const FUNAI_MOCKNET: FunaiNetwork = {
+  ...FUNAI_DEVNET,
+  addressVersion: { ...FUNAI_DEVNET.addressVersion }, // deep copy
+  client: { ...FUNAI_DEVNET.client }, // deep copy
 };
 
 /** @ignore internal */
-export const StacksNetworks = ['mainnet', 'testnet', 'devnet', 'mocknet'] as const;
-/** The enum-style names of different common Stacks networks */
-export type StacksNetworkName = (typeof StacksNetworks)[number];
+export const FunaiNetworks = ['mainnet', 'testnet', 'devnet', 'mocknet'] as const;
+/** The enum-style names of different common Funai networks */
+export type FunaiNetworkName = (typeof FunaiNetworks)[number];
 
 /**
  * Returns the default network for a given name
  * @example
  * ```ts
- * networkFromName('mainnet') // same as STACKS_MAINNET
- * networkFromName('testnet') // same as STACKS_TESTNET
- * networkFromName('devnet') // same as STACKS_DEVNET
- * networkFromName('mocknet') // same as STACKS_MOCKNET
+ * networkFromName('mainnet') // same as FUNAI_MAINNET
+ * networkFromName('testnet') // same as FUNAI_TESTNET
+ * networkFromName('devnet') // same as FUNAI_DEVNET
+ * networkFromName('mocknet') // same as FUNAI_MOCKNET
  * ```
  */
-export function networkFromName(name: StacksNetworkName) {
+export function networkFromName(name: FunaiNetworkName) {
   switch (name) {
     case 'mainnet':
-      return STACKS_MAINNET;
+      return FUNAI_MAINNET;
     case 'testnet':
-      return STACKS_TESTNET;
+      return FUNAI_TESTNET;
     case 'devnet':
-      return STACKS_DEVNET;
+      return FUNAI_DEVNET;
     case 'mocknet':
-      return STACKS_MOCKNET;
+      return FUNAI_MOCKNET;
     default:
       throw new Error(`Unknown network name: ${name}`);
   }
 }
 
 /** @ignore */
-export function networkFrom(network: StacksNetworkName | StacksNetwork) {
+export function networkFrom(network: FunaiNetworkName | FunaiNetwork) {
   if (typeof network === 'string') return networkFromName(network);
   return network;
 }
 
 /** @ignore */
-export function defaultUrlFromNetwork(network?: StacksNetworkName | StacksNetwork) {
+export function defaultUrlFromNetwork(network?: FunaiNetworkName | FunaiNetwork) {
   if (!network) return HIRO_MAINNET_URL; // default to mainnet if no network is given
 
   network = networkFrom(network);
@@ -123,7 +123,7 @@ export function defaultUrlFromNetwork(network?: StacksNetworkName | StacksNetwor
 /**
  * Returns the client of a network, creating a new fetch function if none is available
  */
-export function clientFromNetwork(network: StacksNetwork): Required<ClientOpts> {
+export function clientFromNetwork(network: FunaiNetwork): Required<ClientOpts> {
   if (network.client.fetch) return network.client as Required<ClientOpts>;
   return {
     ...network.client,

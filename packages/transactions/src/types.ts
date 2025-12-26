@@ -180,7 +180,7 @@ export interface FeeEstimateResponse {
  * @param {String} contractName - the contract name
  * @param {String} functionName - name of the function to be called
  * @param {[ClarityValue]} functionArgs - an array of Clarity values as arguments to the function call
- * @param {StacksNetwork} network - the Stacks blockchain network this transaction is destined for
+ * @param {FunaiNetwork} network - the Funai blockchain network this transaction is destined for
  * @param {String} senderAddress - the c32check address of the sender
  */
 export type ReadOnlyFunctionOptions = {

@@ -1,4 +1,4 @@
-import { IntegerType, hexToBytes, intToBigInt } from '@stacks/common';
+import { IntegerType, hexToBytes, intToBigInt } from '@funai/common';
 import { c32addressDecode } from 'c32check';
 import { ClarityType, ClarityValue, OptionalCV, PrincipalCV, principalCV } from '../clarity';
 import {
@@ -29,11 +29,12 @@ import {
   NakamotoCoinbasePayloadWire,
   PoisonPayloadWire,
   SmartContractPayloadWire,
-  StacksWire,
-  StacksWireType,
+  FunaiWire,
+  FunaiWireType,
   StandardPrincipalWire,
   TenureChangePayloadWire,
   TokenTransferPayloadWire,
+  RegisterModelPayloadWire,
   TransactionAuthFieldContentsWire,
   TransactionAuthFieldWire,
   VersionedSmartContractPayloadWire,
@@ -41,7 +42,7 @@ import {
 
 export function createEmptyAddress(): AddressWire {
   return {
-    type: StacksWireType.Address,
+    type: FunaiWireType.Address,
     version: AddressVersion.MainnetSingleSig,
     hash160: '0'.repeat(40),
   };
@@ -51,15 +52,15 @@ export function createMemoString(content: string): MemoStringWire {
   if (content && exceedsMaxLengthBytes(content, MEMO_MAX_LENGTH_BYTES)) {
     throw new Error(`Memo exceeds maximum length of ${MEMO_MAX_LENGTH_BYTES} bytes`);
   }
-  return { type: StacksWireType.MemoString, content };
+  return { type: FunaiWireType.MemoString, content };
 }
 
-export function createLPList<T extends StacksWire>(
+export function createLPList<T extends FunaiWire>(
   values: T[],
   lengthPrefixBytes?: number
 ): LengthPrefixedList {
   return {
-    type: StacksWireType.LengthPrefixedList,
+    type: FunaiWireType.LengthPrefixedList,
     lengthPrefixBytes: lengthPrefixBytes || 4,
     values,
   };
@@ -72,7 +73,7 @@ export function createMessageSignature(signature: string): MessageSignatureWire 
   }
 
   return {
-    type: StacksWireType.MessageSignature,
+    type: FunaiWireType.MessageSignature,
     data: signature,
   };
 }
@@ -101,7 +102,7 @@ export function createInferPayload(
     modelName = createLPString(modelName);
   }
   return {
-    type: StacksWireType.Payload,
+    type: FunaiWireType.Payload,
     payloadType: PayloadType.Infer,
     inferUserAddress,
     amount: intToBigInt(amount),
@@ -109,6 +110,24 @@ export function createInferPayload(
     context,
     nodePrincipal,
     modelName,
+  };
+}
+
+export function createRegisterModelPayload(
+  modelName: string | LengthPrefixedStringWire,
+  modelParams: string | LengthPrefixedStringWire
+): RegisterModelPayloadWire {
+  if (typeof modelName === 'string') {
+    modelName = createLPString(modelName);
+  }
+  if (typeof modelParams === 'string') {
+    modelParams = createLPString(modelParams);
+  }
+  return {
+    type: FunaiWireType.Payload,
+    payloadType: PayloadType.RegisterModel,
+    modelName,
+    modelParams,
   };
 }
 
@@ -125,7 +144,7 @@ export function createTokenTransferPayload(
   }
 
   return {
-    type: StacksWireType.Payload,
+    type: FunaiWireType.Payload,
     payloadType: PayloadType.TokenTransfer,
     recipient,
     amount: intToBigInt(amount),
@@ -147,7 +166,7 @@ export function createContractCallPayload(
   }
 
   return {
-    type: StacksWireType.Payload,
+    type: FunaiWireType.Payload,
     payloadType: PayloadType.ContractCall,
     contractAddress:
       typeof contractAddress === 'string' ? createAddress(contractAddress) : contractAddress,
@@ -175,7 +194,7 @@ export function createSmartContractPayload(
 
   if (typeof clarityVersion === 'number') {
     return {
-      type: StacksWireType.Payload,
+      type: FunaiWireType.Payload,
       payloadType: PayloadType.VersionedSmartContract,
       clarityVersion,
       contractName,
@@ -183,7 +202,7 @@ export function createSmartContractPayload(
     };
   }
   return {
-    type: StacksWireType.Payload,
+    type: FunaiWireType.Payload,
     payloadType: PayloadType.SmartContract,
     contractName,
     codeBody,
@@ -191,7 +210,7 @@ export function createSmartContractPayload(
 }
 
 export function createPoisonPayload(): PoisonPayloadWire {
-  return { type: StacksWireType.Payload, payloadType: PayloadType.PoisonMicroblock };
+  return { type: FunaiWireType.Payload, payloadType: PayloadType.PoisonMicroblock };
 }
 
 export function createCoinbasePayload(
@@ -204,14 +223,14 @@ export function createCoinbasePayload(
 
   if (altRecipient != undefined) {
     return {
-      type: StacksWireType.Payload,
+      type: FunaiWireType.Payload,
       payloadType: PayloadType.CoinbaseToAltRecipient,
       coinbaseBytes,
       recipient: altRecipient,
     };
   }
   return {
-    type: StacksWireType.Payload,
+    type: FunaiWireType.Payload,
     payloadType: PayloadType.Coinbase,
     coinbaseBytes,
   };
@@ -231,7 +250,7 @@ export function createNakamotoCoinbasePayload(
   }
 
   return {
-    type: StacksWireType.Payload,
+    type: FunaiWireType.Payload,
     payloadType: PayloadType.NakamotoCoinbase,
     coinbaseBytes,
     recipient: recipient.type === ClarityType.OptionalSome ? recipient.value : undefined,
@@ -249,7 +268,7 @@ export function createTenureChangePayload(
   publicKeyHash: string
 ): TenureChangePayloadWire {
   return {
-    type: StacksWireType.Payload,
+    type: FunaiWireType.Payload,
     payloadType: PayloadType.TenureChange,
     tenureHash,
     previousTenureHash,
@@ -283,7 +302,7 @@ export function createLPString(
     throw new Error(`String length exceeds maximum bytes ${maxLength}`);
   }
   return {
-    type: StacksWireType.LengthPrefixedString,
+    type: FunaiWireType.LengthPrefixedString,
     content,
     lengthPrefixBytes: prefixLength,
     maxLengthBytes: maxLength,
@@ -297,7 +316,7 @@ export function createAsset(
   assetName: string
 ): AssetWire {
   return {
-    type: StacksWireType.Asset,
+    type: FunaiWireType.Asset,
     address: createAddress(addressString),
     contractName: createLPString(contractName),
     assetName: createLPString(assetName),
@@ -308,7 +327,7 @@ export function createAsset(
 export function createAddress(c32AddressString: string): AddressWire {
   const addressData = c32addressDecode(c32AddressString);
   return {
-    type: StacksWireType.Address,
+    type: FunaiWireType.Address,
     version: addressData[0],
     hash160: addressData[1],
   };
@@ -322,7 +341,7 @@ export function createContractPrincipal(
   const addr = createAddress(addressString);
   const name = createLPString(contractName);
   return {
-    type: StacksWireType.Principal,
+    type: FunaiWireType.Principal,
     prefix: PostConditionPrincipalId.Contract,
     address: addr,
     contractName: name,
@@ -333,7 +352,7 @@ export function createContractPrincipal(
 export function createStandardPrincipal(addressString: string): StandardPrincipalWire {
   const addr = createAddress(addressString);
   return {
-    type: StacksWireType.Principal,
+    type: FunaiWireType.Principal,
     prefix: PostConditionPrincipalId.Standard,
     address: addr,
   };
@@ -345,7 +364,7 @@ export function createTransactionAuthField(
 ): TransactionAuthFieldWire {
   return {
     pubKeyEncoding,
-    type: StacksWireType.TransactionAuthField,
+    type: FunaiWireType.TransactionAuthField,
     contents,
   };
 }

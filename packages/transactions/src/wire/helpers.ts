@@ -15,7 +15,7 @@ import {
   PoisonPayloadWire,
   PublicKeyWire,
   SmartContractPayloadWire,
-  StacksWireType,
+  FunaiWireType,
   StandardPrincipalWire,
   TokenTransferPayloadWire,
 } from './types';
@@ -68,7 +68,7 @@ export function addressFromPublicKeys(
 }
 
 export function addressFromVersionHash(version: AddressVersion, hash: string): AddressWire {
-  return { type: StacksWireType.Address, version, hash160: hash };
+  return { type: FunaiWireType.Address, version, hash160: hash };
 }
 
 export function addressToString(address: AddressWire): string {

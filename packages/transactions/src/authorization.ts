@@ -8,7 +8,7 @@ import {
   PrivateKey,
   PublicKey,
   writeUInt16BE,
-} from '@stacks/common';
+} from '@funai/common';
 import { BytesReader } from './BytesReader';
 import {
   AddressHashMode,
@@ -20,7 +20,7 @@ import {
 } from './constants';
 import { DeserializationError, SigningError, VerificationError } from './errors';
 import {
-  createStacksPublicKey,
+  createFunaiPublicKey,
   privateKeyToPublic,
   publicKeyFromSignatureVrs,
   publicKeyIsCompressed,
@@ -37,13 +37,13 @@ import {
   PublicKeyWire,
   serializeLPListBytes,
   serializeMessageSignatureBytes,
-  StacksWireType,
+  FunaiWireType,
   TransactionAuthFieldWire,
 } from './wire';
 
 export function emptyMessageSignature(): MessageSignatureWire {
   return {
-    type: StacksWireType.MessageSignature,
+    type: FunaiWireType.MessageSignature,
     data: bytesToHex(new Uint8Array(RECOVERABLE_ECDSA_SIG_LENGTH_BYTES)),
   };
 }
@@ -127,7 +127,7 @@ export function createSingleSigSpendingCondition(
     0 as any, // only used for hash, so version doesn't matter
     hashMode,
     1,
-    [createStacksPublicKey(pubKey)]
+    [createFunaiPublicKey(pubKey)]
   ).hash160;
   const keyEncoding = publicKeyIsCompressed(pubKey)
     ? PubKeyEncoding.Compressed
@@ -150,14 +150,14 @@ export function createMultiSigSpendingCondition(
   nonce: IntegerType,
   fee: IntegerType
 ): MultiSigSpendingCondition {
-  const stacksPublicKeys = pubKeys.map(createStacksPublicKey);
+  const funaiPublicKeys = pubKeys.map(createFunaiPublicKey);
 
   // address version arg doesn't matter for signer hash generation
   const signer = addressFromPublicKeys(
     0 as any, // only used for hash, so version doesn't matter
     hashMode,
     numSigs,
-    stacksPublicKeys
+    funaiPublicKeys
   ).hash160;
 
   return {
@@ -291,7 +291,7 @@ export function deserializeMultiSigSpendingCondition(
   const nonce = BigInt('0x' + bytesToHex(bytesReader.readBytes(8)));
   const fee = BigInt('0x' + bytesToHex(bytesReader.readBytes(8)));
 
-  const fields = deserializeLPList(bytesReader, StacksWireType.TransactionAuthField)
+  const fields = deserializeLPList(bytesReader, FunaiWireType.TransactionAuthField)
     .values as TransactionAuthFieldWire[];
 
   let haveUncompressed = false;
@@ -299,10 +299,10 @@ export function deserializeMultiSigSpendingCondition(
 
   for (const field of fields) {
     switch (field.contents.type) {
-      case StacksWireType.PublicKey:
+      case FunaiWireType.PublicKey:
         if (!publicKeyIsCompressed(field.contents.data)) haveUncompressed = true;
         break;
-      case StacksWireType.MessageSignature:
+      case FunaiWireType.MessageSignature:
         if (field.pubKeyEncoding === PubKeyEncoding.Uncompressed) haveUncompressed = true;
         numSigs += 1;
         if (numSigs === 65536)
@@ -418,7 +418,7 @@ export function nextSignature(
   const sigHashPre = sigHashPreSign(curSigHash, authType, fee, nonce);
 
   const signature = signWithKey(privateKey, sigHashPre);
-  const publicKey = createStacksPublicKey(privateKeyToPublic(privateKey));
+  const publicKey = createFunaiPublicKey(privateKeyToPublic(privateKey));
   const nextSigHash = sigHashPostSign(sigHashPre, publicKey, signature);
 
   return {
@@ -437,7 +437,7 @@ export function nextVerification(
 ) {
   const sigHashPre = sigHashPreSign(initialSigHash, authType, fee, nonce);
 
-  const publicKey = createStacksPublicKey(
+  const publicKey = createFunaiPublicKey(
     publicKeyFromSignatureVrs(sigHashPre, signature, pubKeyEncoding)
   );
 
@@ -511,11 +511,11 @@ function verifyMultiSig(
 
   for (const field of condition.fields) {
     switch (field.contents.type) {
-      case StacksWireType.PublicKey:
+      case FunaiWireType.PublicKey:
         if (!publicKeyIsCompressed(field.contents.data)) haveUncompressed = true;
         publicKeys.push(field.contents);
         break;
-      case StacksWireType.MessageSignature:
+      case FunaiWireType.MessageSignature:
         if (field.pubKeyEncoding === PubKeyEncoding.Uncompressed) haveUncompressed = true;
         const { pubKey, nextSigHash } = nextVerification(
           curSigHash,

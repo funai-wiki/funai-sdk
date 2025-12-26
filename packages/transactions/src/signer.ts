@@ -1,4 +1,4 @@
-import { PrivateKey, PublicKey } from '@stacks/common';
+import { PrivateKey, PublicKey } from '@funai/common';
 import {
   SpendingConditionOpts,
   isNonSequentialMultiSig,
@@ -8,20 +8,20 @@ import {
 } from './authorization';
 import { AddressHashMode, AuthType, PubKeyEncoding } from './constants';
 import { SigningError } from './errors';
-import { StacksTransactionWire } from './transaction';
+import { FunaiTransactionWire } from './transaction';
 import { cloneDeep } from './utils';
-import { PublicKeyWire, StacksWireType } from './wire';
-import { createStacksPublicKey } from './keys';
+import { PublicKeyWire, FunaiWireType } from './wire';
+import { createFunaiPublicKey } from './keys';
 
 // todo: get rid of signer and combine with transaction class? could reduce code and complexity by calculating sighash newly each sign and append.
 export class TransactionSigner {
-  transaction: StacksTransactionWire;
+  transaction: FunaiTransactionWire;
   sigHash: string;
   originDone: boolean;
   checkOversign: boolean;
   checkOverlap: boolean;
 
-  constructor(transaction: StacksTransactionWire) {
+  constructor(transaction: FunaiTransactionWire) {
     this.transaction = transaction;
     this.sigHash = transaction.signBegin();
     this.originDone = false;
@@ -34,14 +34,14 @@ export class TransactionSigner {
     if (spendingCondition && !isSingleSig(spendingCondition)) {
       if (
         spendingCondition.fields.filter(
-          field => field.contents.type === StacksWireType.MessageSignature
+          field => field.contents.type === FunaiWireType.MessageSignature
         ).length >= spendingCondition.signaturesRequired
       ) {
         throw new Error('SpendingCondition has more signatures than are expected');
       }
 
       spendingCondition.fields.forEach(field => {
-        if (field.contents.type !== StacksWireType.MessageSignature) return;
+        if (field.contents.type !== FunaiWireType.MessageSignature) return;
 
         const signature = field.contents;
         const nextVerify = nextVerification(
@@ -61,14 +61,14 @@ export class TransactionSigner {
   }
 
   static createSponsorSigner(
-    transaction: StacksTransactionWire,
+    transaction: FunaiTransactionWire,
     spendingCondition: SpendingConditionOpts
   ) {
     if (transaction.auth.authType != AuthType.Sponsored) {
       throw new SigningError('Cannot add sponsor to non-sponsored transaction');
     }
 
-    const tx: StacksTransactionWire = cloneDeep(transaction);
+    const tx: FunaiTransactionWire = cloneDeep(transaction);
     tx.setSponsor(spendingCondition);
     const originSigHash = tx.verifyOrigin();
     const signer = new this(tx);
@@ -123,7 +123,7 @@ export class TransactionSigner {
     const wire =
       typeof publicKey === 'object' && 'type' in publicKey
         ? publicKey
-        : createStacksPublicKey(publicKey);
+        : createFunaiPublicKey(publicKey);
 
     if (this.checkOverlap && this.originDone) {
       throw Error('Cannot append public key to origin after sponsor key');
@@ -152,11 +152,11 @@ export class TransactionSigner {
     this.originDone = true;
   }
 
-  getTxInComplete(): StacksTransactionWire {
+  getTxInComplete(): FunaiTransactionWire {
     return cloneDeep(this.transaction);
   }
 
-  resume(transaction: StacksTransactionWire) {
+  resume(transaction: FunaiTransactionWire) {
     this.transaction = cloneDeep(transaction);
     this.sigHash = transaction.signBegin();
   }

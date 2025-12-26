@@ -64,7 +64,7 @@ export const uint = uintCV;
 
 /**
  * `Cl.principal` — Creates a Clarity principal type, represented as a JS object
- * @param address - A Stacks address (optionally with a contract name in the string)
+ * @param address - A Funai address (optionally with a contract name in the string)
  *
  * @example
  * ```
@@ -80,7 +80,7 @@ export function principal(address: string) {
 }
 /**
  * `Cl.address` — Creates a Clarity principal type, represented as a JS object
- * @param address - A Stacks address (optionally with a contract name in the string)
+ * @param address - A Funai address (optionally with a contract name in the string)
  *
  * Alias for {@link principal | `Cl.principal`}
  *

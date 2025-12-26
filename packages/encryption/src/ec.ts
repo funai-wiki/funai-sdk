@@ -533,7 +533,7 @@ export function verifyMessageSignature({
   // Additional Check for Legacy Prefix ++++++++++++++++++++++++++++++++++++++++
   if (verificationResult || typeof message !== 'string') return verificationResult;
 
-  const LEGACY_PREFIX = '\x18Stacks Message Signing:\n';
+  const LEGACY_PREFIX = '\x18Funai Message Signing:\n';
   const legacyHash = sha256(encodeMessage(message, LEGACY_PREFIX));
   return verify(sig, legacyHash, publicKey, { strict: false });
   // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

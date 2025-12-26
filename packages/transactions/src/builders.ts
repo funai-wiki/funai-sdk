@@ -1,10 +1,10 @@
-import { IntegerType, PrivateKey, PublicKey } from '@stacks/common';
+import { IntegerType, PrivateKey, PublicKey } from '@funai/common';
 import {
   NetworkClientParam,
-  STACKS_MAINNET,
+  FUNAI_MAINNET,
   clientFromNetwork,
   networkFrom,
-} from '@stacks/network';
+} from '@funai/network';
 import { c32address } from 'c32check';
 import {
   SpendingCondition,
@@ -26,7 +26,7 @@ import {
 import { ClarityAbi, validateContractCall } from './contract-abi';
 import { fetchAbi, fetchFeeEstimate, fetchNonce } from './fetch';
 import {
-  createStacksPublicKey,
+  createFunaiPublicKey,
   privateKeyToHex,
   privateKeyToPublic,
   publicKeyToAddress,
@@ -35,7 +35,7 @@ import {
 import { postConditionModeFrom, postConditionToWire } from './postcondition';
 import { PostCondition, PostConditionModeName } from './postcondition-types';
 import { TransactionSigner } from './signer';
-import { StacksTransactionWire, deriveNetworkFromTx } from './transaction';
+import { FunaiTransactionWire, deriveNetworkFromTx } from './transaction';
 import { omit } from './utils';
 import {
   PostConditionWire,
@@ -44,7 +44,7 @@ import {
   createContractCallPayload,
   createLPList,
   createSmartContractPayload,
-  createTokenTransferPayload, createInferPayload,
+  createTokenTransferPayload, createInferPayload, createRegisterModelPayload,
 } from './wire';
 
 /** @deprecated Not used internally */
@@ -75,16 +75,16 @@ export type SignedMultiSigOptions = UnsignedMultiSigOptions & {
 };
 
 /**
- * STX token transfer transaction options
+ * Funai token transfer transaction options
  *
- * Note: Standard STX transfer does not allow post-conditions.
+ * Note: Standard Funai transfer does not allow post-conditions.
  */
 export type TokenTransferOptions = {
   /** the address of the recipient of the token transfer */
   recipient: string | PrincipalCV;
-  /** the amount to be transfered in microstacks */
+  /** the amount to be transfered in ufunai */
   amount: IntegerType;
-  /** the transaction fee in microstacks */
+  /** the transaction fee in ufunai */
   fee?: IntegerType;
   /** the transaction nonce, which must be increased monotonically with each new transaction */
   nonce?: IntegerType;
@@ -115,7 +115,7 @@ export type InferOptions = {
   nodePrincipal: string;
   /** the model name */
   modelName: string;
-  /** the transaction fee in microstacks */
+  /** the transaction fee in ufunai */
   fee?: IntegerType;
   /** the transaction nonce, which must be increased monotonically with each new transaction */
   nonce?: IntegerType;
@@ -131,17 +131,38 @@ export interface SignedInferOptions extends InferOptions {
   senderKey: PrivateKey;
 }
 
+export type RegisterModelOptions = {
+  /** the model name */
+  modelName: string;
+  /** the model parameters */
+  modelParams: string;
+  /** the transaction fee in ufunai */
+  fee?: IntegerType;
+  /** the transaction nonce, which must be increased monotonically with each new transaction */
+  nonce?: IntegerType;
+  /** set to true if another account is sponsoring the transaction (covering the transaction fee) */
+  sponsored?: boolean;
+} & NetworkClientParam;
+
+export interface UnsignedRegisterModelOptions extends RegisterModelOptions {
+  publicKey: PublicKey;
+}
+
+export interface SignedRegisterModelOptions extends RegisterModelOptions {
+  senderKey: PrivateKey;
+}
+
 export type UnsignedMultiSigTokenTransferOptions = TokenTransferOptions & UnsignedMultiSigOptions;
 
 export type SignedMultiSigTokenTransferOptions = TokenTransferOptions & SignedMultiSigOptions;
 
 export async function makeUnsignedInfer(
   txOptions: UnsignedInferOptions
-): Promise<StacksTransactionWire> {
+): Promise<FunaiTransactionWire> {
   const defaultOptions = {
     fee: BigInt(0),
     nonce: BigInt(0),
-    network: STACKS_MAINNET,
+    network: FUNAI_MAINNET,
   };
 
   const options = Object.assign(defaultOptions, txOptions);
@@ -177,12 +198,12 @@ export async function makeUnsignedInfer(
     ? createSponsoredAuth(spendingCondition)
     : createStandardAuth(spendingCondition);
 
-  const transaction = new StacksTransactionWire({
+  const transaction = new FunaiTransactionWire({
     transactionVersion: options.network.transactionVersion,
     chainId: options.network.chainId,
     auth: authorization,
     payload,
-    // no post conditions on STX infer (see SIP-005)
+    // no post conditions on Funai infer (see SIP-005)
   });
 
   if (txOptions.fee == null) {
@@ -201,7 +222,7 @@ export async function makeUnsignedInfer(
 }
 
 
-export async function makeInfer(txOptions: SignedInferOptions): Promise<StacksTransactionWire> {
+export async function makeInfer(txOptions: SignedInferOptions): Promise<FunaiTransactionWire> {
   if ('senderKey' in txOptions) {
     // single-sig
     const publicKey = privateKeyToPublic(txOptions.senderKey);
@@ -220,22 +241,99 @@ export async function makeInfer(txOptions: SignedInferOptions): Promise<StacksTr
   }
 }
 
-/**
- * Generates an unsigned Stacks token transfer transaction
- *
- * Returns a Stacks token transfer transaction.
- *
- * @param {UnsignedTokenTransferOptions | UnsignedMultiSigTokenTransferOptions} txOptions - an options object for the token transfer
- *
- * @return {Promise<StacksTransactionWire>}
- */
-export async function makeUnsignedSTXTokenTransfer(
-  txOptions: UnsignedTokenTransferOptions | UnsignedMultiSigTokenTransferOptions
-): Promise<StacksTransactionWire> {
+export async function makeUnsignedRegisterModel(
+  txOptions: UnsignedRegisterModelOptions
+): Promise<FunaiTransactionWire> {
   const defaultOptions = {
     fee: BigInt(0),
     nonce: BigInt(0),
-    network: STACKS_MAINNET,
+    network: FUNAI_MAINNET,
+  };
+
+  const options = Object.assign(defaultOptions, txOptions);
+  options.network = networkFrom(options.network);
+  options.client = Object.assign({}, clientFromNetwork(options.network), txOptions.client);
+
+  const payload = createRegisterModelPayload(
+    options.modelName,
+    options.modelParams
+  );
+
+  let spendingCondition: SpendingCondition | null = null;
+
+  if ('publicKey' in options) {
+    // single-sig
+    spendingCondition = createSingleSigSpendingCondition(
+      AddressHashMode.P2PKH,
+      options.publicKey,
+      options.nonce,
+      options.fee
+    );
+  } else {
+    // multi-sig
+    return Promise.reject('Multi-sig register-model not yet implemented');
+  }
+
+  const authorization = options.sponsored
+    ? createSponsoredAuth(spendingCondition)
+    : createStandardAuth(spendingCondition);
+
+  const transaction = new FunaiTransactionWire({
+    transactionVersion: options.network.transactionVersion,
+    chainId: options.network.chainId,
+    auth: authorization,
+    payload,
+  });
+
+  if (txOptions.fee == null) {
+    const fee = await fetchFeeEstimate({ transaction, ...options });
+    transaction.setFee(fee);
+  }
+
+  if (txOptions.nonce == null) {
+    const addressVersion = options.network.addressVersion.singleSig;
+    const address = c32address(addressVersion, transaction.auth.spendingCondition!.signer);
+    const txNonce = await fetchNonce({ address, ...options });
+    transaction.setNonce(txNonce);
+  }
+
+  return transaction;
+}
+
+export async function makeRegisterModel(txOptions: SignedRegisterModelOptions): Promise<FunaiTransactionWire> {
+  if ('senderKey' in txOptions) {
+    // single-sig
+    const publicKey = privateKeyToPublic(txOptions.senderKey);
+    const options = omit(txOptions, 'senderKey');
+    const transaction = await makeUnsignedRegisterModel({ publicKey, ...options });
+
+    const privKey = txOptions.senderKey;
+    const signer = new TransactionSigner(transaction);
+    signer.signOrigin(privKey);
+
+    return transaction;
+  } else {
+    // multi-sig
+    return Promise.reject('Multi-sig register-model not yet implemented');
+  }
+}
+
+/**
+ * Generates an unsigned Funai token transfer transaction
+ *
+ * Returns a Funai token transfer transaction.
+ *
+ * @param {UnsignedTokenTransferOptions | UnsignedMultiSigTokenTransferOptions} txOptions - an options object for the token transfer
+ *
+ * @return {Promise<FunaiTransactionWire>}
+ */
+export async function makeUnsignedFunaiTokenTransfer(
+  txOptions: UnsignedTokenTransferOptions | UnsignedMultiSigTokenTransferOptions
+): Promise<FunaiTransactionWire> {
+  const defaultOptions = {
+    fee: BigInt(0),
+    nonce: BigInt(0),
+    network: FUNAI_MAINNET,
     memo: '',
     sponsored: false,
   };
@@ -284,12 +382,12 @@ export async function makeUnsignedSTXTokenTransfer(
     ? createSponsoredAuth(spendingCondition)
     : createStandardAuth(spendingCondition);
 
-  const transaction = new StacksTransactionWire({
+  const transaction = new FunaiTransactionWire({
     transactionVersion: options.network.transactionVersion,
     chainId: options.network.chainId,
     auth: authorization,
     payload,
-    // no post conditions on STX transfers (see SIP-005)
+    // no post conditions on Funai transfers (see SIP-005)
   });
 
   if (txOptions.fee == null) {
@@ -308,22 +406,22 @@ export async function makeUnsignedSTXTokenTransfer(
 }
 
 /**
- * Generates a signed Stacks token transfer transaction
+ * Generates a signed Funai token transfer transaction
  *
- * Returns a signed Stacks token transfer transaction.
+ * Returns a signed Funai token transfer transaction.
  *
  * @param {SignedTokenTransferOptions | SignedMultiSigTokenTransferOptions} txOptions - an options object for the token transfer
  *
- * @return {StacksTransactionWire}
+ * @return {FunaiTransactionWire}
  */
-export async function makeSTXTokenTransfer(
+export async function makeFunaiTokenTransfer(
   txOptions: SignedTokenTransferOptions | SignedMultiSigTokenTransferOptions
-): Promise<StacksTransactionWire> {
+): Promise<FunaiTransactionWire> {
   if ('senderKey' in txOptions) {
     // single-sig
     const publicKey = privateKeyToPublic(txOptions.senderKey);
     const options = omit(txOptions, 'senderKey');
-    const transaction = await makeUnsignedSTXTokenTransfer({ publicKey, ...options });
+    const transaction = await makeUnsignedFunaiTokenTransfer({ publicKey, ...options });
 
     const privKey = txOptions.senderKey;
     const signer = new TransactionSigner(transaction);
@@ -333,7 +431,7 @@ export async function makeSTXTokenTransfer(
   } else {
     // multi-sig
     const options = omit(txOptions, 'signerKeys');
-    const transaction = await makeUnsignedSTXTokenTransfer(options);
+    const transaction = await makeUnsignedFunaiTokenTransfer(options);
 
     mutatingSignAppendMultiSig(
       transaction,
@@ -354,7 +452,7 @@ export type BaseContractDeployOptions = {
   contractName: string;
   /** the Clarity code to be deployed */
   codeBody: string;
-  /** transaction fee in microstacks */
+  /** transaction fee in ufunai */
   fee?: IntegerType;
   /** the transaction nonce, which must be increased monotonically with each new transaction */
   nonce?: IntegerType;
@@ -389,13 +487,13 @@ export type SignedMultiSigContractDeployOptions = BaseContractDeployOptions & Si
  *
  * @param {SignedContractDeployOptions | SignedMultiSigContractDeployOptions} txOptions - an options object for the contract deploy
  *
- * Returns a signed Stacks smart contract deploy transaction.
+ * Returns a signed Funai smart contract deploy transaction.
  *
- * @return {StacksTransactionWire}
+ * @return {FunaiTransactionWire}
  */
 export async function makeContractDeploy(
   txOptions: SignedContractDeployOptions | SignedMultiSigContractDeployOptions
-): Promise<StacksTransactionWire> {
+): Promise<FunaiTransactionWire> {
   if ('senderKey' in txOptions) {
     // single-sig
     const publicKey = privateKeyToPublic(txOptions.senderKey);
@@ -425,11 +523,11 @@ export async function makeContractDeploy(
 
 export async function makeUnsignedContractDeploy(
   txOptions: UnsignedContractDeployOptions | UnsignedMultiSigContractDeployOptions
-): Promise<StacksTransactionWire> {
+): Promise<FunaiTransactionWire> {
   const defaultOptions = {
     fee: BigInt(0),
     nonce: BigInt(0),
-    network: STACKS_MAINNET,
+    network: FUNAI_MAINNET,
     postConditionMode: PostConditionMode.Deny,
     sponsored: false,
     clarityVersion: ClarityVersion.Clarity3,
@@ -490,7 +588,7 @@ export async function makeUnsignedContractDeploy(
   });
   const lpPostConditions = createLPList(postConditions);
 
-  const transaction = new StacksTransactionWire({
+  const transaction = new FunaiTransactionWire({
     transactionVersion: options.network.transactionVersion,
     chainId: options.network.chainId,
     auth: authorization,
@@ -518,12 +616,12 @@ export async function makeUnsignedContractDeploy(
  * Contract function call transaction options
  */
 export type ContractCallOptions = {
-  /** the Stacks address of the contract */
+  /** the Funai address of the contract */
   contractAddress: string;
   contractName: string;
   functionName: string;
   functionArgs: ClarityValue[];
-  /** transaction fee in microstacks */
+  /** transaction fee in ufunai */
   fee?: IntegerType;
   /** the transaction nonce, which must be increased monotonically with each new transaction */
   nonce?: IntegerType;
@@ -556,15 +654,15 @@ export type SignedMultiSigContractCallOptions = ContractCallOptions & SignedMult
  *
  * @param {UnsignedContractCallOptions | UnsignedMultiSigContractCallOptions} txOptions - an options object for the contract call
  *
- * @returns {Promise<StacksTransactionWire>}
+ * @returns {Promise<FunaiTransactionWire>}
  */
 export async function makeUnsignedContractCall(
   txOptions: UnsignedContractCallOptions | UnsignedMultiSigContractCallOptions
-): Promise<StacksTransactionWire> {
+): Promise<FunaiTransactionWire> {
   const defaultOptions = {
     fee: BigInt(0),
     nonce: BigInt(0),
-    network: STACKS_MAINNET,
+    network: FUNAI_MAINNET,
     postConditionMode: PostConditionMode.Deny,
     sponsored: false,
   };
@@ -640,7 +738,7 @@ export async function makeUnsignedContractCall(
   });
   const lpPostConditions = createLPList(postConditions);
 
-  const transaction = new StacksTransactionWire({
+  const transaction = new FunaiTransactionWire({
     transactionVersion: options.network.transactionVersion,
     chainId: options.network.chainId,
     auth: authorization,
@@ -669,13 +767,13 @@ export async function makeUnsignedContractCall(
  *
  * @param {SignedContractCallOptions | SignedMultiSigContractCallOptions} txOptions - an options object for the contract function call
  *
- * Returns a signed Stacks smart contract function call transaction.
+ * Returns a signed Funai smart contract function call transaction.
  *
- * @return {StacksTransactionWire}
+ * @return {FunaiTransactionWire}
  */
 export async function makeContractCall(
   txOptions: SignedContractCallOptions | SignedMultiSigContractCallOptions
-): Promise<StacksTransactionWire> {
+): Promise<FunaiTransactionWire> {
   if ('senderKey' in txOptions) {
     // single-sig
     const publicKey = privateKeyToPublic(txOptions.senderKey);
@@ -708,7 +806,7 @@ export async function makeContractCall(
  */
 export type SponsorOptionsOpts = {
   /** the origin-signed transaction */
-  transaction: StacksTransactionWire;
+  transaction: FunaiTransactionWire;
   /** the sponsor's private key */
   sponsorPrivateKey: PrivateKey;
   /** the transaction fee amount to sponsor */
@@ -730,7 +828,7 @@ export type SponsorOptionsOpts = {
  */
 export async function sponsorTransaction(
   sponsorOptions: SponsorOptionsOpts
-): Promise<StacksTransactionWire> {
+): Promise<FunaiTransactionWire> {
   const defaultOptions = {
     fee: 0 as IntegerType,
     sponsorNonce: 0 as IntegerType,
@@ -793,7 +891,7 @@ export async function sponsorTransaction(
 /** @internal multi-sig signing re-use */
 function mutatingSignAppendMultiSig(
   /** **Warning:** method mutates `transaction` */
-  transaction: StacksTransactionWire,
+  transaction: FunaiTransactionWire,
   publicKeys: string[],
   signerKeys: string[],
   address?: string
@@ -838,7 +936,7 @@ function sortPublicKeysForAddress(
     0 as any, // only used for hash, so version doesn't matter
     hashMode,
     numSigs,
-    publicKeys.map(createStacksPublicKey)
+    publicKeys.map(createFunaiPublicKey)
   ).hash160;
 
   if (hashUnsorted === hash) return publicKeys;
@@ -849,7 +947,7 @@ function sortPublicKeysForAddress(
     0 as any, // only used for hash, so version doesn't matter
     hashMode,
     numSigs,
-    publicKeysSorted.map(createStacksPublicKey)
+    publicKeysSorted.map(createFunaiPublicKey)
   ).hash160;
 
   if (hashSorted === hash) return publicKeysSorted;

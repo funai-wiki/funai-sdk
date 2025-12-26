@@ -1,4 +1,4 @@
-import type { ContractIdString } from '@stacks/transactions';
+import type { ContractIdString } from '@funai/transactions';
 
 export interface V2CoreInfoResponse {
   burn_block_height: number;
@@ -7,8 +7,8 @@ export interface V2CoreInfoResponse {
 
 export interface CycleInfoResponse {
   id: number;
-  min_threshold_ustx: number;
-  stacked_ustx: number;
+  min_threshold_ufunai: number;
+  stacked_ufunai: number;
   is_pox_active: boolean;
 }
 
@@ -23,7 +23,7 @@ export interface V2PoxInfoResponse {
   contract_versions: ContractVersionResponse[];
   current_burnchain_block_height?: number;
   first_burnchain_block_height: number;
-  min_amount_ustx: string;
+  min_amount_ufunai: string;
   next_reward_cycle_in: number;
   prepare_cycle_length: number;
   prepare_phase_block_length: number;
@@ -35,12 +35,12 @@ export interface V2PoxInfoResponse {
   reward_slots: number;
   current_cycle: CycleInfoResponse;
   next_cycle: CycleInfoResponse & {
-    min_increment_ustx: number;
+    min_increment_ufunai: number;
     prepare_phase_start_block_height: number;
     blocks_until_prepare_phase: number;
     reward_phase_start_block_height: number;
     blocks_until_reward_phase: number;
-    ustx_until_pox_rejection: number;
+    ufunai_until_pox_rejection: number;
   };
 }
 
@@ -54,7 +54,7 @@ export interface V1InfoBlockTimesResponse {
 }
 
 export interface ExtendedAccountBalancesResponse {
-  stx: {
+  funai: {
     balance: string;
     total_sent: string;
     total_received: string;
@@ -69,7 +69,7 @@ export interface ExtendedAccountBalancesResponse {
 }
 
 export interface ExtendedAccountBalances {
-  stx: {
+  funai: {
     balance: bigint;
     total_sent: bigint;
     total_received: bigint;
@@ -90,4 +90,80 @@ export interface PaginationOptions {
 
 export interface BaseErrorResponse {
   error: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
+export interface SubmitTaskRequest {
+  task_id?: string;
+  user_address: string;
+  user_input: string;
+  context: string;
+  fee?: number;
+  nonce?: number;
+  infer_fee: number;
+  max_infer_time: number;
+  model_name: string;
+  signed_tx?: string;
+}
+
+export interface SubmitTaskResponse {
+  task_id: string;
+}
+
+export interface RegisterNodeRequest {
+  node_id: string;
+  endpoint: string;
+  public_key: string;
+  supported_models: string[];
+  performance_score?: number;
+}
+
+export interface HeartbeatRequest {
+  node_id: string;
+  status: 'online' | 'offline' | 'busy' | 'maintenance';
+}
+
+export interface CompleteTaskRequest {
+  task_id: string;
+  output: string;
+  confidence: number;
+  inference_node_id: string;
+}
+
+export interface InferenceNodeResponse {
+  node_id: string;
+  endpoint: string;
+  status: string;
+  supported_models: string[];
+  performance_score: number;
+  last_heartbeat: number;
+}
+
+export interface StatsResponse {
+  total_tasks: number;
+  completed_tasks: number;
+  failed_tasks: number;
+  active_nodes: number;
+  average_inference_time: number;
+}
+
+export interface TaskStatusResponse {
+  task_id: string;
+  status: string;
+  user_input: string;
+  context: string;
+  model_name: string;
+  max_infer_time: number;
+  infer_fee: number;
+  result?: {
+    output: string;
+    confidence: number;
+    completed_at: number;
+    inference_node_id: string;
+  };
 }

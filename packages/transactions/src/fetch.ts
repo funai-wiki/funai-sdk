@@ -4,7 +4,7 @@ import { ClarityValue, NoneCV, deserializeCV, serializeCV } from './clarity';
 import { ClarityAbi } from './contract-abi';
 import { NoEstimateAvailableError } from './errors';
 import {
-  StacksTransactionWire,
+  FunaiTransactionWire,
   deriveNetworkFromTx,
   estimateTransactionByteLength,
 } from './transaction';
@@ -27,7 +27,7 @@ export const READONLY_FUNCTION_CALL_PATH = '/v2/contracts/call-read';
 export const MAP_ENTRY_PATH = '/v2/map_entry';
 
 /**
- * Broadcast a serialized transaction to a Stacks node (which will validate and forward to the network).
+ * Broadcast a serialized transaction to a Funai node (which will validate and forward to the network).
  * @param opts.transaction - The transaction to broadcast
  * @param opts.attachment - Optional attachment encoded as a hex string
  * @param opts.api - Optional API info (`.url` & `.fetch`) used for fetch call
@@ -40,7 +40,7 @@ export async function broadcastTransaction({
   client: _client,
 }: {
   /** The transaction to broadcast */
-  transaction: StacksTransactionWire;
+  transaction: FunaiTransactionWire;
   /** Optional attachment in bytes or encoded as a hex string */
   attachment?: Uint8Array | string;
 } & NetworkClientParam): Promise<TxBroadcastResult> {
@@ -92,13 +92,13 @@ async function _getNonceApi({
 
 /**
  * Lookup the nonce for an address from a core node
- * @param opts.address - The Stacks address to look up the next nonce for
+ * @param opts.address - The Funai address to look up the next nonce for
  * @param opts.api - Optional API info (`.url` & `.fetch`) used for fetch call
  * @return A promise that resolves to an integer
  */
 export async function fetchNonce(
   opts: {
-    /** The Stacks address to look up the next nonce for */
+    /** The Funai address to look up the next nonce for */
     address: string;
   } & NetworkClientParam
 ): Promise<bigint> {
@@ -126,12 +126,12 @@ export async function fetchNonce(
 /**
  * @deprecated Use the new {@link fetchFeeEstimateTransaction} function instead.
  *
- * Estimate the total transaction fee in microstacks for a token transfer
+ * Estimate the total transaction fee in microfunais for a token transfer
  *
  * ⚠ Only sensible for token transfer transactions!
  * @param opts.transaction - The token transfer transaction to estimate fees for (or its estimated length in bytes)
  * @param opts.api - Optional API info (`.url` & `.fetch`) used for fetch call
- * @return A promise that resolves to number of microstacks per byte
+ * @return A promise that resolves to number of microfunais per byte
  */
 export async function fetchFeeEstimateTransfer({
   transaction: txOpt,
@@ -139,7 +139,7 @@ export async function fetchFeeEstimateTransfer({
   client: _client,
 }: {
   /** The token transfer transaction to estimate fees for (or its estimated length in bytes) */
-  transaction: StacksTransactionWire | number;
+  transaction: FunaiTransactionWire | number;
 } & NetworkClientParam): Promise<bigint> {
   const network = typeof txOpt === 'number' ? 'mainnet' : _network ?? deriveNetworkFromTx(txOpt);
   const client = Object.assign({}, clientFromNetwork(networkFrom(network)), _client);
@@ -166,7 +166,7 @@ export async function fetchFeeEstimateTransfer({
 }
 
 /**
- * Estimate the total transaction fee in microstacks for a Stacks transaction
+ * Estimate the total transaction fee in microfunais for a Funai transaction
  * @param opts.payload - The transaction to estimate fees for
  * @param opts.estimatedLength - Optional estimation of the final length (in
  * bytes) of the transaction, including any post-conditions and signatures
@@ -224,7 +224,7 @@ export async function fetchFeeEstimate({
   network: _network,
   client: _client,
 }: {
-  transaction: StacksTransactionWire;
+  transaction: FunaiTransactionWire;
 } & NetworkClientParam): Promise<bigint | number> {
   const network = _network ?? deriveNetworkFromTx(txOpt);
   const client = Object.assign({}, clientFromNetwork(networkFrom(network)), _client);

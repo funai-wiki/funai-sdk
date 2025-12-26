@@ -84,7 +84,7 @@ export * as Cl from './cl';
  * @example
  * ```
  * import { Pc } from '@stacks/transactions';
- * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6').willSendEq(10000).ustx();
+ * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6').willSendEq(10000).ufunai();
  * ```
  */
 export * as Pc from './pc';

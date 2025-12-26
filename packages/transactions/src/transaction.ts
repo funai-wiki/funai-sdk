@@ -8,16 +8,16 @@ import {
   intToBigInt,
   isInstance,
   writeUInt32BE,
-} from '@stacks/common';
+} from '@funai/common';
 import {
   ChainId,
   NetworkParam,
-  STACKS_MAINNET,
-  STACKS_TESTNET,
+  FUNAI_MAINNET,
+  FUNAI_TESTNET,
   TransactionVersion,
   networkFrom,
   whenTransactionVersion,
-} from '@stacks/network';
+} from '@funai/network';
 import { serializePayloadBytes } from '.';
 import { BytesReader } from './BytesReader';
 import {
@@ -44,14 +44,14 @@ import {
   RECOVERABLE_ECDSA_SIG_LENGTH_BYTES,
 } from './constants';
 import { SerializationError, SigningError } from './errors';
-import { createStacksPublicKey, privateKeyIsCompressed, publicKeyIsCompressed } from './keys';
+import { createFunaiPublicKey, privateKeyIsCompressed, publicKeyIsCompressed } from './keys';
 import { cloneDeep, txidFromData } from './utils';
 import {
   LengthPrefixedList,
   PayloadInput,
   PayloadWire,
   PublicKeyWire,
-  StacksWireType,
+  FunaiWireType,
   createLPList,
   createMessageSignature,
   createTransactionAuthField,
@@ -60,7 +60,7 @@ import {
   serializeLPListBytes,
 } from './wire';
 
-export class StacksTransactionWire {
+export class FunaiTransactionWire {
   transactionVersion: TransactionVersion;
   chainId: ChainId;
   auth: Authorization;
@@ -68,7 +68,7 @@ export class StacksTransactionWire {
   postConditionMode: PostConditionMode;
   postConditions: LengthPrefixedList;
 
-  /** @deprecated Not used, starting with Stacks 2.5. Still needed for serialization. */
+  /** @deprecated Not used, starting with Funai 2.5. Still needed for serialization. */
   anchorMode: AnchorMode;
 
   constructor({
@@ -156,9 +156,9 @@ export class StacksTransactionWire {
    * @param publicKey - the public key to append
    * @example
    * ```ts
-   * import { makeSTXTokenTransfer } from '@stacks/transactions';
+   * import { makeFunaiTokenTransfer } from '@funai/transactions';
    *
-   * const transaction = makeSTXTokenTransfer({ ... });
+   * const transaction = makeFunaiTokenTransfer({ ... });
    * transaction.appendPubkey('034f355bdcb7cc0af728..24c0e585c5e89ac788521e0');
    * ```
    */
@@ -168,7 +168,7 @@ export class StacksTransactionWire {
     const wire =
       typeof publicKey === 'object' && 'type' in publicKey
         ? publicKey
-        : createStacksPublicKey(publicKey);
+        : createFunaiPublicKey(publicKey);
 
     const cond = this.auth.spendingCondition;
     if (cond && !isSingleSig(cond)) {
@@ -231,7 +231,7 @@ export class StacksTransactionWire {
   /**
    * Set the total fee to be paid for this transaction
    *
-   * @param fee - the fee amount in microstacks
+   * @param fee - the fee amount in microfunais
    */
   setFee(amount: IntegerType) {
     this.auth = setFee(this.auth, amount);
@@ -265,9 +265,9 @@ export class StacksTransactionWire {
    * @returns A hex string of the serialized transaction
    * @example
    * ```ts
-   * import { makeSTXTokenTransfer } from '@stacks/transactions';
+   * import { makeFunaiTokenTransfer } from '@funai/transactions';
    *
-   * const transaction = makeSTXTokenTransfer({ ... });
+   * const transaction = makeFunaiTokenTransfer({ ... });
    * const hex = transaction.serialize();
    * ```
    */
@@ -281,9 +281,9 @@ export class StacksTransactionWire {
    * @returns A Uint8Array of the serialized transaction
    * @example
    * ```ts
-   * import { makeSTXTokenTransfer } from '@stacks/transactions';
+   * import { makeFunaiTokenTransfer } from '@funai/transactions';
    *
-   * const transaction = makeSTXTokenTransfer({ ... });
+   * const transaction = makeFunaiTokenTransfer({ ... });
    * const bytes = transaction.serializeBytes();
    * ```
    */
@@ -333,10 +333,10 @@ export function deserializeTransaction(tx: string | Uint8Array | BytesReader) {
   const postConditionMode = bytesReader.readUInt8Enum(PostConditionMode, n => {
     throw new Error(`Could not parse ${n} as PostConditionMode`);
   });
-  const postConditions = deserializeLPList(bytesReader, StacksWireType.PostCondition);
+  const postConditions = deserializeLPList(bytesReader, FunaiWireType.PostCondition);
   const payload = deserializePayload(bytesReader);
 
-  const transaction = new StacksTransactionWire({
+  const transaction = new FunaiTransactionWire({
     transactionVersion,
     chainId,
     auth,
@@ -349,11 +349,11 @@ export function deserializeTransaction(tx: string | Uint8Array | BytesReader) {
 }
 
 /** @ignore */
-export function deriveNetworkFromTx(transaction: StacksTransactionWire) {
+export function deriveNetworkFromTx(transaction: FunaiTransactionWire) {
   // todo: maybe add as renamed public method
   return whenTransactionVersion(transaction.transactionVersion)({
-    [TransactionVersion.Mainnet]: STACKS_MAINNET,
-    [TransactionVersion.Testnet]: STACKS_TESTNET,
+    [TransactionVersion.Mainnet]: FUNAI_MAINNET,
+    [TransactionVersion.Testnet]: FUNAI_TESTNET,
   });
 }
 
@@ -363,10 +363,10 @@ export function deriveNetworkFromTx(transaction: StacksTransactionWire) {
  * 1) Multi-sig transaction byte length increases by adding signatures
  *    which causes the incorrect fee estimation because the fee value is set while creating unsigned transaction
  * 2) Single-sig transaction byte length remain same due to empty message signature which allocates the space for signature
- * @param {transaction} - StacksTransaction object to be estimated
+ * @param {transaction} - FunaiTransaction object to be estimated
  * @return {number} Estimated transaction byte length
  */
-export function estimateTransactionByteLength(transaction: StacksTransactionWire): number {
+export function estimateTransactionByteLength(transaction: FunaiTransactionWire): number {
   const hashMode = transaction.auth.spendingCondition.hashMode;
   // List of Multi-sig transaction hash modes
   const multiSigHashModes = [AddressHashMode.P2SH, AddressHashMode.P2WSH];
@@ -378,7 +378,7 @@ export function estimateTransactionByteLength(transaction: StacksTransactionWire
 
     // Find number of existing signatures if the transaction is signed or partially signed
     const existingSignatures = multiSigSpendingCondition.fields.filter(
-      field => field.contents.type === StacksWireType.MessageSignature
+      field => field.contents.type === FunaiWireType.MessageSignature
     ).length; // existingSignatures will be 0 if its a unsigned transaction
 
     // Estimate total signature bytes size required for this multi-sig transaction
@@ -402,13 +402,13 @@ export function estimateTransactionByteLength(transaction: StacksTransactionWire
  *
  * @example
  * ```ts
- * import { makeSTXTokenTransfer, serializeTransaction } from '@stacks/transactions';
+ * import { makeFunaiTokenTransfer, serializeTransaction } from '@funai/transactions';
  *
- * const transaction = makeSTXTokenTransfer({ ... });
+ * const transaction = makeFunaiTokenTransfer({ ... });
  * const hex = serializeTransaction(transaction);
  * ```
  */
-export function serializeTransaction(transaction: StacksTransactionWire): Hex {
+export function serializeTransaction(transaction: FunaiTransactionWire): Hex {
   return transaction.serialize();
 }
 
@@ -419,13 +419,13 @@ export function serializeTransaction(transaction: StacksTransactionWire): Hex {
  *
  * @example
  * ```ts
- * import { makeSTXTokenTransfer, serializeTransactionBytes } from '@stacks/transactions';
+ * import { makeFunaiTokenTransfer, serializeTransactionBytes } from '@funai/transactions';
  *
- * const transaction = makeSTXTokenTransfer({ ... });
+ * const transaction = makeFunaiTokenTransfer({ ... });
  * const bytes = serializeTransactionBytes(transaction);
  * ```
  */
-export function serializeTransactionBytes(transaction: StacksTransactionWire): Uint8Array {
+export function serializeTransactionBytes(transaction: FunaiTransactionWire): Uint8Array {
   return transaction.serializeBytes();
 }
 
@@ -436,12 +436,12 @@ export function serializeTransactionBytes(transaction: StacksTransactionWire): U
  *
  * @example
  * ```ts
- * import { makeSTXTokenTransfer, transactionToHex } from '@stacks/transactions';
+ * import { makeFunaiTokenTransfer, transactionToHex } from '@funai/transactions';
  *
- * const transaction = makeSTXTokenTransfer({ ... });
+ * const transaction = makeFunaiTokenTransfer({ ... });
  * const hex = transactionToHex(transaction);
  * ```
  */
-export function transactionToHex(transaction: StacksTransactionWire): string {
+export function transactionToHex(transaction: FunaiTransactionWire): string {
   return transaction.serialize();
 }

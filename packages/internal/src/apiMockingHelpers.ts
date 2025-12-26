@@ -1,5 +1,5 @@
 import { Configuration, TransactionsApi } from '@stacks/blockchain-api-client';
-import { STACKS_TESTNET } from '@stacks/network';
+import { FUNAI_TESTNET } from '@stacks/network';
 import { MockResponseInitFunction } from 'jest-fetch-mock';
 import { StackingClient } from '@stacks/stacking';
 
@@ -96,7 +96,7 @@ export async function waitForBlock(burnBlockId: number, client?: StackingClient)
     client ??
     new StackingClient({
       address: '',
-      network: STACKS_TESTNET,
+      network: FUNAI_TESTNET,
       client: { baseUrl: 'http://localhost:3999' },
     });
 
@@ -125,7 +125,7 @@ export async function waitForCycle(cycleId: number, client?: StackingClient) {
     client ??
     new StackingClient({
       address: '',
-      network: STACKS_TESTNET,
+      network: FUNAI_TESTNET,
       client: { baseUrl: 'http://localhost:3999' },
     });
 
