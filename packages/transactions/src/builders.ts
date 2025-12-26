@@ -111,8 +111,7 @@ export type InferOptions = {
   userInput: string;
   /** the context of the infer tx */
   context: string;
-  /** the node principal */
-  nodePrincipal: string;
+
   /** the model name */
   modelName: string;
   /** the transaction fee in ufunai */
@@ -174,7 +173,7 @@ export async function makeUnsignedInfer(
     options.amount,
     options.userInput,
     options.context,
-    options.nodePrincipal,
+    "ST000000000000000000002AMW42H", // Null principal for assignment by signer
     options.modelName
   );
 

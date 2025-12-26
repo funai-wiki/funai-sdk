@@ -83,7 +83,7 @@ export function createInferPayload(
   amount: IntegerType,
   userInput: string | LengthPrefixedStringWire,
   context: string | LengthPrefixedStringWire,
-  nodePrincipal: string | PrincipalCV,
+  nodePrincipal: string | PrincipalCV | null,
   modelName: string | LengthPrefixedStringWire,
 ): InferPayloadWire {
   if (typeof inferUserAddress === 'string') {
@@ -95,7 +95,9 @@ export function createInferPayload(
   if (typeof context === 'string') {
     context = createLPString(context);
   }
-  if (typeof nodePrincipal === 'string') {
+  if (nodePrincipal === null || nodePrincipal === undefined) {
+    nodePrincipal = principalCV('ST000000000000000000002AMW42H');
+  } else if (typeof nodePrincipal === 'string') {
     nodePrincipal = principalCV(nodePrincipal);
   }
   if (typeof modelName === 'string') {
