@@ -100,7 +100,7 @@ export class TransactionSigner {
       if (
         this.checkOversign &&
         spendingCondition.fields.filter(
-          field => field.contents.type === StacksWireType.MessageSignature
+          field => field.contents.type === FunaiWireType.MessageSignature
         ).length >= spendingCondition.signaturesRequired
       ) {
         throw new Error('Origin would have too many signatures');

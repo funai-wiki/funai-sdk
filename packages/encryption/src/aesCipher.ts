@@ -1,4 +1,4 @@
-import { concatBytes } from '@stacks/common';
+import { concatBytes } from '@funai/common';
 import { getCryptoLib } from './cryptoUtils';
 
 type NodeCryptoCreateCipher = typeof import('crypto').createCipheriv;

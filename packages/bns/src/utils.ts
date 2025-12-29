@@ -1,5 +1,5 @@
-import { utf8ToBytes } from '@stacks/common';
-import { hash160 } from '@stacks/transactions';
+import { utf8ToBytes } from '@funai/common';
+import { hash160 } from '@funai/transactions';
 
 /** @ignore */
 export function decodeFQN(fqdn: string): {

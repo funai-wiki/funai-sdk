@@ -1,4 +1,4 @@
-import { hexToBytes } from '@stacks/common';
+import { hexToBytes } from '@funai/common';
 import {
   MOCK_EMPTY_ACCOUNT,
   MOCK_FULL_ACCOUNT,
@@ -11,8 +11,8 @@ import {
   waitForCycle,
   waitForTx,
 } from '@stacks/internal';
-import { STACKS_MAINNET, STACKS_TESTNET } from '@stacks/network';
-import { ContractCallPayload, deserializeTransaction, fetchNonce } from '@stacks/transactions';
+import { STACKS_MAINNET, STACKS_TESTNET } from '@funai/network';
+import { ContractCallPayload, deserializeTransaction, fetchNonce } from '@funai/transactions';
 import { StackingClient, decodeBtcAddress, decodeBtcAddressBytes } from '../src';
 import { PoxOperationPeriod } from '../src/constants';
 import { BTC_ADDRESS_CASES } from './utils.test';

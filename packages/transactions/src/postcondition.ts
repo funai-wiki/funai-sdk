@@ -77,7 +77,7 @@ export function postConditionToWire(postcondition: PostCondition): PostCondition
  *
  * @example
  * ```ts
- * import { postConditionToHex } from '@stacks/transactions';
+ * import { postConditionToHex } from '@funai/transactions';
  *
  * const hex = postConditionToHex({
  *   type: 'stx-postcondition',

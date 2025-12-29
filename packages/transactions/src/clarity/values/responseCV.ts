@@ -11,7 +11,7 @@ import { ResponseErrorCV, ResponseOkCV } from '../types';
  *
  * @example
  * ```
- *  import { responseErrorCV, intCV } from '@stacks/transactions';
+ *  import { responseErrorCV, intCV } from '@funai/transactions';
  *
  *  const respErrorCV = responseErrorCV(intCV(1));
  *
@@ -36,7 +36,7 @@ export function responseErrorCV<T extends ClarityValue = ClarityValue>(
  *
  * @example
  * ```
- *  import { responseOkCV, intCV } from '@stacks/transactions';
+ *  import { responseOkCV, intCV } from '@funai/transactions';
  *
  *  const respOKCV = responseOkCV(intCV(1));
  *

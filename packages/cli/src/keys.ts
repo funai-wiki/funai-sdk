@@ -7,8 +7,8 @@ const c32check = require('c32check');
 import { HDKey } from '@scure/bip32';
 import * as scureBip39 from '@scure/bip39';
 
-import { getPublicKeyFromPrivate, publicKeyToBtcAddress } from '@stacks/encryption';
-import { DerivationType, deriveAccount, generateWallet, getRootNode } from '@stacks/wallet-sdk';
+import { getPublicKeyFromPrivate, publicKeyToBtcAddress } from '@funai/encryption';
+import { DerivationType, deriveAccount, generateWallet, getRootNode } from '@funai/wallet-sdk';
 import * as bip32 from 'bip32';
 import * as bip39 from 'bip39';
 import * as blockstack from 'blockstack';
@@ -16,7 +16,7 @@ import * as wif from 'wif';
 
 import { getMaxIDSearchIndex, getPrivateKeyAddress } from './common';
 import { CLINetworkAdapter } from './network';
-import { compressPrivateKey } from '@stacks/transactions';
+import { compressPrivateKey } from '@funai/transactions';
 
 const BITCOIN_PUBKEYHASH = 0;
 const BITCOIN_PUBKEYHASH_TESTNET = 111;

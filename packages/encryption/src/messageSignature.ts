@@ -1,5 +1,5 @@
 import { sha256 } from '@noble/hashes/sha256';
-import { concatBytes, utf8ToBytes } from '@stacks/common';
+import { concatBytes, utf8ToBytes } from '@funai/common';
 import { decode, encode, encodingLength } from './varuint';
 
 // 'Funai Signed Message:\n'.length === 22

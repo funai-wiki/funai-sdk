@@ -1,4 +1,4 @@
-import { bytesToHex, concatArray } from '@stacks/common';
+import { bytesToHex, concatArray } from '@funai/common';
 import { createMessageSignature, createTransactionAuthField } from '../src';
 import { BytesReader } from '../src/BytesReader';
 import {

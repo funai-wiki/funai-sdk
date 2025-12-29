@@ -11,8 +11,8 @@ import { wordlist } from '@scure/bip39/wordlists/english';
 // https://github.com/paulmillr/scure-bip32
 // Secure, audited & minimal implementation of BIP32 hierarchical deterministic (HD) wallets.
 import { HDKey } from '@scure/bip32';
-import { bytesToHex } from '@stacks/common';
-import { encryptMnemonic } from '@stacks/encryption';
+import { bytesToHex } from '@funai/common';
+import { encryptMnemonic } from '@funai/encryption';
 import { DerivationType } from '.';
 import { deriveAccount, deriveWalletKeys } from './derive';
 import { Wallet, getRootNode } from './models/common';

@@ -9,7 +9,7 @@ import { NoneCV, OptionalCV } from '../types';
  *
  * @example
  * ```
- *  import { noneCV } from '@stacks/transactions';
+ *  import { noneCV } from '@funai/transactions';
  *
  *  const value = noneCV();
  *  // { type: 'none' }
@@ -31,7 +31,7 @@ export function noneCV(): NoneCV {
  *
  * @example
  * ```
- *  import { someCV, trueCV } from '@stacks/transactions';
+ *  import { someCV, trueCV } from '@funai/transactions';
  *
  *  const value = someCV(trueCV());
  *  // { type: 'some', value: { type: 'true' } }

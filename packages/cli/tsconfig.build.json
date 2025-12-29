@@ -12,7 +12,13 @@
       "path": "../auth/tsconfig.build.json"
     },
     {
+      "path": "../bns/tsconfig.build.json"
+    },
+    {
       "path": "../common/tsconfig.build.json"
+    },
+    {
+      "path": "../encryption/tsconfig.build.json"
     },
     {
       "path": "../network/tsconfig.build.json"

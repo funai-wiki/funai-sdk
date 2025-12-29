@@ -9,7 +9,7 @@ import {
   WalletConfig,
 } from '../../src/models/wallet-config';
 import { mockWallet, mockWalletConfig, mockGaiaHubInfo } from '../mocks';
-import { decryptContent } from '@stacks/encryption';
+import { decryptContent } from '@funai/encryption';
 import fetchMock from 'jest-fetch-mock';
 
 beforeEach(() => {

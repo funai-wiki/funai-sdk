@@ -22,8 +22,8 @@ import { makeZoneFile, parseZoneFile } from 'zone-file';
 // @ts-ignore
 import * as inspector from 'schema-inspector';
 
-import { Logger } from '@stacks/common';
-import { NetworkClientParam, clientFromNetwork, networkFrom } from '@stacks/network';
+import { Logger } from '@funai/common';
+import { NetworkClientParam, clientFromNetwork, networkFrom } from '@funai/network';
 import { PublicPersonProfile } from './types';
 
 const schemaDefinition: { [key: string]: any } = {

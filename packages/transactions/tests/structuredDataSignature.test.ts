@@ -1,6 +1,6 @@
 import { sha256 } from '@noble/hashes/sha256';
-import { asciiToBytes, bytesToHex, hexToBytes } from '@stacks/common';
-import { verifyMessageSignatureRsv } from '@stacks/encryption';
+import { asciiToBytes, bytesToHex, hexToBytes } from '@funai/common';
+import { verifyMessageSignatureRsv } from '@funai/encryption';
 import { standardPrincipalCV, stringAsciiCV, trueCV, tupleCV, uintCV } from '../src/clarity';
 import { publicKeyFromSignatureRsv, signMessageHashRsv } from '../src/keys';
 import {

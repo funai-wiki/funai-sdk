@@ -1,4 +1,4 @@
-import { asciiToBytes, bytesToUtf8, concatBytes, hexToBytes, utf8ToBytes } from '@stacks/common';
+import { asciiToBytes, bytesToUtf8, concatBytes, hexToBytes, utf8ToBytes } from '@funai/common';
 import assert from 'assert';
 import { Cl, deserializeAddress } from '../src';
 import { BytesReader } from '../src/BytesReader';

@@ -1,4 +1,4 @@
-import { utf8ToBytes } from '@stacks/common';
+import { utf8ToBytes } from '@funai/common';
 import { Cl, encodeAbiClarityValue, encodeClarityValue } from '../src';
 
 const TEST_CASES = [

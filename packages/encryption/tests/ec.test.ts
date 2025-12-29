@@ -1,5 +1,5 @@
 import { sha256 } from '@noble/hashes/sha256';
-import { bytesToHex } from '@stacks/common';
+import { bytesToHex } from '@funai/common';
 import { verifyMessageSignature, verifyMessageSignatureRsv } from '../src/ec';
 
 test('verifyMessageSignature', () => {

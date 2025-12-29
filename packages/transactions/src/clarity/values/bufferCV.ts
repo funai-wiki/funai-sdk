@@ -1,4 +1,4 @@
-import { bytesToHex, utf8ToBytes } from '@stacks/common';
+import { bytesToHex, utf8ToBytes } from '@funai/common';
 import { ClarityType } from '../constants';
 import { BufferCV } from '../types';
 
@@ -11,7 +11,7 @@ import { BufferCV } from '../types';
  *
  * @example
  * ```
- *  import { bufferCV } from '@stacks/transactions';
+ *  import { bufferCV } from '@funai/transactions';
  *
  *  const buffer = utf8ToBytes('this is a test');
  *  const buf = bufferCV(buffer);
@@ -41,7 +41,7 @@ export const bufferCV = (buffer: Uint8Array): BufferCV => {
  *
  * @example
  * ```
- *  import { bufferCVFromString } from '@stacks/transactions';
+ *  import { bufferCVFromString } from '@funai/transactions';
  *
  *  const str = 'this is a test';
  *  const buf = bufferCVFromString(str);

@@ -1,4 +1,4 @@
-import { STACKS_MAINNET, STACKS_TESTNET, StacksNetwork } from '@stacks/network';
+import { STACKS_MAINNET, STACKS_TESTNET, StacksNetwork } from '@funai/network';
 import {
   AddressWire,
   AssetWire,

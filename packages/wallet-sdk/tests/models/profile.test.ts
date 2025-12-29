@@ -1,5 +1,5 @@
-import { getPublicKeyFromPrivate } from '@stacks/encryption';
-import { makeRandomPrivKey } from '@stacks/transactions';
+import { getPublicKeyFromPrivate } from '@funai/encryption';
+import { makeRandomPrivKey } from '@funai/transactions';
 import fetchMock from 'jest-fetch-mock';
 import { TokenVerifier } from 'jsontokens';
 import {

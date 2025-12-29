@@ -1,7 +1,7 @@
-import { FetchFn, bytesToHex, createFetchFn } from '@stacks/common';
-import { getPublicKeyFromPrivate, publicKeyToBtcAddress, randomBytes } from '@stacks/encryption';
-import { ChainId } from '@stacks/network';
-import { GaiaHubConfig } from '@stacks/storage';
+import { FetchFn, bytesToHex, createFetchFn } from '@funai/common';
+import { getPublicKeyFromPrivate, publicKeyToBtcAddress, randomBytes } from '@funai/encryption';
+import { ChainId } from '@funai/network';
+import { GaiaHubConfig } from '@funai/storage';
 import { Json, TokenSigner } from 'jsontokens';
 import { parseZoneFile } from 'zone-file';
 

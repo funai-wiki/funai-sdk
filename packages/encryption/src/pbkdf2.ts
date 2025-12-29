@@ -1,4 +1,4 @@
-import { utf8ToBytes, writeUInt32BE } from '@stacks/common';
+import { utf8ToBytes, writeUInt32BE } from '@funai/common';
 import { getCryptoLib } from './cryptoUtils';
 
 export type Pbkdf2Digests = 'sha512' | 'sha256';

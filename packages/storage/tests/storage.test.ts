@@ -1,4 +1,4 @@
-import { AppConfig, LOCALSTORAGE_SESSION_KEY, UserData, UserSession } from '@stacks/auth';
+import { AppConfig, LOCALSTORAGE_SESSION_KEY, UserData, UserSession } from '@funai/auth';
 import {
   bytesToUtf8,
   DoesNotExist,
@@ -7,15 +7,15 @@ import {
   hexToBytes,
   HIRO_MAINNET_URL,
   utf8ToBytes,
-} from '@stacks/common';
+} from '@funai/common';
 import {
   aes256CbcEncrypt,
   eciesGetJsonStringLength,
   getPublicKeyFromPrivate,
   hashSha256Sync,
   verifySignature,
-} from '@stacks/encryption';
-import { createFetchFn } from '@stacks/common';
+} from '@funai/encryption';
+import { createFetchFn } from '@funai/common';
 import { toByteArray } from 'base64-js';
 import * as crypto from 'crypto';
 import fetchMock from 'jest-fetch-mock';
@@ -1269,7 +1269,7 @@ test('putFile & getFile encrypted, signed', () => {
     getFullReadUrl,
   }));
 
-  jest.mock('@stacks/auth', () => ({
+  jest.mock('@funai/auth', () => ({
     lookupProfile,
   }));
 
@@ -1415,7 +1415,7 @@ test('putFile & getFile unencrypted, signed', async () => {
     getBlockstackErrorFromResponse: jest.requireActual('../src/hub').getBlockstackErrorFromResponse,
   }));
 
-  jest.mock('@stacks/auth', () => ({
+  jest.mock('@funai/auth', () => ({
     lookupProfile,
   }));
 
@@ -2251,7 +2251,7 @@ test('getUserAppFileUrl', async () => {
 
   const lookupProfile = jest.fn().mockResolvedValue(profile);
 
-  jest.mock('@stacks/auth', () => ({
+  jest.mock('@funai/auth', () => ({
     lookupProfile,
   }));
 

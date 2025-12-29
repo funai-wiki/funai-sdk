@@ -1,4 +1,4 @@
-import { lookupProfile, NAME_LOOKUP_PATH, UserSession } from '@stacks/auth';
+import { lookupProfile, NAME_LOOKUP_PATH, UserSession } from '@funai/auth';
 import {
   DoesNotExist,
   GAIA_URL,
@@ -9,7 +9,7 @@ import {
   PayloadTooLargeError,
   SignatureVerificationError,
   utf8ToBytes,
-} from '@stacks/common';
+} from '@funai/common';
 import {
   eciesGetJsonStringLength,
   EncryptionOptions,
@@ -17,8 +17,8 @@ import {
   publicKeyToBtcAddress,
   signECDSA,
   verifyECDSA,
-} from '@stacks/encryption';
-import { createFetchFn, FetchFn } from '@stacks/common';
+} from '@funai/encryption';
+import { createFetchFn, FetchFn } from '@funai/common';
 import { FileContentLoader } from './fileContentLoader';
 import {
   connectToGaiaHub,

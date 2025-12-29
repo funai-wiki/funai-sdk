@@ -33,7 +33,7 @@
     "lodash.clonedeep": "^4.5.0"
   },
   "devDependencies": {
-    "@stacks/encryption": "^7.0.3",
+    "@funai/encryption": "^7.0.3",
     "@types/common-tags": "^1.8.0",
     "@types/elliptic": "^6.4.12",
     "@types/lodash.clonedeep": "^4.5.6",

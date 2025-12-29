@@ -4,7 +4,7 @@ import {
   bytesToHex,
   hexToBytes,
   utf8ToBytes,
-} from '@stacks/common';
+} from '@funai/common';
 import { ECPair, address, networks } from 'bitcoinjs-lib';
 import bs58check from 'bs58check';
 import { SECP256K1Client } from 'jsontokens';

@@ -10,7 +10,7 @@ import { StringAsciiCV, StringUtf8CV } from '../types';
  *
  * @example
  * ```
- *  import { stringAsciiCV } from '@stacks/transactions';
+ *  import { stringAsciiCV } from '@funai/transactions';
  *
  *  const stringAscii = stringAsciiCV('test');
  *
@@ -33,7 +33,7 @@ export const stringAsciiCV = (data: string): StringAsciiCV => {
  *
  * @example
  * ```
- *  import { stringUtf8CV } from '@stacks/transactions';
+ *  import { stringUtf8CV } from '@funai/transactions';
  *
  *  const stringUTF8 = stringUtf8CV('test');
  *

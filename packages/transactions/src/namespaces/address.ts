@@ -23,7 +23,7 @@ export type AddressRepr = { hash160: string; contractName?: string } & (
  * @param address - The address string to parse.
  * @example
  * ```ts
- * import { Address } from '@stacks/transactions';
+ * import { Address } from '@funai/transactions';
  *
  * const address = Address.parse('SP000000000000000000002Q6VF78');
  * // { version: 22, versionChar: 'P', hash160: '0000000000000000000000000000000000000000' }
@@ -53,7 +53,7 @@ export function parse(
  * @param address - The address object to stringify.
  * @example
  * ```ts
- * import { Address } from '@stacks/transactions';
+ * import { Address } from '@funai/transactions';
  *
  * const address = Address.stringify({ version: 22, hash160: '0000000000000000000000000000000000000000' });
  * console.log(address); // 'SP000000000000000000002Q6VF78'
@@ -78,7 +78,7 @@ export function stringify(address: AddressRepr): string {
  *
  * @example
  * ```ts
- * import { Address } from '@stacks/transactions';
+ * import { Address } from '@funai/transactions';
  *
  * const address = Address.fromPrivateKey('73a2f291df5a8ce3ceb668a25ac7af45639513af7596d710ddf59f64f484fd2801');
  * // 'SP10J81WVGVB3M4PHQN4Q4G0R8586TBJH948RESDR'
@@ -96,7 +96,7 @@ export const fromPrivateKey = privateKeyToAddress;
  *
  * @example
  * ```ts
- * import { Address } from '@stacks/transactions';
+ * import { Address } from '@funai/transactions';
  *
  * const address = Address.fromPublicKey('0316e35d38b52d4886e40065e4952a49535ce914e02294be58e252d1998f129b19');
  * // 'SP10J81WVGVB3M4PHQN4Q4G0R8586TBJH948RESDR'

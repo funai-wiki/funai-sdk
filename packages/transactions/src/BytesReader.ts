@@ -1,4 +1,4 @@
-import { bytesToHex, hexToBytes, readUInt16BE, readUInt32BE, readUInt8 } from '@stacks/common';
+import { bytesToHex, hexToBytes, readUInt16BE, readUInt32BE, readUInt8 } from '@funai/common';
 
 function createEnumChecker<T extends string, TEnumValue extends number>(enumVariable: {
   [key in T]: TEnumValue;

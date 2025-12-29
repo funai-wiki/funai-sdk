@@ -1,4 +1,4 @@
-import { IntegerType, intToBigInt } from '@stacks/common';
+import { IntegerType, intToBigInt } from '@funai/common';
 import { ClarityValue } from './clarity';
 import {
   FungibleComparator,
@@ -26,7 +26,7 @@ import { parseContractId, validateFunaiAddress } from './utils';
  * @returns A partial post condition builder, which can be chained into a final post condition.
  * @example
  * ```
- * import { Pc } from '@stacks/transactions';
+ * import { Pc } from '@funai/transactions';
  * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6').willSendEq(10000).ufunai();
  * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6.mycontract').willSendGte(2000).ft();
  * ```
@@ -50,7 +50,7 @@ export function principal(principal: AddressString | ContractIdString) {
  * @returns A partial post condition builder, which can be chained into a final post condition.
  * @example
  * ```
- * import { Pc } from '@stacks/transactions';
+ * import { Pc } from '@funai/transactions';
  * Pc.origin().willSendEq(10000).ufunai();
  * Pc.origin().willSendGte(2000).ft();
  * ```
@@ -73,7 +73,7 @@ class PartialPcWithPrincipal {
    * Finalize with the chained `.ufunai()` or `.ft(…)` method.
    * @example
    * ```
-   * import { Pc } from '@stacks/transactions';
+   * import { Pc } from '@funai/transactions';
    * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6').willSendEq(100).stx();
    * ```
    */
@@ -87,7 +87,7 @@ class PartialPcWithPrincipal {
    * Finalize with the chained `.ufunai()` or `.ft(…)` method.
    * @example
    * ```
-   * import { Pc } from '@stacks/transactions';
+   * import { Pc } from '@funai/transactions';
    * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6').willSendLte(100).stx();
    * ```
    */
@@ -101,7 +101,7 @@ class PartialPcWithPrincipal {
    * Finalize with the chained `.ufunai()` or `.ft(…)` method.
    * @example
    * ```
-   * import { Pc } from '@stacks/transactions';
+   * import { Pc } from '@funai/transactions';
    * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6').willSendLt(100).stx();
    * ```
    */
@@ -115,7 +115,7 @@ class PartialPcWithPrincipal {
    * Finalize with the chained `.ufunai()` or `.ft(…)` method.
    * @example
    * ```
-   * import { Pc } from '@stacks/transactions';
+   * import { Pc } from '@funai/transactions';
    * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6').willSendGte(100).stx();
    * ```
    */
@@ -129,7 +129,7 @@ class PartialPcWithPrincipal {
    * Finalize with the chained `.ufunai()` or `.ft(…)` method.
    * @example
    * ```
-   * import { Pc } from '@stacks/transactions';
+   * import { Pc } from '@funai/transactions';
    * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6').willSendGt(100).stx();
    * ```
    */
@@ -143,7 +143,7 @@ class PartialPcWithPrincipal {
    * Finalize with the chained `.nft(…)` method.
    * @example
    * ```
-   * import { Pc } from '@stacks/transactions';
+   * import { Pc } from '@funai/transactions';
    * Pc.principal('STB4…K6.nft-contract').willSendAsset().nft('STB4…K6.super-nft::super', uintCV(1));
    * ```
    */
@@ -157,7 +157,7 @@ class PartialPcWithPrincipal {
    * Finalize with the chained `.nft(…)` method.
    * @example
    * ```
-   * import { Pc } from '@stacks/transactions';
+   * import { Pc } from '@funai/transactions';
    * Pc.principal('STB4…K6.nft-contract').willNotSendAsset().nft('STB4…K6.super-nft::super', uintCV(1));
    * ```
    */

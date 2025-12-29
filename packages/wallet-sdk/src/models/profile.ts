@@ -1,12 +1,12 @@
-import { getPublicKeyFromPrivate } from '@stacks/encryption';
-import { FetchFn, createFetchFn } from '@stacks/common';
+import { getPublicKeyFromPrivate } from '@funai/encryption';
+import { FetchFn, createFetchFn } from '@funai/common';
 import {
   PublicPersonProfile,
   PublicProfileBase,
   signProfileToken,
   wrapProfileToken,
-} from '@stacks/profile';
-import { GaiaHubConfig, connectToGaiaHub, uploadToGaiaHub } from '@stacks/storage';
+} from '@funai/profile';
+import { GaiaHubConfig, connectToGaiaHub, uploadToGaiaHub } from '@funai/storage';
 import { getProfileURLFromZoneFile } from '../utils';
 import { Account, getGaiaAddress } from './common';
 

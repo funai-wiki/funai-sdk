@@ -25,9 +25,9 @@ import {
   trueCV,
   falseCV,
   standardPrincipalCV,
-} from '@stacks/transactions';
+} from '@funai/transactions';
 
-import { StacksNetwork, TransactionVersion } from '@stacks/network';
+import { StacksNetwork, TransactionVersion } from '@funai/network';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ZoneFile = require('zone-file');

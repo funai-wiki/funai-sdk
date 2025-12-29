@@ -1,4 +1,4 @@
-import { hexToBytes, utf8ToBytes } from '@stacks/common';
+import { hexToBytes, utf8ToBytes } from '@funai/common';
 import {
   ClarityType,
   ClarityValue,

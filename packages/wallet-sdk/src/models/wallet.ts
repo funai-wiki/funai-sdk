@@ -1,4 +1,4 @@
-import { NetworkClientParam, clientFromNetwork, networkFrom } from '@stacks/network';
+import { NetworkClientParam, clientFromNetwork, networkFrom } from '@funai/network';
 import { DerivationType, deriveStxPrivateKey, fetchUsernameForAccountByDerivationType } from '..';
 import { deriveAccount, deriveLegacyConfigPrivateKey } from '../derive';
 import { connectToGaiaHubWithConfig, getHubInfo } from '../utils';

@@ -2,7 +2,7 @@ import fetchMock from 'jest-fetch-mock';
 
 import { generateWallet, restoreWalletAccounts } from '../../src';
 import { mockGaiaHubInfo } from '../mocks';
-import { STACKS_MAINNET } from '@stacks/network';
+import { STACKS_MAINNET } from '@funai/network';
 
 const SECRET_KEY =
   'sound idle panel often situate develop unit text design antenna ' +

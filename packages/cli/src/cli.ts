@@ -1,7 +1,7 @@
 import * as scureBip39 from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
-import { buildPreorderNameTx, buildRegisterNameTx } from '@stacks/bns';
-import { bytesToHex, getRandomIntegerType, HIRO_MAINNET_URL, HIRO_TESTNET_URL } from '@stacks/common';
+import { buildPreorderNameTx, buildRegisterNameTx } from '@funai/bns';
+import { bytesToHex, getRandomIntegerType, HIRO_MAINNET_URL, HIRO_TESTNET_URL } from '@funai/common';
 import {
   ACCOUNT_PATH,
   broadcastTransaction,
@@ -18,8 +18,9 @@ import {
   fetchFeeEstimateTransfer,
   getAddressFromPrivateKey,
   makeContractCall,
-  makeContractDeploy, makeInfer,
-  makeSTXTokenTransfer,
+  makeContractDeploy,
+  makeInfer,
+  makeFunaiTokenTransfer,
   PostConditionMode,
   privateKeyToPublic,
   ReadOnlyFunctionOptions,
@@ -28,11 +29,11 @@ import {
   SignedContractDeployOptions, SignedInferOptions,
   SignedTokenTransferOptions,
   signWithKey,
-  StacksTransactionWire,
+  FunaiTransactionWire,
   TransactionSigner,
   TxBroadcastResult,
   validateContractCall,
-} from '@stacks/transactions';
+} from '@funai/transactions';
 import * as bitcoin from 'bitcoinjs-lib';
 import * as blockstack from 'blockstack';
 import * as crypto from 'crypto';
@@ -46,14 +47,14 @@ import * as winston from 'winston';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const c32check = require('c32check');
 
-import { UserData } from '@stacks/auth';
+import { UserData } from '@funai/auth';
 import 'cross-fetch/polyfill';
 
-import { StackerInfo, StackingClient } from '@stacks/stacking';
+import { StackerInfo, StackingClient } from '@funai/stacking';
 
-import { AccountsApi, Configuration, FaucetsApi } from '@stacks/blockchain-api-client';
+import { Configuration, FaucetsApi } from '@stacks/blockchain-api-client';
 
-import { GaiaHubConfig } from '@stacks/storage';
+import { GaiaHubConfig } from '@funai/storage';
 
 import {
   extractAppKey,
@@ -90,13 +91,13 @@ import { CLI_NETWORK_OPTS, CLINetworkAdapter, getNetwork, NameInfoType } from '.
 
 import { gaiaAuth, gaiaConnect, gaiaUploadProfileAll, getGaiaAddressFromProfile } from './data';
 
-import { defaultUrlFromNetwork, FUNAI_MAINNET, FUNAI_TESTNET } from '@stacks/network';
+import { defaultUrlFromNetwork, FUNAI_MAINNET, FUNAI_TESTNET } from '@funai/network';
 import {
   generateNewAccount,
   generateWallet,
   getAppPrivateKey,
   restoreWalletAccounts,
-} from '@stacks/wallet-sdk';
+} from '@funai/wallet-sdk';
 import { getMaxIDSearchIndex, getPrivateKeyAddress, setMaxIDSearchIndex } from './common';
 import {
   canonicalPrivateKey,
@@ -331,7 +332,7 @@ async function getStacksWalletKey(_network: CLINetworkAdapter, args: string[]): 
 async function migrateSubdomains(_network: CLINetworkAdapter, args: string[]): Promise<string> {
   const mnemonic: string = await getBackupPhrase(args[0]); // args[0] is the cli argument for mnemonic
   const baseWallet = await generateWallet({ secretKey: mnemonic, password: '' });
-  const network = _network.isMainnet() ? STACKS_MAINNET : STACKS_TESTNET;
+  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
   const wallet = await restoreWalletAccounts({
     wallet: baseWallet,
     gaiaHubUrl: 'https://hub.blockstack.org',
@@ -680,7 +681,7 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
   const nonce = BigInt(args[7]);
   const privateKey = args[8];
 
-  const network = _network.isMainnet()? STACKS_MAINNET: STACKS_TESTNET;
+  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
 
   const options: SignedInferOptions = {
     inferUserAddress: inferUserAddress,
@@ -695,7 +696,7 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
     network,
   };
 
-  const tx: StacksTransactionWire = await makeInfer(options);
+  const tx: FunaiTransactionWire = await makeInfer(options);
 
   if (estimateOnly) {
     return fetchFeeEstimateTransfer({ transaction: tx, network }).then(cost => {
@@ -745,7 +746,7 @@ async function sendTokens(_network: CLINetworkAdapter, args: string[]): Promise<
     memo = args[5];
   }
 
-  const network = _network.isMainnet() ? STACKS_MAINNET : STACKS_TESTNET;
+  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
 
   const options: SignedTokenTransferOptions = {
     recipient: recipientAddress,
@@ -757,7 +758,7 @@ async function sendTokens(_network: CLINetworkAdapter, args: string[]): Promise<
     network,
   };
 
-  const tx: StacksTransactionWire = await makeSTXTokenTransfer(options);
+  const tx: FunaiTransactionWire = await makeFunaiTokenTransfer(options);
 
   if (estimateOnly) {
     return fetchFeeEstimateTransfer({ transaction: tx, network }).then(cost => {
@@ -802,7 +803,7 @@ async function contractDeploy(_network: CLINetworkAdapter, args: string[]): Prom
 
   const source = fs.readFileSync(sourceFile).toString();
 
-  const network = _network.isMainnet() ? STACKS_MAINNET : STACKS_TESTNET;
+  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
 
   const options: SignedContractDeployOptions = {
     contractName,
@@ -861,7 +862,7 @@ async function contractFunctionCall(_network: CLINetworkAdapter, args: string[])
   const privateKey = args[5];
 
   // temporary hack to use network config from stacks-transactions lib
-  const network = _network.isMainnet() ? STACKS_MAINNET : STACKS_TESTNET;
+  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
 
   let abi: ClarityAbi;
   let abiArgs: ClarityFunctionArg[];
@@ -945,7 +946,7 @@ async function readOnlyContractFunctionCall(
   const functionName = args[2];
   const senderAddress = args[3];
 
-  const network = _network.isMainnet() ? STACKS_MAINNET : STACKS_TESTNET;
+  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
 
   let abi: ClarityAbi;
   let abiArgs: ClarityFunctionArg[];
@@ -1288,7 +1289,10 @@ function gaiaDumpBucket(_network: CLINetworkAdapter, args: string[]): Promise<st
       .then((filebytes: Buffer | ArrayBuffer) => {
         return new Promise((resolve, reject) => {
           try {
-            fs.writeFileSync(destPath, Buffer.from(filebytes), { encoding: null, mode: 0o660 });
+            fs.writeFileSync(destPath, Buffer.from(filebytes as any), {
+              encoding: null,
+              mode: 0o660,
+            });
             resolve();
           } catch (e) {
             reject(e);
@@ -1677,8 +1681,12 @@ function decryptMnemonic(_network: CLINetworkAdapter, args: string[]): Promise<s
 async function stackingStatus(_network: CLINetworkAdapter, args: string[]): Promise<string> {
   const address = args[0];
 
-  const network = _network.isMainnet() ? STACKS_MAINNET : STACKS_TESTNET;
-  const stacker = new StackingClient({ address, network });
+  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
+  const stacker = new StackingClient({
+    address,
+    network,
+    client: { baseUrl: _network.nodeAPIUrl },
+  });
 
   return stacker
     .getStatus()
@@ -1709,26 +1717,22 @@ async function canStack(_network: CLINetworkAdapter, args: string[]): Promise<st
   const poxAddress = args[2];
   const stxAddress = args[3];
 
-  const network = _network.isMainnet() ? STACKS_MAINNET : STACKS_TESTNET;
-  const stacker = new StackingClient({ address: stxAddress, network });
-
-  const apiConfig = new Configuration({
-    basePath: network.client.baseUrl,
+  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
+  const stacker = new StackingClient({
+    address: stxAddress,
+    network,
+    client: { baseUrl: _network.nodeAPIUrl },
   });
-  const accounts = new AccountsApi(apiConfig);
 
-  const balancePromise = accounts.getAccountBalance({
-    principal: stxAddress,
-  });
+  const balancePromise = stacker.getAccountBalance();
 
   const poxInfoPromise = stacker.getPoxInfo();
 
-  const stackingEligiblePromise = stacker.canStack({ poxAddress, cycles });
+  const stackingEligiblePromise = stacker.canStack({ poxAddress, cycles, amountMicroStx: amount });
 
   return Promise.all([balancePromise, poxInfoPromise, stackingEligiblePromise])
     .then(([balance, poxInfo, stackingEligible]) => {
       const minAmount = BigInt(poxInfo.min_amount_ustx);
-      const balanceBN = BigInt(balance.stx.balance);
 
       if (minAmount > amount) {
         throw new Error(
@@ -1736,9 +1740,9 @@ async function canStack(_network: CLINetworkAdapter, args: string[]): Promise<st
         );
       }
 
-      if (amount > balanceBN) {
+      if (amount > balance) {
         throw new Error(
-          `Stacking amount greater than account balance of ${balanceBN.toString()} microstacks`
+          `Stacking amount greater than account balance of ${balance.toString()} microstacks`
         );
       }
 
@@ -1843,20 +1847,25 @@ async function stack(_network: CLINetworkAdapter, args: string[]): Promise<strin
   const signerKey = privateKeyToPublic(privateKey);
   console.log('signerKey', signerKey);
 
-  const network = _network.isMainnet() ? STACKS_MAINNET : STACKS_TESTNET;
+  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
 
   const stxAddress = getAddressFromPrivateKey(privateKey, network);
 
-  const stacker = new StackingClient({ address: stxAddress, network });
+  const stacker = new StackingClient({
+    address: stxAddress,
+    network,
+    client: { baseUrl: _network.nodeAPIUrl },
+  });
 
   const poxInfoPromise = stacker.getPoxInfo();
 
   const coreInfoPromise = stacker.getCoreInfo();
 
-  const stackingEligiblePromise = stacker.canStack({ poxAddress, cycles });
+  const stackingEligiblePromise = stacker.canStack({ poxAddress, cycles, amountMicroStx: amount });
+  const balancePromise = stacker.getAccountBalance();
 
-  return Promise.all([poxInfoPromise, coreInfoPromise, stackingEligiblePromise])
-    .then(([poxInfo, coreInfo, stackingEligible]) => {
+  return Promise.all([poxInfoPromise, coreInfoPromise, stackingEligiblePromise, balancePromise])
+    .then(([poxInfo, coreInfo, stackingEligible, balance]) => {
       const minAmount = BigInt(poxInfo.min_amount_ustx);
       const currentCycle = poxInfo.reward_cycle_id;
       const burnChainBlockHeight = coreInfo.burn_block_height;
@@ -1868,12 +1877,18 @@ async function stack(_network: CLINetworkAdapter, args: string[]): Promise<strin
         );
       }
 
+      if (amount > balance) {
+        throw new Error(
+          `Stacking amount greater than account balance of ${balance.toString()} microstacks`
+        );
+      }
+
       if (!stackingEligible.eligible) {
         throw new Error(`Account cannot participate in stacking. ${stackingEligible.reason}`);
       }
-      const authId = getRandomIntegerType("number", 1, 10000000);
+      const authId = getRandomIntegerType('number', 1, 10000000);
       const signerSignature = stacker.signPoxSignature({
-        topic: "stack-stx",
+        topic: 'stack-stx',
         poxAddress,
         rewardCycle: currentCycle,
         period: cycles,
@@ -1888,7 +1903,7 @@ async function stack(_network: CLINetworkAdapter, args: string[]): Promise<strin
         cycles,
         burnBlockHeight: startBurnBlock,
 
-        signerKey: signerKey,
+        signerKey: typeof signerKey === 'string' ? signerKey : bytesToHex(signerKey),
         signerSignature,
         maxAmount: maxAmountMicroStx,
         authId,
@@ -1917,7 +1932,7 @@ async function register(_network: CLINetworkAdapter, args: string[]): Promise<st
   const zonefile = args[3];
   const publicKey = privateKeyToPublic(privateKey);
 
-  const network = _network.isMainnet() ? STACKS_MAINNET : STACKS_TESTNET;
+  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
 
   const unsignedTransaction = await buildRegisterNameTx({
     fullyQualifiedName,
@@ -1952,7 +1967,7 @@ async function preorder(_network: CLINetworkAdapter, args: string[]): Promise<st
   const stxToBurn = args[3];
   const publicKey = privateKeyToPublic(privateKey);
 
-  const network = _network.isMainnet() ? STACKS_MAINNET : STACKS_TESTNET;
+  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
 
   const unsignedTransaction = await buildPreorderNameTx({
     fullyQualifiedName,
@@ -2227,7 +2242,7 @@ export function CLIMain() {
           if (result instanceof Buffer) {
             return result;
           } else {
-            const resJson: any = JSON.parse(result);
+            const resJson: any = JSON.parse(result.toString());
             if (resJson.hasOwnProperty('status') && !resJson.status) {
               exitcode = 1;
             }

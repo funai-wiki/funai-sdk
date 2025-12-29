@@ -1,5 +1,5 @@
-import { isSameOriginAbsoluteUrl } from '@stacks/common';
-import { publicKeyToBtcAddress } from '@stacks/encryption';
+import { isSameOriginAbsoluteUrl } from '@funai/common';
+import { publicKeyToBtcAddress } from '@funai/encryption';
 import { decodeToken, TokenVerifier } from 'jsontokens';
 import { getAddressFromDID } from './dids';
 import { fetchAppManifest } from './provider';

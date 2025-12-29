@@ -9,7 +9,7 @@ import {
   randomBytes,
   signWithKey,
   verifySignature,
-} from '@stacks/transactions';
+} from '@funai/transactions';
 import * as crypto from 'crypto';
 import { readFileSync } from 'fs';
 import inquirer from 'inquirer';
@@ -24,7 +24,7 @@ import {
   WalletKeyInfoResult,
 } from './derivation-path/keychain';
 import * as fixtures from './fixtures/cli.fixture';
-import { bytesToHex } from '@stacks/common';
+import { bytesToHex } from '@funai/common';
 
 const TEST_ABI: ClarityAbi = JSON.parse(
   readFileSync(path.join(__dirname, './abi/test-abi.json')).toString()

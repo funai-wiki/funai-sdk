@@ -12,7 +12,7 @@ import {
 // Very small in size as compared to bitcoinjs/bip39 wordlist
 // Reference: https://github.com/paulmillr/scure-bip39
 import { wordlist } from '@scure/bip39/wordlists/english';
-import { bytesToHex } from '@stacks/common';
+import { bytesToHex } from '@funai/common';
 import {
   generateSecretKey,
   generateWallet,

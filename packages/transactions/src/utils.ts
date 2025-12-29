@@ -2,7 +2,7 @@ import { ripemd160 } from '@noble/hashes/ripemd160';
 import { sha256 } from '@noble/hashes/sha256';
 import { sha512_256 } from '@noble/hashes/sha512';
 import { utils } from '@noble/secp256k1';
-import { bytesToHex, concatArray, concatBytes, utf8ToBytes } from '@stacks/common';
+import { bytesToHex, concatArray, concatBytes, utf8ToBytes } from '@funai/common';
 import { c32addressDecode } from 'c32check';
 import lodashCloneDeep from 'lodash.clonedeep';
 import { ClarityValue, deserializeCV, serializeCV } from './clarity';
@@ -195,6 +195,9 @@ export const validateFunaiAddress = (address: string): boolean => {
     return false;
   }
 };
+
+/** @deprecated Use validateFunaiAddress */
+export const validateStacksAddress = validateFunaiAddress;
 
 /** @ignore */
 export function parseContractId(contractId: ContractIdString) {

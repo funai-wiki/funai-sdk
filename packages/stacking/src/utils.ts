@@ -1,12 +1,12 @@
 import { sha256 } from '@noble/hashes/sha256';
 import { bech32, bech32m } from '@scure/base';
-import { IntegerType, PrivateKey, bigIntToBytes, bytesToHex, hexToBytes } from '@stacks/common';
+import { IntegerType, PrivateKey, bigIntToBytes, bytesToHex, hexToBytes } from '@funai/common';
 import {
   base58CheckDecode,
   base58CheckEncode,
   verifyMessageSignatureRsv,
-} from '@stacks/encryption';
-import { StacksNetwork, StacksNetworkName, StacksNetworks, networkFrom } from '@stacks/network';
+} from '@funai/encryption';
+import { StacksNetwork, StacksNetworkName, StacksNetworks, networkFrom } from '@funai/network';
 import {
   BufferCV,
   ClarityType,
@@ -19,7 +19,7 @@ import {
   stringAsciiCV,
   tupleCV,
   uintCV,
-} from '@stacks/transactions';
+} from '@funai/transactions';
 import { PoxOperationInfo } from '.';
 import {
   B58_ADDR_PREFIXES,

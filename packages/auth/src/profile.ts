@@ -1,5 +1,5 @@
-import { NetworkClientParam, clientFromNetwork, networkFrom } from '@stacks/network';
-import { resolveZoneFileToProfile } from '@stacks/profile';
+import { NetworkClientParam, clientFromNetwork, networkFrom } from '@funai/network';
+import { resolveZoneFileToProfile } from '@funai/profile';
 
 export interface ProfileLookupOptions {
   username: string;

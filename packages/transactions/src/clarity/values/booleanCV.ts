@@ -8,7 +8,7 @@ import { BooleanCV } from '../types';
  *
  * @example
  * ```
- *  import { trueCV } from '@stacks/transactions';
+ *  import { trueCV } from '@funai/transactions';
  *
  *  const trueCV = trueCV();
  *  // { type: 'true' }
@@ -26,7 +26,7 @@ export const trueCV = (): BooleanCV => ({ type: ClarityType.BoolTrue });
  *
  * @example
  * ```
- *  import { falseCV } from '@stacks/transactions';
+ *  import { falseCV } from '@funai/transactions';
  *
  *  const falseCV = falseCV();
  *  // { type: 'false' }
@@ -44,7 +44,7 @@ export const falseCV = (): BooleanCV => ({ type: ClarityType.BoolFalse });
  *
  * @example
  * ```
- *  import { boolCV } from '@stacks/transactions';
+ *  import { boolCV } from '@funai/transactions';
  *
  *  const boolCV = boolCV(false);
  *  // { type: 'false' }

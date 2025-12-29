@@ -8,7 +8,7 @@ import {
   toTwos,
   utf8ToBytes,
   writeUInt32BE,
-} from '@stacks/common';
+} from '@funai/common';
 import {
   BooleanCV,
   BufferCV,
@@ -146,7 +146,7 @@ function serializeStringUtf8CV(cv: StringUtf8CV) {
  * Serializes clarity value to hex
  * @example
  * ```
- *  import { intCV, serializeCV } from '@stacks/transactions';
+ *  import { intCV, serializeCV } from '@funai/transactions';
  *
  *  const serialized = serializeCV(intCV(100)); // Similarly works for other clarity types as well like listCV, booleanCV ...
  *  // '0000000000000000000000000000000064'

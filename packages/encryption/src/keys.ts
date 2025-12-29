@@ -8,7 +8,7 @@ import {
   hexToBytes,
   privateKeyToBytes,
   readUInt8,
-} from '@stacks/common';
+} from '@funai/common';
 import base58 from 'bs58';
 import { hashRipemd160 } from './hashRipemd160';
 import { hashSha256Sync } from './sha2Hash';

@@ -1,4 +1,4 @@
-import { asciiToBytes, hexToBytes, utf8ToBytes } from '@stacks/common';
+import { asciiToBytes, hexToBytes, utf8ToBytes } from '@funai/common';
 import {
   boolCV,
   bufferCV,
@@ -31,7 +31,7 @@ export { parse } from './clarity/parser';
  * Alias for {@link boolCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.bool(true);
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -43,7 +43,7 @@ export const bool = boolCV;
  * Alias for {@link intCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.int(-100);
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -55,7 +55,7 @@ export const int = intCV;
  * Alias for {@link uintCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.uint(100);
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -68,7 +68,7 @@ export const uint = uintCV;
  *
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.principal('ST000000000000000000002AMW42H');
  * Cl.principal('ST000000000000000000002AMW42H.asset');
  * ```
@@ -86,7 +86,7 @@ export function principal(address: string) {
  *
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.address('ST000000000000000000002AMW42H');
  * Cl.address('ST000000000000000000002AMW42H.asset');
  * ```
@@ -99,7 +99,7 @@ export const address = principal;
  * Alias for {@link contractPrincipalCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.contractPrincipal('ST000000000000000000002AMW42H', 'asset');
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -111,7 +111,7 @@ export const contractPrincipal = contractPrincipalCV;
  * Alias for {@link standardPrincipalCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.standardPrincipal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6');
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -125,7 +125,7 @@ export const standardPrincipal = standardPrincipalCV;
  * Alias for {@link listCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.list([Cl.int(100), Cl.int(200)]);
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -137,7 +137,7 @@ export const list = listCV;
  * Alias for {@link stringAsciiCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.stringAscii('hello world');
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -149,7 +149,7 @@ export const stringAscii = stringAsciiCV;
  * Alias for {@link stringUtf8CV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.stringUtf8('hello world');
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -161,7 +161,7 @@ export const stringUtf8 = stringUtf8CV;
  * Alias for {@link bufferCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.buffer(Uint8Array.from([0x01, 0x02, 0x03]));
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -173,7 +173,7 @@ export const buffer = bufferCV;
  * @returns input encoded as a {@link BufferCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.bufferFromHex('a1b2c3');
  * ```
  */
@@ -184,7 +184,7 @@ export const bufferFromHex = (hex: string) => bufferCV(hexToBytes(hex));
  * @returns input encoded as a {@link BufferCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.bufferFromAscii('hello world');
  * ```
  */
@@ -195,7 +195,7 @@ export const bufferFromAscii = (ascii: string) => bufferCV(asciiToBytes(ascii));
  * @returns input encoded as a {@link BufferCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.bufferFromUtf8('hello world');
  * ```
  */
@@ -208,7 +208,7 @@ export const bufferFromUtf8 = (utf8: string) => bufferCV(utf8ToBytes(utf8));
  * Alias for {@link noneCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.none();
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -220,7 +220,7 @@ export const none = noneCV;
  * Alias for {@link someCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.some(Cl.uint(100));
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -232,7 +232,7 @@ export const some = someCV;
  * Alias for {@link responseOkCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.ok(Cl.uint(100));
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -244,7 +244,7 @@ export const ok = responseOkCV;
  * Alias for {@link responseErrorCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.error(Cl.uint(9900));
  * ```
  * @see {@link serialize}, {@link deserialize}
@@ -256,7 +256,7 @@ export const error = responseErrorCV;
  * Alias for {@link tupleCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.tuple({
  *   a: Cl.uint(100),
  *   b: Cl.stringUtf8('hello world'),
@@ -273,7 +273,7 @@ export const tuple = tupleCV;
  * Alias for {@link serializeCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.serialize(Cl.uint(100));
  * ```
  * @see {@link deserialize}
@@ -285,7 +285,7 @@ export const serialize = serializeCV;
  * Alias for {@link deserializeCV}
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  * Cl.deserialize("0c00000001016103");
  * ```
  * @see {@link serialize}

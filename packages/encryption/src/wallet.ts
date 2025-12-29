@@ -5,7 +5,7 @@ import { entropyToMnemonic, mnemonicToEntropy, validateMnemonic } from '@scure/b
 // Very small in size as compared to bitcoinjs/bip39 wordlist
 // Reference: https://github.com/paulmillr/scure-bip39
 import { wordlist } from '@scure/bip39/wordlists/english';
-import { bytesToHex, concatBytes, equals, hexToBytes } from '@stacks/common';
+import { bytesToHex, concatBytes, equals, hexToBytes } from '@funai/common';
 import { createCipher } from './aesCipher';
 import { GetRandomBytes, randomBytes } from './cryptoRandom';
 import { hmacSha256 } from './ec';

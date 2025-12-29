@@ -16,7 +16,7 @@ import {
   getGlobalScope,
   hexToBytes,
   utf8ToBytes,
-} from '@stacks/common';
+} from '@funai/common';
 import * as pbkdf2 from '../src/pbkdf2';
 import * as aesCipher from '../src/aesCipher';
 import * as sha2Hash from '../src/sha2Hash';

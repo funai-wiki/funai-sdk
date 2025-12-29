@@ -1,7 +1,7 @@
 import { Configuration, TransactionsApi } from '@stacks/blockchain-api-client';
-import { FUNAI_TESTNET } from '@stacks/network';
+import { FUNAI_TESTNET } from '@funai/network';
 import { MockResponseInitFunction } from 'jest-fetch-mock';
-import { StackingClient } from '@stacks/stacking';
+import { StackingClient } from '@funai/stacking';
 
 // NOTES
 // Capture traffic via the fetchWrapper

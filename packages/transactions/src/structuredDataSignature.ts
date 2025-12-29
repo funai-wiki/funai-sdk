@@ -1,5 +1,5 @@
 import { sha256 } from '@noble/hashes/sha256';
-import { PrivateKey, bytesToHex, concatBytes, hexToBytes } from '@stacks/common';
+import { PrivateKey, bytesToHex, concatBytes, hexToBytes } from '@funai/common';
 import { ClarityType, ClarityValue, serializeCVBytes } from './clarity';
 import { signMessageHashRsv } from './keys';
 

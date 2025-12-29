@@ -1,5 +1,5 @@
-import { utf8ToBytes } from '@stacks/common';
-import { STACKS_TESTNET } from '@stacks/network';
+import { utf8ToBytes } from '@funai/common';
+import { STACKS_TESTNET } from '@funai/network';
 import {
   NonFungiblePostCondition,
   StxPostCondition,
@@ -16,7 +16,7 @@ import {
   trueCV,
   tupleCV,
   uintCV,
-} from '@stacks/transactions';
+} from '@funai/transactions';
 import fetchMock from 'jest-fetch-mock';
 import { BNS_CONTRACT_NAME, PriceFunction } from '../src';
 import { decodeFQN, getZonefileHash } from '../src/utils';
@@ -37,8 +37,8 @@ test('canRegisterName true', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     fetchCallReadOnlyFunction,
     getAddressFromPrivateKey,
   }));
@@ -76,8 +76,8 @@ test('canRegisterName false', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     fetchCallReadOnlyFunction,
     getAddressFromPrivateKey,
   }));
@@ -115,8 +115,8 @@ test('canRegisterName error', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     fetchCallReadOnlyFunction,
     getAddressFromPrivateKey,
   }));
@@ -154,8 +154,8 @@ test('getNamespacePrice', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     fetchCallReadOnlyFunction,
     getAddressFromPrivateKey,
   }));
@@ -190,8 +190,8 @@ test('getNamespacePrice error', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     fetchCallReadOnlyFunction,
     getAddressFromPrivateKey,
   }));
@@ -227,8 +227,8 @@ test('getNamePrice', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     fetchCallReadOnlyFunction,
     getAddressFromPrivateKey,
   }));
@@ -265,8 +265,8 @@ test('getNamePrice error', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     fetchCallReadOnlyFunction,
     getAddressFromPrivateKey,
   }));
@@ -299,8 +299,8 @@ test('preorderNamespace', async () => {
 
   const makeUnsignedContractCall = jest.fn().mockResolvedValue({});
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeUnsignedContractCall,
   }));
 
@@ -370,8 +370,8 @@ test('revealNamespace', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeUnsignedContractCall,
   }));
 
@@ -438,8 +438,8 @@ test('importName', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeUnsignedContractCall,
   }));
 
@@ -482,8 +482,8 @@ test('readyNamespace', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeUnsignedContractCall,
   }));
 
@@ -520,8 +520,8 @@ test('preorderName', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeUnsignedContractCall,
   }));
 
@@ -569,8 +569,8 @@ test('registerName', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeUnsignedContractCall,
   }));
 
@@ -615,8 +615,8 @@ test('updateName', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeUnsignedContractCall,
   }));
 
@@ -660,11 +660,11 @@ test('transferName', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeUnsignedContractCall,
     createNonFungiblePostCondition:
-      jest.requireActual('@stacks/transactions').createNonFungiblePostCondition,
+      jest.requireActual('@funai/transactions').createNonFungiblePostCondition,
   }));
 
   const { buildTransferNameTx } = require('../src');
@@ -729,11 +729,11 @@ test('transferName optionalArguments', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeUnsignedContractCall,
     createNonFungiblePostCondition:
-      jest.requireActual('@stacks/transactions').createNonFungiblePostCondition,
+      jest.requireActual('@funai/transactions').createNonFungiblePostCondition,
   }));
 
   const { buildTransferNameTx } = require('../src');
@@ -796,8 +796,8 @@ test('revokeName', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeUnsignedContractCall,
   }));
 
@@ -837,8 +837,8 @@ test('renewName', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeUnsignedContractCall,
   }));
 
@@ -893,8 +893,8 @@ test('renewName optionalArguments', async () => {
 
   const network = STACKS_TESTNET;
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeUnsignedContractCall,
   }));
 

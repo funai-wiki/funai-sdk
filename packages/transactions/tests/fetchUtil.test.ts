@@ -1,4 +1,4 @@
-import { createApiKeyMiddleware, createFetchFn } from '@stacks/common';
+import { createApiKeyMiddleware, createFetchFn } from '@funai/common';
 import fetchMock from 'jest-fetch-mock';
 import { broadcastTransaction } from '../src';
 import { makeSTXTokenTransfer } from '../src/builders';

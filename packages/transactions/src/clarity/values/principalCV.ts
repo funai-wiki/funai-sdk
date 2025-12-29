@@ -1,4 +1,4 @@
-import { utf8ToBytes } from '@stacks/common';
+import { utf8ToBytes } from '@funai/common';
 import {
   AddressWire,
   LengthPrefixedStringWire,
@@ -25,7 +25,7 @@ export function principalCV(principal: string): PrincipalCV {
  *
  * @example
  * ```
- *  import { standardPrincipalCV } from '@stacks/transactions';
+ *  import { standardPrincipalCV } from '@funai/transactions';
  *
  *  const addr = standardPrincipalCV('SP2JXKMSH007NPYAQHKJPQMAQYAD90NQGTVJVQ02B');
  *  // { type: 'address', address: { type: 0, version: 22, hash160: 'a5d9d331000f5b79578ce56bd157f29a9056f0d6' } }
@@ -46,7 +46,7 @@ export function standardPrincipalCV(addressString: string): StandardPrincipalCV 
  *
  * @example
  * ```
- *  import { standardPrincipalCVFromAddress, Address  } from '@stacks/transactions';
+ *  import { standardPrincipalCVFromAddress, Address  } from '@funai/transactions';
  *
  *  const address: Address = {
  *    type: 0,
@@ -73,7 +73,7 @@ export function standardPrincipalCVFromAddress(address: AddressWire): StandardPr
  *
  * @example
  * ```
- *  import { contractPrincipalCV } from '@stacks/transactions';
+ *  import { contractPrincipalCV } from '@funai/transactions';
  *
  *  const contractAddress = contractPrincipalCV('SP2JXKMSH007NPYAQHKJPQMAQYAD90NQGTVJVQ02B', 'test');
  *  // { type: 'contract', address: { type: 0, version: 22, hash160: 'a5d9d331000f5b79578ce56bd157f29a9056f0d6' }, contractName: { type: 2, content: 'test', lengthPrefixBytes: 1, maxLengthBytes: 128 } }
@@ -99,7 +99,7 @@ export function contractPrincipalCV(
  *
  * @example
  * ```
- *  import { contractPrincipalCVFromAddress, createLPString, createAddress } from '@stacks/transactions';
+ *  import { contractPrincipalCVFromAddress, createLPString, createAddress } from '@funai/transactions';
  *
  *  const contractAddressCV = contractPrincipalCVFromAddress(createAddress('SP2JXKMSH007NPYAQHKJPQMAQYAD90NQGTVJVQ02B'), createLPString('test'));
  *

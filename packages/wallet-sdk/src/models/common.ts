@@ -1,8 +1,8 @@
-import { getPublicKeyFromPrivate, publicKeyToBtcAddress } from '@stacks/encryption';
+import { getPublicKeyFromPrivate, publicKeyToBtcAddress } from '@funai/encryption';
 // https://github.com/paulmillr/scure-bip32
 // Secure, audited & minimal implementation of BIP32 hierarchical deterministic (HD) wallets.
 import { HDKey } from '@scure/bip32';
-import { Profile } from '@stacks/profile';
+import { Profile } from '@funai/profile';
 
 export interface Account {
   /** The private key used for STX payments */

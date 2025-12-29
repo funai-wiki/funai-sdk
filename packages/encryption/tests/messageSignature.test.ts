@@ -1,6 +1,6 @@
-import { bytesToHex, concatBytes, equals, utf8ToBytes } from '@stacks/common';
-import { STACKS_TESTNET } from '@stacks/network';
-import { getAddressFromPublicKey } from '@stacks/transactions';
+import { bytesToHex, concatBytes, equals, utf8ToBytes } from '@funai/common';
+import { STACKS_TESTNET } from '@funai/network';
+import { getAddressFromPublicKey } from '@funai/transactions';
 import { verifyMessageSignatureRsv } from '../src/ec';
 import { decodeMessage, encodeMessage, hashMessage } from '../src/messageSignature';
 

@@ -367,7 +367,7 @@ export function getRandomIntegerType(
  * Converts an integer-compatible value to a Uint8Array (given a byte length)
  * @example
  * ```ts
- * import { intToBytes } from "@stacks/common";
+ * import { intToBytes } from "@funai/common";
  * console.log(intToBytes(560, 4));
  * // Uint8Array(4) [ 0, 0, 2, 48 ]
  * ```

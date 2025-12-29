@@ -1,9 +1,9 @@
-import { publicKeyToBtcAddress } from '@stacks/encryption';
+import { publicKeyToBtcAddress } from '@funai/encryption';
 import * as bitcoinjs from 'bitcoinjs-lib';
 import { TransactionSigner } from 'blockstack';
 import { DEFAULT_MAX_ID_SEARCH_INDEX } from './argparse';
 import { CLINetworkAdapter } from './network';
-import { privateKeyToPublic } from '@stacks/transactions';
+import { privateKeyToPublic } from '@funai/transactions';
 
 let maxIDSearchIndex = DEFAULT_MAX_ID_SEARCH_INDEX;
 

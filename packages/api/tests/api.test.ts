@@ -1,5 +1,5 @@
-import { DEVNET_URL, HIRO_MAINNET_URL, HIRO_TESTNET_URL } from '@stacks/common';
-import { FUNAI_DEVNET, FUNAI_MAINNET, FUNAI_TESTNET } from '@stacks/network';
+import { DEVNET_URL, HIRO_MAINNET_URL, HIRO_TESTNET_URL } from '@funai/common';
+import { FUNAI_DEVNET, FUNAI_MAINNET, FUNAI_TESTNET } from '@funai/network';
 import { FunaiNodeApi } from '../src';
 
 describe('setting FunaiApi URL', () => {

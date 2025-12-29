@@ -1,6 +1,6 @@
-import { decryptContent } from '@stacks/encryption';
-import { createFetchFn, FetchFn } from '@stacks/common';
-import { GaiaHubConfig } from '@stacks/storage';
+import { decryptContent } from '@funai/encryption';
+import { createFetchFn, FetchFn } from '@funai/common';
+import { GaiaHubConfig } from '@funai/storage';
 import { deriveLegacyConfigPrivateKey } from '../derive';
 import { Wallet, getRootNode } from './common';
 

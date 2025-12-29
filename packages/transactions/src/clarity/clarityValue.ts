@@ -17,7 +17,7 @@ import {
   FalseCV,
 } from '.';
 import { ClarityType } from './constants';
-import { asciiToBytes, bytesToAscii, hexToBytes, utf8ToBytes } from '@stacks/common';
+import { asciiToBytes, bytesToAscii, hexToBytes, utf8ToBytes } from '@funai/common';
 
 export type ClarityValue =
   | BooleanCV

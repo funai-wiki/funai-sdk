@@ -1,4 +1,4 @@
-import { NetworkClientParam } from '@stacks/network';
+import { NetworkClientParam } from '@funai/network';
 import { ClarityValue } from './clarity';
 
 /**

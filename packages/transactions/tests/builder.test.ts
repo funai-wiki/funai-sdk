@@ -8,8 +8,8 @@ import {
   createFetchFn,
   hexToBytes,
   utf8ToBytes,
-} from '@stacks/common';
-import { STACKS_MAINNET, STACKS_TESTNET } from '@stacks/network';
+} from '@funai/common';
+import { STACKS_MAINNET, STACKS_TESTNET } from '@funai/network';
 import * as fs from 'fs';
 import fetchMock from 'jest-fetch-mock';
 import {

@@ -1,4 +1,4 @@
-import { bytesToAscii, bytesToTwosBigInt, bytesToUtf8, hexToBytes } from '@stacks/common';
+import { bytesToAscii, bytesToTwosBigInt, bytesToUtf8, hexToBytes } from '@funai/common';
 import {
   ClarityValue,
   ClarityWireType,
@@ -26,7 +26,7 @@ import { deserializeAddress, deserializeLPString } from '../wire';
  * Deserializes clarity value to clarity type
  * @example
  * ```
- *  import { intCV, serializeCV, deserializeCV } from '@stacks/transactions';
+ *  import { intCV, serializeCV, deserializeCV } from '@funai/transactions';
  *
  *  const serialized = serializeCV(intCV(100)); // Similarly works for other clarity types as well like listCV, booleanCV ...
  *

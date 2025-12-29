@@ -1,5 +1,5 @@
 import { DEFAULT_SCOPE, DEFAULT_BLOCKSTACK_HOST, AuthScope } from './constants';
-import { getGlobalObject } from '@stacks/common';
+import { getGlobalObject } from '@funai/common';
 
 /**
  * Configuration data for the current app.

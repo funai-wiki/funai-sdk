@@ -1,4 +1,4 @@
-import { utf8ToBytes } from '@stacks/common';
+import { utf8ToBytes } from '@funai/common';
 
 /**
  * Retrieves the specified file from the app's data store.

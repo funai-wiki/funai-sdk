@@ -1,8 +1,8 @@
 import { sha256 } from '@noble/hashes/sha256';
-import { HIRO_TESTNET_URL, bigIntToBytes, bytesToHex, hexToBytes } from '@stacks/common';
-import { base58CheckDecode, getPublicKeyFromPrivate } from '@stacks/encryption';
+import { HIRO_TESTNET_URL, bigIntToBytes, bytesToHex, hexToBytes } from '@funai/common';
+import { base58CheckDecode, getPublicKeyFromPrivate } from '@funai/encryption';
 import { V2_POX_REGTEST_POX_3, setApiMocks } from '@stacks/internal';
-import { STACKS_MAINNET, STACKS_TESTNET, defaultUrlFromNetwork } from '@stacks/network';
+import { STACKS_MAINNET, STACKS_TESTNET, defaultUrlFromNetwork } from '@funai/network';
 import {
   ClarityType,
   ReadOnlyFunctionOptions,
@@ -20,7 +20,7 @@ import {
   tupleCV,
   uintCV,
   validateContractCall,
-} from '@stacks/transactions';
+} from '@funai/transactions';
 import fetchMock from 'jest-fetch-mock';
 import { StackingClient } from '../src';
 import { PoXAddressVersion, StackingErrors } from '../src/constants';
@@ -201,8 +201,8 @@ test('check stacking eligibility true', async () => {
   const functionCallResponse = responseOkCV(trueCV());
   const fetchCallReadOnlyFunction = jest.fn().mockResolvedValue(functionCallResponse);
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     fetchCallReadOnlyFunction,
   }));
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -242,8 +242,8 @@ test('check stacking eligibility false bad cycles', async () => {
   const functionCallResponse = responseErrorCV(intCV(2));
   const fetchCallReadOnlyFunction = jest.fn().mockResolvedValue(functionCallResponse);
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     fetchCallReadOnlyFunction,
   }));
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -289,8 +289,8 @@ test('stack stx', async () => {
   const broadcastResponse = JSON.stringify({ txid: 'mocktxid' });
   const broadcastTransaction = jest.fn().mockResolvedValue(broadcastResponse);
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeContractCall,
     broadcastTransaction,
   }));
@@ -372,8 +372,8 @@ test('delegate stx', async () => {
   const broadcastResponse = JSON.stringify({ txid: 'mocktxid' });
   const broadcastTransaction = jest.fn().mockResolvedValue(broadcastResponse);
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeContractCall,
     broadcastTransaction,
   }));
@@ -453,8 +453,8 @@ test('delegate stx with empty optional parameters', async () => {
   const broadcastResponse = JSON.stringify({ txid: 'mocktxid' });
   const broadcastTransaction = jest.fn().mockResolvedValue(broadcastResponse);
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeContractCall,
     broadcastTransaction,
   }));
@@ -531,8 +531,8 @@ test('delegate stack stx with one delegator', async () => {
   const broadcastResponse = JSON.stringify({ txid: 'mocktxid' });
   const broadcastTransaction = jest.fn().mockResolvedValue(broadcastResponse);
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeContractCall,
     broadcastTransaction,
   }));
@@ -626,8 +626,8 @@ test('delegate stack stx with set nonce', async () => {
   const broadcastResponse = JSON.stringify({ txid: 'mocktxid' });
   const broadcastTransaction = jest.fn().mockResolvedValue(broadcastResponse);
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeContractCall,
     broadcastTransaction,
   }));
@@ -719,8 +719,8 @@ test('delegator commit', async () => {
   const broadcastResponse = JSON.stringify({ txid: 'mocktxid' });
   const broadcastTransaction = jest.fn().mockResolvedValue(broadcastResponse);
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeContractCall,
     broadcastTransaction,
   }));
@@ -791,8 +791,8 @@ test('revoke delegate stx', async () => {
   const broadcastResponse = JSON.stringify({ txid: 'mocktxid' });
   const broadcastTransaction = jest.fn().mockResolvedValue(broadcastResponse);
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     makeContractCall,
     broadcastTransaction,
   }));
@@ -864,8 +864,8 @@ test('get stacking status', async () => {
 
   const fetchCallReadOnlyFunction = jest.fn().mockResolvedValue(functionCallResponse);
 
-  jest.mock('@stacks/transactions', () => ({
-    ...jest.requireActual('@stacks/transactions'),
+  jest.mock('@funai/transactions', () => ({
+    ...jest.requireActual('@funai/transactions'),
     fetchCallReadOnlyFunction,
   }));
 

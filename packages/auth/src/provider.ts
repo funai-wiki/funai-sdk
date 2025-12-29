@@ -1,5 +1,5 @@
 import { decodeToken } from 'jsontokens';
-import { BLOCKSTACK_HANDLER, FetchFn, createFetchFn, getGlobalObject } from '@stacks/common';
+import { BLOCKSTACK_HANDLER, FetchFn, createFetchFn, getGlobalObject } from '@funai/common';
 
 /**
  * Retrieves the authentication request from the query string

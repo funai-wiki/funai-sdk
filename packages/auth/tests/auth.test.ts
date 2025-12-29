@@ -21,7 +21,7 @@ import {
   makeECPrivateKey,
   getPublicKeyFromPrivate,
   publicKeyToBtcAddress,
-} from '@stacks/encryption';
+} from '@funai/encryption';
 
 import { sampleProfiles, sampleNameRecords, sampleTokenFiles } from './sampleData';
 

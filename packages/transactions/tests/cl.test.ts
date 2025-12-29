@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { hexToBytes } from '@stacks/common';
+import { hexToBytes } from '@funai/common';
 import {
   Cl,
   boolCV,

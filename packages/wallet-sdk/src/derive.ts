@@ -1,17 +1,17 @@
 // https://github.com/paulmillr/scure-bip32
 // Secure, audited & minimal implementation of BIP32 hierarchical deterministic (HD) wallets.
 import { HDKey } from '@scure/bip32';
-import { getNameInfo } from '@stacks/auth';
-import { bytesToHex, utf8ToBytes } from '@stacks/common';
-import { createSha2Hash } from '@stacks/encryption';
+import { getNameInfo } from '@funai/auth';
+import { bytesToHex, utf8ToBytes } from '@funai/common';
+import { createSha2Hash } from '@funai/encryption';
 import {
   NetworkClientParam,
   NetworkParam,
   StacksNetwork,
   clientFromNetwork,
   networkFrom,
-} from '@stacks/network';
-import { compressPrivateKey, getAddressFromPrivateKey } from '@stacks/transactions';
+} from '@funai/network';
+import { compressPrivateKey, getAddressFromPrivateKey } from '@funai/transactions';
 import { Account, HARDENED_OFFSET, WalletKeys } from './models/common';
 import { fetchFirstName } from './usernames';
 import { assertIsTruthy } from './utils';

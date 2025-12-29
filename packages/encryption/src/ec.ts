@@ -20,7 +20,7 @@ import {
   parseRecoverableSignatureVrs,
   signatureRsvToVrs,
   utf8ToBytes,
-} from '@stacks/common';
+} from '@funai/common';
 import { fromByteArray, toByteArray } from 'base64-js';
 import { createCipher } from './aesCipher';
 import { getPublicKeyFromPrivate } from './keys';

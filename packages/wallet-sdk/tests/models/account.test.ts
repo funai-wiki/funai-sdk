@@ -1,9 +1,9 @@
-import { decryptPrivateKey } from '@stacks/auth';
+import { decryptPrivateKey } from '@funai/auth';
 import {
   getPublicKeyFromPrivate,
   makeECPrivateKey,
   publicKeyToBtcAddress,
-} from '@stacks/encryption';
+} from '@funai/encryption';
 import fetchMock from 'jest-fetch-mock';
 import { decodeToken } from 'jsontokens';
 import { getAppPrivateKey, getGaiaAddress, makeAuthResponse } from '../../src';

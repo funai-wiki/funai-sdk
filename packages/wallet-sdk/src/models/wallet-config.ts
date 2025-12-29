@@ -1,7 +1,7 @@
 import { Account, Wallet } from './common';
-import { GaiaHubConfig, connectToGaiaHub, uploadToGaiaHub } from '@stacks/storage';
-import { decryptContent, encryptContent, getPublicKeyFromPrivate } from '@stacks/encryption';
-import { createFetchFn, FetchFn } from '@stacks/common';
+import { GaiaHubConfig, connectToGaiaHub, uploadToGaiaHub } from '@funai/storage';
+import { decryptContent, encryptContent, getPublicKeyFromPrivate } from '@funai/encryption';
+import { createFetchFn, FetchFn } from '@funai/common';
 
 /** @deprecated */
 export interface ConfigApp {

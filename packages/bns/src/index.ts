@@ -1,5 +1,5 @@
-import { IntegerType, PublicKey, intToBigInt, utf8ToBytes } from '@stacks/common';
-import { NetworkClientParam, StacksNetwork } from '@stacks/network';
+import { IntegerType, PublicKey, intToBigInt, utf8ToBytes } from '@funai/common';
+import { NetworkClientParam, StacksNetwork } from '@funai/network';
 import {
   ClarityType,
   ClarityValue,
@@ -24,7 +24,7 @@ import {
   standardPrincipalCV,
   tupleCV,
   uintCV,
-} from '@stacks/transactions';
+} from '@funai/transactions';
 import { decodeFQN, getZonefileHash } from './utils';
 
 export const BNS_CONTRACT_NAME = 'bns';

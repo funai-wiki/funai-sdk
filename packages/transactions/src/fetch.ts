@@ -1,5 +1,5 @@
-import { bytesToHex, validateHash256, with0x } from '@stacks/common';
-import { NetworkClientParam, clientFromNetwork, networkFrom } from '@stacks/network';
+import { bytesToHex, validateHash256, with0x } from '@funai/common';
+import { NetworkClientParam, clientFromNetwork, networkFrom } from '@funai/network';
 import { ClarityValue, NoneCV, deserializeCV, serializeCV } from './clarity';
 import { ClarityAbi } from './contract-abi';
 import { NoEstimateAvailableError } from './errors';

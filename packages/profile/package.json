@@ -1,5 +1,5 @@
 {
-  "name": "@stacks/profile",
+  "name": "@funai/profile",
   "version": "7.0.3",
   "description": "Library for Stacks profiles",
   "license": "MIT",
@@ -20,9 +20,9 @@
     "typecheck:watch": "npm run typecheck -- --watch"
   },
   "dependencies": {
-    "@stacks/common": "^7.0.2",
-    "@stacks/network": "^7.0.2",
-    "@stacks/transactions": "^7.0.3",
+    "@funai/common": "^7.0.2",
+    "@funai/network": "^7.0.2",
+    "@funai/transactions": "^7.0.3",
     "jsontokens": "^4.0.1",
     "schema-inspector": "^2.0.2",
     "zone-file": "^2.0.0-beta.3"

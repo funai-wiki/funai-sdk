@@ -5,9 +5,9 @@ import {
   HIRO_MAINNET_URL,
   HIRO_TESTNET_URL,
   createFetchFn,
-} from '@stacks/common';
+} from '@funai/common';
 import { AddressVersion, ChainId, PeerNetworkId, TransactionVersion } from './constants';
-import { ClientParam } from '@stacks/common';
+import { ClientParam } from '@funai/common';
 
 export type FunaiNetwork = {
   chainId: number;
@@ -25,6 +25,9 @@ export type FunaiNetwork = {
     fetch?: FetchFn; // fetch is optional and will be created by default in fetch helpers
   };
 };
+
+/** @deprecated Use FunaiNetwork */
+export type StacksNetwork = FunaiNetwork;
 
 export interface NetworkParam {
   network?: FunaiNetworkName | FunaiNetwork;
@@ -75,6 +78,11 @@ export const FUNAI_MOCKNET: FunaiNetwork = {
 export const FunaiNetworks = ['mainnet', 'testnet', 'devnet', 'mocknet'] as const;
 /** The enum-style names of different common Funai networks */
 export type FunaiNetworkName = (typeof FunaiNetworks)[number];
+
+/** @deprecated Use FunaiNetworks */
+export const StacksNetworks = FunaiNetworks;
+/** @deprecated Use FunaiNetworkName */
+export type StacksNetworkName = FunaiNetworkName;
 
 /**
  * Returns the default network for a given name

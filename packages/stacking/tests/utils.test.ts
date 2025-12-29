@@ -1,4 +1,4 @@
-import { hexToBytes } from '@stacks/common';
+import { hexToBytes } from '@funai/common';
 import { PoXAddressVersion } from '../src/constants';
 import { decodeBtcAddress, poxAddressToBtcAddress, poxAddressToTuple } from '../src/utils';
 

@@ -1,4 +1,4 @@
-import { createFetchFn, FetchFn } from '@stacks/common';
+import { createFetchFn, FetchFn } from '@funai/common';
 import { parseZoneFile } from 'zone-file';
 
 import { getTokenFileUrl, Person } from '../profile';

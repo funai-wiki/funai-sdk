@@ -1,4 +1,4 @@
-import { bytesToUtf8, hexToBytes } from '@stacks/common';
+import { bytesToUtf8, hexToBytes } from '@funai/common';
 import {
   Cl,
   ContractPrincipalWire,

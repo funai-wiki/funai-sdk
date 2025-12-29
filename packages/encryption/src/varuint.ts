@@ -5,7 +5,7 @@ import {
   writeUInt16LE,
   writeUInt32LE,
   writeUInt8,
-} from '@stacks/common';
+} from '@funai/common';
 
 // The following methods are based on `bitcoinjs/varuint-bitcoin` implementation
 // https://github.com/bitcoinjs/varuint-bitcoin/blob/8342fe7362f20a412d61b9ade20839aafaa7f78e/index.js

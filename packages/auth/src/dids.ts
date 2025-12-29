@@ -1,4 +1,4 @@
-import { InvalidDIDError } from '@stacks/common';
+import { InvalidDIDError } from '@funai/common';
 
 /**
  * @ignore

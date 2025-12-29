@@ -6,13 +6,13 @@ import {
   makeUUID4,
   nextMonth,
   utf8ToBytes,
-} from '@stacks/common';
+} from '@funai/common';
 import {
   decryptECIES,
   encryptECIES,
   makeECPrivateKey,
   publicKeyToBtcAddress,
-} from '@stacks/encryption';
+} from '@funai/encryption';
 import { SECP256K1Client, TokenSigner } from 'jsontokens';
 import { AuthScope, DEFAULT_SCOPE } from './constants';
 import { makeDIDFromAddress } from './dids';

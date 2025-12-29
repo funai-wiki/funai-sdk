@@ -102,7 +102,7 @@ export interface SignedTokenTransferOptions extends TokenTransferOptions {
   senderKey: PrivateKey;
 }
 
-export type InferOptions = {
+export interface InferOptions extends NetworkClientParam {
   /** the address of the sender of the infer tx */
   inferUserAddress: string;
   /** the amount to be transfered */
@@ -111,6 +111,8 @@ export type InferOptions = {
   userInput: string;
   /** the context of the infer tx */
   context: string;
+  /** the node principal of the infer tx */
+  nodePrincipal?: string;
 
   /** the model name */
   modelName: string;
@@ -120,7 +122,7 @@ export type InferOptions = {
   nonce?: IntegerType;
   /** set to true if another account is sponsoring the transaction (covering the transaction fee) */
   sponsored?: boolean;
-} & NetworkClientParam;
+}
 
 export interface UnsignedInferOptions extends InferOptions {
   publicKey: PublicKey;
@@ -173,7 +175,7 @@ export async function makeUnsignedInfer(
     options.amount,
     options.userInput,
     options.context,
-    "ST000000000000000000002AMW42H", // Null principal for assignment by signer
+    options.nodePrincipal ?? 'ST000000000000000000002AMW42H', // Null principal for assignment by signer
     options.modelName
   );
 
@@ -442,6 +444,9 @@ export async function makeFunaiTokenTransfer(
     return transaction;
   }
 }
+
+/** @deprecated Use makeFunaiTokenTransfer */
+export const makeSTXTokenTransfer = makeFunaiTokenTransfer;
 
 /**
  * Contract deploy transaction options

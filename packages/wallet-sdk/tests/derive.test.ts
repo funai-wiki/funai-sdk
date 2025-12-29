@@ -11,7 +11,7 @@ import {
 // Secure, audited & minimal implementation of BIP39 mnemonic phrases.
 import { HDKey } from '@scure/bip32';
 import { mnemonicToSeed } from '@scure/bip39';
-import { STACKS_MAINNET } from '@stacks/network';
+import { STACKS_MAINNET } from '@funai/network';
 import fetchMock from 'jest-fetch-mock';
 
 const SECRET_KEY =

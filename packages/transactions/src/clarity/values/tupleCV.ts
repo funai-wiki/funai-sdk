@@ -12,7 +12,7 @@ import { TupleCV, TupleData } from '../types';
  *
  * @example
  * ```
- *  import { tupleCV, trueCV, falseCV } from '@stacks/transactions';
+ *  import { tupleCV, trueCV, falseCV } from '@funai/transactions';
  *
  *  const tuple = tupleCV({
  *    c: trueCV(),

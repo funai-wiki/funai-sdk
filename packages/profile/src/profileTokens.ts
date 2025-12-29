@@ -1,7 +1,7 @@
 import { decodeToken, SECP256K1Client, TokenSigner, TokenVerifier } from 'jsontokens';
 import { TokenInterface } from 'jsontokens/lib/decode';
-import { nextYear, makeUUID4 } from '@stacks/common';
-import { getAddressFromPublicKey } from '@stacks/transactions';
+import { nextYear, makeUUID4 } from '@funai/common';
+import { getAddressFromPublicKey } from '@funai/transactions';
 
 /**
  * Signs a profile token

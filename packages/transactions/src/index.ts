@@ -33,7 +33,7 @@ export * from './namespaces';
  *
  * @example
  * ```
- * import { Cl } from '@stacks/transactions';
+ * import { Cl } from '@funai/transactions';
  *
  * Cl.bool(true);
  * Cl.uint(100);
@@ -83,7 +83,7 @@ export * as Cl from './cl';
  *
  * @example
  * ```
- * import { Pc } from '@stacks/transactions';
+ * import { Pc } from '@funai/transactions';
  * Pc.principal('STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6').willSendEq(10000).ufunai();
  * ```
  */

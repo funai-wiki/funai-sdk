@@ -32,6 +32,11 @@ export enum FunaiWireType {
   TransactionAuthField,
 }
 
+/** @deprecated Use FunaiWireType */
+export const StacksWireType = FunaiWireType;
+/** @deprecated Use FunaiWireType */
+export type StacksWireType = FunaiWireType;
+
 type WhenWireTypeMap<T> = Record<FunaiWireType, T>;
 
 export function whenWireType(wireType: FunaiWireType) {

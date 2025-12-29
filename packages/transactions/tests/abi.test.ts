@@ -1,4 +1,4 @@
-import { utf8ToBytes } from '@stacks/common';
+import { utf8ToBytes } from '@funai/common';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { createContractCallPayload } from '../src';

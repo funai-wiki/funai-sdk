@@ -1,4 +1,4 @@
-import { bytesToHex, utf8ToBytes } from '@stacks/common';
+import { bytesToHex, utf8ToBytes } from '@funai/common';
 import {
   ClarityVersion,
   CoinbasePayloadToAltRecipient,

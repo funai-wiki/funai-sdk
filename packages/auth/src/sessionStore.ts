@@ -1,6 +1,6 @@
 import { SessionData, SessionOptions } from './sessionData';
 import { LOCALSTORAGE_SESSION_KEY } from './constants';
-import { NoSessionDataError } from '@stacks/common';
+import { NoSessionDataError } from '@funai/common';
 
 /**
  * An abstract class representing the SessionDataStore interface.

@@ -7,7 +7,7 @@ import { decodeToken } from 'jsontokens';
 import { verifyAuthResponse } from './verification';
 import * as authMessages from './messages';
 import { utils } from '@noble/secp256k1';
-import { decryptContent, encryptContent, EncryptContentOptions } from '@stacks/encryption';
+import { decryptContent, encryptContent, EncryptContentOptions } from '@funai/encryption';
 import { getAddressFromDID } from './dids';
 import {
   createFetchFn,
@@ -21,8 +21,8 @@ import {
   LoginFailedError,
   MissingParameterError,
   nextHour,
-} from '@stacks/common';
-import { extractProfile } from '@stacks/profile';
+} from '@funai/common';
+import { extractProfile } from '@funai/profile';
 import { AuthScope, DEFAULT_PROFILE } from './constants';
 
 import { UserData } from './userData';

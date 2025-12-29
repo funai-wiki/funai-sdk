@@ -12,7 +12,7 @@ import {
   PRIVATE_KEY_BYTES_COMPRESSED,
   utf8ToBytes,
   ValidationError,
-} from '@stacks/common';
+} from '@funai/common';
 import {
   ecSign,
   getPublicKeyFromPrivate,
@@ -20,8 +20,8 @@ import {
   publicKeyToBtcAddress,
   randomBytes,
   Signature,
-} from '@stacks/encryption';
-import { createFetchFn, FetchFn } from '@stacks/common';
+} from '@funai/encryption';
+import { createFetchFn, FetchFn } from '@funai/common';
 import { fromByteArray } from 'base64-js';
 import { TokenSigner } from 'jsontokens';
 

@@ -145,7 +145,7 @@ export type MultiSigHashMode =
   | AddressHashMode.P2WSHNonSequential;
 
 // re-export for backwards compatibility
-export { AddressVersion } from '@stacks/network';
+export { AddressVersion } from '@funai/network';
 
 // todo: try to remove this
 export enum PubKeyEncoding {

@@ -317,6 +317,11 @@ export class FunaiTransactionWire {
   }
 }
 
+/** @deprecated Use FunaiTransactionWire */
+export type StacksTransactionWire = FunaiTransactionWire;
+/** @deprecated Use FunaiTransactionWire */
+export const StacksTransactionWire = FunaiTransactionWire;
+
 /**
  * @param tx hex string or bytes of serialized transaction
  */

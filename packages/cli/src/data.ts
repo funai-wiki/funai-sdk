@@ -11,9 +11,9 @@ import { getPrivateKeyAddress } from './common';
 
 import { CLINetworkAdapter, NameInfoType } from './network';
 
-import { UserData } from '@stacks/auth';
+import { UserData } from '@funai/auth';
 
-import { GaiaHubConfig, connectToGaiaHub } from '@stacks/storage';
+import { GaiaHubConfig, connectToGaiaHub } from '@funai/storage';
 
 /*
  * Set up a session for Gaia.

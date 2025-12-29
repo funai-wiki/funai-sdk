@@ -1,11 +1,11 @@
-import { bytesToHex, hexToBytes } from '@stacks/common';
+import { bytesToHex, hexToBytes } from '@funai/common';
 import {
   ChainId,
   DEFAULT_CHAIN_ID,
   STACKS_MAINNET,
   STACKS_TESTNET,
   TransactionVersion,
-} from '@stacks/network';
+} from '@funai/network';
 import fetchMock from 'jest-fetch-mock';
 import { BytesReader } from '../src/BytesReader';
 import {

@@ -1,17 +1,17 @@
-import { ClientOpts, IntegerType, PrivateKey, hexToBytes, intToBigInt } from '@stacks/common';
+import { ClientOpts, IntegerType, PrivateKey, hexToBytes, intToBigInt } from '@funai/common';
 import {
   ChainId,
   NetworkClientParam,
   StacksNetwork,
   clientFromNetwork,
   networkFrom,
-} from '@stacks/network';
+} from '@funai/network';
 import {
   BurnchainRewardListResponse,
   BurnchainRewardSlotHolderListResponse,
   BurnchainRewardsTotal,
 } from '@stacks/stacks-blockchain-api-types';
-import type { ContractIdString } from '@stacks/transactions';
+import type { ContractIdString } from '@funai/transactions';
 import {
   BufferCV,
   ClarityType,
@@ -37,7 +37,7 @@ import {
   stringAsciiCV,
   uintCV,
   validateStacksAddress,
-} from '@stacks/transactions';
+} from '@funai/transactions';
 import { PoxOperationPeriod, StackingErrors } from './constants';
 import {
   Pox4SignatureTopic,
@@ -170,6 +170,8 @@ export interface CanLockStxOptions {
   poxAddress: string;
   /** number of cycles to lock */
   cycles: number;
+  /** number of microstacks to lock (optional, defaults to account balance) */
+  amountMicroStx?: IntegerType;
 }
 
 /**
@@ -553,8 +555,14 @@ export class StackingClient {
    * @param {CanLockStxOptions} options - a required lock STX options object
    * @returns {Promise<StackingEligibility>} that resolves to a StackingEligibility object if the operation succeeds
    */
-  async canStack({ poxAddress, cycles }: CanLockStxOptions): Promise<StackingEligibility> {
-    const balancePromise: Promise<bigint> = this.getAccountBalance();
+  async canStack({
+    poxAddress,
+    cycles,
+    amountMicroStx,
+  }: CanLockStxOptions): Promise<StackingEligibility> {
+    const balancePromise: Promise<bigint> = amountMicroStx
+      ? Promise.resolve(intToBigInt(amountMicroStx))
+      : this.getAccountBalance();
     const poxInfoPromise = this.getPoxInfo();
 
     return Promise.all([balancePromise, poxInfoPromise])

@@ -12,8 +12,8 @@ import {
   parseRecoverableSignatureVrs,
   signatureRsvToVrs,
   utf8ToBytes,
-} from '@stacks/common';
-import { AddressVersion, STACKS_TESTNET } from '@stacks/network';
+} from '@funai/common';
+import { AddressVersion, STACKS_TESTNET } from '@funai/network';
 import { ec as EC } from 'elliptic';
 import {
   PubKeyEncoding,

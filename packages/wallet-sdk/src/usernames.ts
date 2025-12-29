@@ -1,4 +1,4 @@
-import { NetworkClientParam, clientFromNetwork, networkFrom } from '@stacks/network';
+import { NetworkClientParam, clientFromNetwork, networkFrom } from '@funai/network';
 
 export const fetchFirstName = async (
   opts: {

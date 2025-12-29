@@ -57,6 +57,9 @@ export interface SingleSigSpendingCondition {
   signature: MessageSignatureWire;
 }
 
+/** @deprecated Use SingleSigSpendingCondition */
+export type StacksSingleSigSpendingCondition = SingleSigSpendingCondition;
+
 export interface SingleSigSpendingConditionOpts
   extends Omit<SingleSigSpendingCondition, 'nonce' | 'fee'> {
   nonce: IntegerType;
@@ -79,6 +82,9 @@ export interface MultiSigSpendingConditionOpts
 }
 
 export type SpendingCondition = SingleSigSpendingCondition | MultiSigSpendingCondition;
+
+/** @deprecated Use SpendingCondition */
+export type StacksSpendingCondition = SpendingCondition;
 
 export type SpendingConditionOpts = SingleSigSpendingConditionOpts | MultiSigSpendingConditionOpts;
 
@@ -567,10 +573,16 @@ function verifyMultiSig(
 
 export type Authorization = StandardAuthorization | SponsoredAuthorization;
 
+/** @deprecated Use Authorization */
+export type StacksAuthorization = Authorization;
+
 export interface StandardAuthorization {
   authType: AuthType.Standard;
   spendingCondition: SpendingCondition;
 }
+
+/** @deprecated Use StandardAuthorization */
+export type StacksStandardAuthorization = StandardAuthorization;
 
 export interface SponsoredAuthorization {
   authType: AuthType.Sponsored;
