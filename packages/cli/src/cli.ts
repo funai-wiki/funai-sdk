@@ -1,7 +1,7 @@
 import * as scureBip39 from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
 import { buildPreorderNameTx, buildRegisterNameTx } from '@funai/bns';
-import { bytesToHex, getRandomIntegerType, HIRO_MAINNET_URL, HIRO_TESTNET_URL } from '@funai/common';
+import { bytesToHex, getRandomIntegerType } from '@funai/common';
 import {
   ACCOUNT_PATH,
   broadcastTransaction,
@@ -513,7 +513,7 @@ function balance(_network: CLINetworkAdapter, args: string[]): Promise<string> {
   }
 
   // temporary hack to use network config from stacks-transactions lib
-  const url = _network.isMainnet() ? HIRO_MAINNET_URL : HIRO_TESTNET_URL;
+  const url = _network.nodeAPIUrl;
 
   return fetch(`${url}${ACCOUNT_PATH}/${address}?proof=0`)
     .then(response => {
@@ -1862,7 +1862,10 @@ async function stack(_network: CLINetworkAdapter, args: string[]): Promise<strin
   const coreInfoPromise = stacker.getCoreInfo();
 
   const stackingEligiblePromise = stacker.canStack({ poxAddress, cycles, amountMicroStx: amount });
-  const balancePromise = stacker.getAccountBalance();
+  const balancePromise = stacker.getAccountBalance().catch((error) => {
+    console.error('Error getting account balance:', error);
+    return BigInt(0);
+  });
 
   return Promise.all([poxInfoPromise, coreInfoPromise, stackingEligiblePromise, balancePromise])
     .then(([poxInfo, coreInfo, stackingEligible, balance]) => {
