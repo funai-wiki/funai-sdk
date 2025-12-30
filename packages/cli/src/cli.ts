@@ -714,17 +714,18 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
     network,
   });
 
-  return api
-    .submitInferenceTask({
-      privateKey,
-      userInput,
-      context,
-      modelName,
-      amount,
-      maxInferTime: 60, // Default to 60 seconds
-      fee,
-      nonce,
-    })
+    return api
+      .submitInferenceTask({
+        privateKey,
+        userInput,
+        context,
+        modelName,
+        amount,
+        maxInferTime: 60, // Default to 60 seconds
+        nodePrincipal,
+        fee,
+        nonce,
+      })
     .then((taskId: string) => {
       return {
         task_id: taskId,
@@ -2230,7 +2231,7 @@ export function CLIMain() {
         ? transactionBroadcasterUrl
         : configData.broadcastServiceUrl,
       nodeAPIUrl: nodeAPIUrl ? nodeAPIUrl : configData.blockstackNodeUrl,
-      signerAPIUrl: signerAPIUrl ? signerAPIUrl : configData.funaiSignerUrl,
+      signerAPIUrl: signerAPIUrl ? signerAPIUrl : (nodeAPIUrl ? nodeAPIUrl : configData.funaiSignerUrl),
     };
 
     // wrap command-line options

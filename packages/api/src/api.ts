@@ -248,6 +248,7 @@ export class FunaiNodeApi {
     modelName: string;
     amount: number | bigint;
     maxInferTime: number;
+    nodePrincipal?: string;
     fee?: number | bigint;
     nonce?: number | bigint;
     taskId?: string;
@@ -259,6 +260,7 @@ export class FunaiNodeApi {
       amount: options.amount,
       userInput: options.userInput,
       context: options.context,
+      nodePrincipal: options.nodePrincipal,
       modelName: options.modelName,
       senderKey: options.privateKey,
       network: this.network,
