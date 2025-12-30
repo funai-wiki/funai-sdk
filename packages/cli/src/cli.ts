@@ -710,7 +710,7 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
   }
 
   const api = new FunaiNodeApi({
-    baseUrl: _network.nodeAPIUrl,
+    baseUrl: _network.signerAPIUrl || _network.nodeAPIUrl,
     network,
   });
 
@@ -2133,7 +2133,7 @@ const COMMANDS: Record<string, CommandFunction> = {
  */
 export function CLIMain() {
   const argv = process.argv;
-  const opts = getCLIOpts(argv);
+  const opts = getCLIOpts(argv, 'deitlUxC:F:B:P:D:G:N:H:T:I:S:m:M:X:u:p:c:');
 
   const cmdArgs: any = checkArgs(
     CLIOptAsStringArray(opts, '_') ? CLIOptAsStringArray(opts, '_')! : []
@@ -2172,6 +2172,7 @@ export function CLIMain() {
     const apiUrl = CLIOptAsString(opts, 'H');
     const transactionBroadcasterUrl = CLIOptAsString(opts, 'T');
     const nodeAPIUrl = CLIOptAsString(opts, 'I');
+    const signerAPIUrl = CLIOptAsString(opts, 'S');
     const utxoUrl = CLIOptAsString(opts, 'X');
     const bitcoindUsername = CLIOptAsString(opts, 'u');
     const bitcoindPassword = CLIOptAsString(opts, 'p');
@@ -2229,6 +2230,7 @@ export function CLIMain() {
         ? transactionBroadcasterUrl
         : configData.broadcastServiceUrl,
       nodeAPIUrl: nodeAPIUrl ? nodeAPIUrl : configData.blockstackNodeUrl,
+      signerAPIUrl: signerAPIUrl ? signerAPIUrl : configData.funaiSignerUrl,
     };
 
     // wrap command-line options

@@ -15,6 +15,7 @@ export interface CLI_NETWORK_OPTS {
   altAPIUrl: string | null;
   altTransactionBroadcasterUrl: string | null;
   nodeAPIUrl: string | null;
+  signerAPIUrl: string | null;
 }
 
 export interface PriceType {
@@ -49,6 +50,7 @@ export class CLINetworkAdapter {
   gracePeriod: number | null;
   receiveFeesPeriod: number | null;
   nodeAPIUrl: string;
+  signerAPIUrl: string | null;
   optAlwaysCoerceAddress: boolean;
   legacyNetwork: BlockstackNetwork;
 
@@ -64,6 +66,7 @@ export class CLINetworkAdapter {
       altAPIUrl: opts.nodeAPIUrl,
       altTransactionBroadcasterUrl: network.broadcastServiceUrl,
       nodeAPIUrl: opts.nodeAPIUrl,
+      signerAPIUrl: opts.signerAPIUrl,
     };
 
     opts = Object.assign({}, optsDefault, opts);
@@ -82,6 +85,7 @@ export class CLINetworkAdapter {
     this.receiveFeesPeriod = opts.receiveFeesPeriod;
     this.gracePeriod = opts.gracePeriod;
     this.nodeAPIUrl = opts.nodeAPIUrl!;
+    this.signerAPIUrl = opts.signerAPIUrl;
 
     this.optAlwaysCoerceAddress = false;
   }

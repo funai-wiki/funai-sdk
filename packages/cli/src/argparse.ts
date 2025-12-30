@@ -64,6 +64,7 @@ export interface CLI_LOG_CONFIG_TYPE {
 export interface CLI_CONFIG_TYPE {
   blockstackAPIUrl: string;
   blockstackNodeUrl: string;
+  funaiSignerUrl: string;
   broadcastServiceUrl: string;
   utxoServiceUrl: string;
   logConfig: CLI_LOG_CONFIG_TYPE;
@@ -83,6 +84,7 @@ const LOG_CONFIG_DEFAULTS: CLI_LOG_CONFIG_TYPE = {
 const CONFIG_DEFAULTS: CLI_CONFIG_TYPE = {
   blockstackAPIUrl: 'https://api.hiro.so',
   blockstackNodeUrl: 'https://api.hiro.so',
+  funaiSignerUrl: 'https://signer.funai.org',
   broadcastServiceUrl: 'https://api.hiro.so/v2/transactions',
   utxoServiceUrl: 'https://blockchain.info',
   logConfig: LOG_CONFIG_DEFAULTS,
@@ -91,6 +93,7 @@ const CONFIG_DEFAULTS: CLI_CONFIG_TYPE = {
 const CONFIG_LOCALNET_DEFAULTS = {
   blockstackAPIUrl: `http://localhost:20443`,
   blockstackNodeUrl: `http://localhost:20443`,
+  funaiSignerUrl: `http://localhost:3030`,
   broadcastServiceUrl: `http://localhost:20443/v2/transactions`,
   utxoServiceUrl: `http://localhost:18332`,
   logConfig: Object.assign({}, LOG_CONFIG_DEFAULTS, { level: 'debug' }),
@@ -99,6 +102,7 @@ const CONFIG_LOCALNET_DEFAULTS = {
 const CONFIG_TESTNET_DEFAULTS = {
   blockstackAPIUrl: `https://api.testnet.hiro.so`,
   blockstackNodeUrl: `https://api.testnet.hiro.so`,
+  funaiSignerUrl: `https://signer.testnet.funai.org`,
   broadcastServiceUrl: `https://api.testnet.hiro.so/v2/transactions`,
   utxoServiceUrl: `https://blockchain.info`, // todo: this likely doesn't work anymore
   logConfig: Object.assign({}, LOG_CONFIG_DEFAULTS, { level: 'debug' }),
@@ -3035,6 +3039,8 @@ Options can be:
     -H URL              Use an alternative Blockstack Core API endpoint.
 
     -I URL              Use an alternative Blockstack Core Indexer endpoint.
+
+    -S URL              Use an alternative Funai Signer endpoint.
 
     -M MAX_INDEX        Maximum keychain index to use when searching for an identity address
                         (default is ${DEFAULT_MAX_ID_SEARCH_INDEX}).
