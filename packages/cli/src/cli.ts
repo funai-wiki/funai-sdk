@@ -676,11 +676,11 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
   const amount = BigInt(args[1]);
   const userInput = args[2];
   const context = args[3];
-  const nodePrincipal = args[4];
-  const modelName = args[5];
-  const fee = BigInt(args[6]);
-  const nonce = BigInt(args[7]);
-  const privateKey = args[8];
+  const modelName = args[4];
+  const fee = BigInt(args[5]);
+  const nonce = BigInt(args[6]);
+  const privateKey = args[7];
+  const nodePrincipal = args[8];
 
   const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
 
