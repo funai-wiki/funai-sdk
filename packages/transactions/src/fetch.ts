@@ -63,10 +63,14 @@ export async function broadcastTransaction({
   const response = await client.fetch(url, options);
 
   if (!response.ok) {
+    const text = await response.text();
     try {
-      return (await response.json()) as TxBroadcastResultRejected;
+      return JSON.parse(text) as TxBroadcastResultRejected;
     } catch (e) {
-      throw Error('Failed to broadcast transaction (unable to parse node response).', { cause: e });
+      throw Error(
+        `Failed to broadcast transaction (unable to parse node response). Status: ${response.status} ${response.statusText}. Body: ${text}`,
+        { cause: e }
+      );
     }
   }
 
