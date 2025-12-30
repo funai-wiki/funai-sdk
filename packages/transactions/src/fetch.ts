@@ -1,7 +1,9 @@
 import { bytesToHex, validateHash256, with0x } from '@funai/common';
 import { NetworkClientParam, clientFromNetwork, networkFrom } from '@funai/network';
+import { c32address } from 'c32check';
 import { ClarityValue, NoneCV, deserializeCV, serializeCV } from './clarity';
 import { ClarityAbi } from './contract-abi';
+import { PayloadType } from './constants';
 import { NoEstimateAvailableError } from './errors';
 import {
   FunaiTransactionWire,
@@ -16,7 +18,7 @@ import {
   TxBroadcastResultRejected,
 } from './types';
 import { cvToHex, parseReadOnlyResponse } from './utils';
-import { serializePayloadBytes } from './wire';
+import { serializePayloadBytes, InferPayloadWire } from './wire';
 
 export const BROADCAST_PATH = '/v2/transactions';
 export const TRANSFER_FEE_ESTIMATE_PATH = '/v2/fees/transfer';
@@ -25,6 +27,7 @@ export const ACCOUNT_PATH = '/v2/accounts';
 export const CONTRACT_ABI_PATH = '/v2/contracts/interface';
 export const READONLY_FUNCTION_CALL_PATH = '/v2/contracts/call-read';
 export const MAP_ENTRY_PATH = '/v2/map_entry';
+export const INFER_SUBMIT_PATH = '/api/v1/tasks/submit';
 
 /**
  * Broadcast a serialized transaction to a Funai node (which will validate and forward to the network).
@@ -396,4 +399,73 @@ export async function fetchContractMapEntry<T extends ClarityValue = ClarityValu
   } catch (error) {
     throw new Error(`Error deserializing Clarity value "${json.data}": ${error}`);
   }
+}
+
+/**
+ * Submit an inference task to the Signer API.
+ * @param opts.transaction - The signed Infer transaction
+ * @param opts.signerUrl - The URL of the Signer API
+ * @param opts.maxInferTime - Maximum time in seconds for inference
+ * @param opts.client - Optional API info (`.fetch`) used for fetch call
+ * @returns A Promise that resolves to the task ID
+ */
+export async function submitInferenceTask({
+  transaction,
+  signerUrl,
+  maxInferTime,
+  client: _client,
+}: {
+  transaction: FunaiTransactionWire;
+  signerUrl: string;
+  maxInferTime: number;
+} & NetworkClientParam): Promise<{ task_id: string }> {
+  const payload = transaction.payload;
+  
+  if (payload.payloadType !== PayloadType.Infer) {
+     throw new Error('Transaction must be an Infer transaction');
+  }
+  
+  // Cast to InferPayloadWire to access fields
+  const inferPayload = payload as unknown as InferPayloadWire;
+
+  const network = deriveNetworkFromTx(transaction);
+  const client = Object.assign({}, clientFromNetwork(networkFrom(network)), _client);
+
+  const addressVersion = network.addressVersion.singleSig;
+  const userAddress = c32address(addressVersion, transaction.auth.spendingCondition!.signer);
+
+  const signed_tx = bytesToHex(transaction.serialize());
+
+  const json = {
+    user_address: userAddress,
+    user_input: inferPayload.userInput.content,
+    context: inferPayload.context.content,
+    fee: Number(transaction.auth.spendingCondition!.fee),
+    nonce: Number(transaction.auth.spendingCondition!.nonce),
+    infer_fee: Number(inferPayload.amount),
+    max_infer_time: maxInferTime,
+    model_name: inferPayload.modelName.content,
+    signed_tx,
+  };
+
+  const options = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(json),
+  };
+
+  const url = `${signerUrl}${INFER_SUBMIT_PATH}`;
+  const response = await client.fetch(url, options);
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to submit inference task: ${response.status} ${response.statusText} - ${text}`);
+  }
+
+  const result = await response.json();
+  if (!result.success) {
+      throw new Error(`Signer rejected task: ${result.error}`);
+  }
+
+  return result.data;
 }
