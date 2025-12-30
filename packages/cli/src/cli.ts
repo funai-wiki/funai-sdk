@@ -92,6 +92,7 @@ import { CLI_NETWORK_OPTS, CLINetworkAdapter, getNetwork, NameInfoType } from '.
 import { gaiaAuth, gaiaConnect, gaiaUploadProfileAll, getGaiaAddressFromProfile } from './data';
 
 import { defaultUrlFromNetwork, FUNAI_MAINNET, FUNAI_TESTNET } from '@funai/network';
+import { FunaiNodeApi } from '@funai/api';
 import {
   generateNewAccount,
   generateWallet,
@@ -708,12 +709,25 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
     return Promise.resolve(tx.serialize());
   }
 
-  return broadcastTransaction({ transaction: tx, network })
-    .then((response: TxBroadcastResult) => {
-      if (response.hasOwnProperty('error')) {
-        return response;
-      }
+  const api = new FunaiNodeApi({
+    baseUrl: _network.nodeAPIUrl,
+    network,
+  });
+
+  return api
+    .submitInferenceTask({
+      privateKey,
+      userInput,
+      context,
+      modelName,
+      amount,
+      maxInferTime: 60, // Default to 60 seconds
+      fee,
+      nonce,
+    })
+    .then((taskId: string) => {
       return {
+        task_id: taskId,
         txid: `0x${tx.txid()}`,
         transaction: generateExplorerTxPageUrl(tx.txid(), network),
       };
