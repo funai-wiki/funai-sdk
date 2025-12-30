@@ -39,6 +39,7 @@ import {
   TransactionAuthFieldWire,
   VersionedSmartContractPayloadWire,
 } from './types';
+import { addressToString } from './helpers';
 
 export function createEmptyAddress(): AddressWire {
   return {
@@ -96,7 +97,14 @@ export function createInferPayload(
     context = createLPString(context);
   }
   if (nodePrincipal === null || nodePrincipal === undefined) {
-    nodePrincipal = principalCV('ST000000000000000000002AMW42H');
+    nodePrincipal = {
+      type: ClarityType.PrincipalStandard,
+      value: addressToString({
+        type: FunaiWireType.Address,
+        version: 0,
+        hash160: '0'.repeat(40),
+      }),
+    };
   } else if (typeof nodePrincipal === 'string') {
     nodePrincipal = principalCV(nodePrincipal);
   }

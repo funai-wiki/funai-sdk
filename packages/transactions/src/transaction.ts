@@ -41,6 +41,7 @@ import {
   AuthType,
   PostConditionMode,
   PubKeyEncoding,
+  PayloadType,
   RECOVERABLE_ECDSA_SIG_LENGTH_BYTES,
 } from './constants';
 import { SerializationError, SigningError } from './errors';
@@ -52,13 +53,16 @@ import {
   PayloadWire,
   PublicKeyWire,
   FunaiWireType,
+  InferPayloadWire,
   createLPList,
   createMessageSignature,
   createTransactionAuthField,
   deserializeLPList,
   deserializePayload,
   serializeLPListBytes,
+  addressToString,
 } from './wire';
+import { ClarityType } from './clarity';
 
 export class FunaiTransactionWire {
   transactionVersion: TransactionVersion;
@@ -216,7 +220,22 @@ export class FunaiTransactionWire {
   }
 
   txid(): string {
-    const serialized = this.serializeBytes();
+    const tx = cloneDeep(this);
+    if (tx.payload.payloadType === PayloadType.Infer) {
+      const inferPayload = tx.payload as InferPayloadWire;
+      // Use null principal for nodePrincipal during txid calculation to match Rust's behavior
+      // StandardPrincipalData(0, [0u8; 20])
+      // @ts-ignore
+      inferPayload.nodePrincipal = {
+        type: ClarityType.PrincipalStandard,
+        value: addressToString({
+          type: FunaiWireType.Address,
+          version: 0,
+          hash160: '0'.repeat(40),
+        }),
+      };
+    }
+    const serialized = tx.serializeBytes();
     return txidFromData(serialized);
   }
 

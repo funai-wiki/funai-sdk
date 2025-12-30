@@ -175,7 +175,7 @@ export async function makeUnsignedInfer(
     options.amount,
     options.userInput,
     options.context,
-    options.nodePrincipal ?? options.network.bootAddress, // Null principal for assignment by signer
+    options.nodePrincipal, // Null principal for assignment by signer
     options.modelName
   );
 
