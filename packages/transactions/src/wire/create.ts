@@ -101,7 +101,7 @@ export function createInferPayload(
       type: ClarityType.PrincipalStandard,
       value: addressToString({
         type: FunaiWireType.Address,
-        version: 0,
+        version: 0 as any,
         hash160: '0'.repeat(40),
       }),
     };
