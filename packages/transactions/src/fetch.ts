@@ -434,7 +434,7 @@ export async function submitInferenceTask({
   const addressVersion = network.addressVersion.singleSig;
   const userAddress = c32address(addressVersion, transaction.auth.spendingCondition!.signer);
 
-  const signed_tx = bytesToHex(transaction.serialize());
+  const signed_tx = transaction.serialize();
 
   const json = {
     user_address: userAddress,
