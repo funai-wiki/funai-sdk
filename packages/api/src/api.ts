@@ -24,6 +24,8 @@ import {
   fetchAbi,
   fetchFeeEstimateTransaction,
   fetchNonce,
+  makeInfer,
+  getAddressFromPrivateKey,
 } from '@funai/transactions';
 import {
   ApiResponse,
@@ -231,6 +233,53 @@ export class FunaiNodeApi {
     } else {
       throw new Error(result.error || 'Failed to submit inference task');
     }
+  }
+
+  /**
+   * Submit an inference task to the signer using a private key for automatic signing.
+   * Derives the user address from the private key.
+   * @param options - The task details and sender's private key
+   * @returns A promise that resolves to the task ID
+   */
+  async submitInferenceTask(options: {
+    privateKey: string;
+    userInput: string;
+    context: string;
+    modelName: string;
+    amount: number | bigint;
+    maxInferTime: number;
+    fee?: number | bigint;
+    nonce?: number | bigint;
+    taskId?: string;
+  }): Promise<string> {
+    const userAddress = getAddressFromPrivateKey(options.privateKey, this.network);
+
+    const transaction = await makeInfer({
+      inferUserAddress: userAddress,
+      amount: options.amount,
+      userInput: options.userInput,
+      context: options.context,
+      modelName: options.modelName,
+      senderKey: options.privateKey,
+      network: this.network,
+      fee: options.fee,
+      nonce: options.nonce,
+    });
+
+    const signedTxHex = transaction.serialize();
+
+    return this.submitInferTask({
+      task_id: options.taskId,
+      user_address: userAddress,
+      user_input: options.userInput,
+      context: options.context,
+      model_name: options.modelName,
+      infer_fee: Number(options.amount),
+      max_infer_time: options.maxInferTime,
+      fee: options.fee ? Number(options.fee) : undefined,
+      nonce: options.nonce ? Number(options.nonce) : undefined,
+      signed_tx: signedTxHex,
+    });
   }
 
   /**
