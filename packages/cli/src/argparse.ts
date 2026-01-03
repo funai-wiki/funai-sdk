@@ -2509,19 +2509,19 @@ export const CLI_ARGS = {
           name: 'userInput',
           type: 'string',
           realtype: 'string',
-          pattern: '^.{0,34}$',
+          pattern: '^.{0,10000}$',
         },
         {
           name: 'context',
           type: 'string',
           realtype: 'string',
-          pattern: '^.{0,34}$',
+          pattern: '^.{0,10000}$',
         },
         {
           name: 'modelName',
           type: 'string',
           realtype: 'string',
-          pattern: '^.{0,34}$',
+          pattern: '^.{0,10000}$',
         },
         {
           name: 'fee',
@@ -3493,7 +3493,9 @@ export function getCommandArgs(command: string, argsList: string[]) {
       }
     } else {
       // positional argument
-      orderedArgs.push(argsList[i]);
+      if (argsList[i] === '-' || !argsList[i].startsWith('-')) {
+        orderedArgs.push(argsList[i]);
+      }
     }
   }
 
