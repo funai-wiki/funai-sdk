@@ -2541,20 +2541,14 @@ export const CLI_ARGS = {
           realtype: 'private_key',
           pattern: `${PRIVATE_KEY_PATTERN_ANY}`,
         },
-        {
-          name: 'nodePrincipal',
-          type: 'string',
-          realtype: 'address',
-          pattern: STACKS_ADDRESS_PATTERN,
-        },
       ],
       minItems: 7,
-      maxItems: 9,
+      maxItems: 8,
       help: 'infer\n' +
         '\n' +
         'Example:\n' +
         '```console\n' +
-        '    $ funai-cli infer --address ST6ZMM0CX01734YMS6Q7SPJHQR9GMQPSBH6RP8RV --amount 100 --userInput "weather" --context "{}" --modelName "llama3" --fee 206 --nonce 0 --payment_key <PRIVATE_KEY> --nodePrincipal ST6ZMM0CX01734YMS6Q7SPJHQR9GMQPSBH6RP8RV\n' +
+        '    $ funai-cli infer --address ST6ZMM0CX01734YMS6Q7SPJHQR9GMQPSBH6RP8RV --amount 100 --userInput "weather" --context "{}" --modelName "llama3" --fee 206 --nonce 0 --payment_key <PRIVATE_KEY>\n' +
         '```\n',
       group: 'Account Management',
     },

@@ -680,7 +680,6 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
   const fee = BigInt(args[5]);
   const nonce = BigInt(args[6]);
   const privateKey = args[7];
-  const nodePrincipal = args[8];
 
   const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
 
@@ -689,7 +688,6 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
     amount: amount,
     userInput: userInput,
     context: context,
-    nodePrincipal: nodePrincipal,
     modelName: modelName,
     senderKey: privateKey,
     fee,
@@ -722,7 +720,6 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
         modelName,
         amount,
         maxInferTime: 60, // Default to 60 seconds
-        nodePrincipal,
         fee,
         nonce,
       })
