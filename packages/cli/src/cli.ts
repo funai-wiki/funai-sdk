@@ -1958,13 +1958,18 @@ async function stackExtend(_network: CLINetworkAdapter, args: string[]): Promise
   const poxInfo = await stacker.getPoxInfo();
   const currentCycle = poxInfo.reward_cycle_id;
 
-  const authId = getRandomIntegerType('number', 1, 10000000);
-  // For stack-extend, maxAmount should probably be the currently stacked amount or a safe upper bound.
-  // The contract uses it to verify the signature. 
-  // We'll use a large value if we don't have the exact stacked amount easily.
-  // Actually, let's try to get the status to find the stacked amount.
   const status = await stacker.getStatus();
-  const maxAmount = status.stacked ? BigInt(500000000000000000) : BigInt(0); // Use a large default if stacked
+  if (!status.stacked) {
+    console.warn('Warning: Account does not appear to be currently stacked in pox-4. stack_extend may fail.');
+  }
+
+  const authId = getRandomIntegerType('number', 1, 10000000);
+  // Use a safe maxAmount. If we can't get the current stacked amount, 
+  // we'll use a very large value that covers common stacking amounts.
+  const maxAmount = BigInt("1000000000000000000"); // 1B STX in uSTX
+
+  console.log(`Extending stacking for ${extendCycles} cycles...`);
+  console.log(`Current cycle: ${currentCycle}, authId: ${authId}, maxAmount: ${maxAmount.toString()}`);
 
   const signerSignature = stacker.signPoxSignature({
     topic: 'stack-extend',
