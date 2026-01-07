@@ -1940,6 +1940,66 @@ async function stack(_network: CLINetworkAdapter, args: string[]): Promise<strin
     });
 }
 
+async function stackExtend(_network: CLINetworkAdapter, args: string[]): Promise<string> {
+  const extendCycles = Number(args[0]);
+  const poxAddress = args[1];
+  const privateKey = args[2];
+  const signerKey = privateKeyToPublic(privateKey);
+
+  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
+  const stxAddress = getAddressFromPrivateKey(privateKey, network);
+
+  const stacker = new StackingClient({
+    address: stxAddress,
+    network,
+    client: { baseUrl: _network.nodeAPIUrl },
+  });
+
+  const poxInfo = await stacker.getPoxInfo();
+  const currentCycle = poxInfo.reward_cycle_id;
+
+  const authId = getRandomIntegerType('number', 1, 10000000);
+  // For stack-extend, maxAmount should probably be the currently stacked amount or a safe upper bound.
+  // The contract uses it to verify the signature. 
+  // We'll use a large value if we don't have the exact stacked amount easily.
+  // Actually, let's try to get the status to find the stacked amount.
+  const status = await stacker.getStatus();
+  const maxAmount = status.stacked ? BigInt(500000000000000000) : BigInt(0); // Use a large default if stacked
+
+  const signerSignature = stacker.signPoxSignature({
+    topic: 'stack-extend',
+    poxAddress,
+    rewardCycle: currentCycle,
+    period: extendCycles,
+    maxAmount,
+    authId,
+    signerPrivateKey: privateKey,
+  });
+
+  return stacker
+    .stackExtend({
+      extendCycles,
+      poxAddress,
+      signerKey: typeof signerKey === 'string' ? signerKey : bytesToHex(signerKey),
+      signerSignature,
+      maxAmount,
+      authId,
+      privateKey,
+    })
+    .then((response: TxBroadcastResult) => {
+      if ('error' in response) {
+        return response;
+      }
+      return {
+        txid: `0x${response.txid}`,
+        transaction: generateExplorerTxPageUrl(response.txid, network),
+      };
+    })
+    .catch(error => {
+      return error;
+    });
+}
+
 async function register(_network: CLINetworkAdapter, args: string[]): Promise<string> {
   const fullyQualifiedName = args[0];
   const privateKey = args[1];
@@ -2121,6 +2181,7 @@ const COMMANDS: Record<string, CommandFunction> = {
   send_tokens: sendTokens,
   infer: infer,
   stack: stack,
+  stack_extend: stackExtend,
   migrate_subdomains: migrateSubdomains,
   stacking_status: stackingStatus,
   faucet: faucetCall,

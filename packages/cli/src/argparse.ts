@@ -2630,6 +2630,40 @@ export const CLI_ARGS = {
         '```\n',
       group: 'Account Management',
     },
+    stack_extend: {
+      type: 'array',
+      items: [
+        {
+          name: 'extendCycles',
+          type: 'string',
+          realtype: 'integer',
+          pattern: '^[0-9]+$',
+        },
+        {
+          name: 'pox_address',
+          type: 'string',
+          realtype: 'integer',
+          pattern: `${ADDRESS_PATTERN}`,
+        },
+        {
+          name: 'private_key',
+          type: 'string',
+          realtype: 'private_key',
+          pattern: `${PRIVATE_KEY_PATTERN_ANY}`,
+        },
+      ],
+      minItems: 3,
+      maxItems: 3,
+      help:
+        'Extend stacking for the specified account.\n' +
+        '\n' +
+        'Example:\n' +
+        '\n' +
+        '```console\n' +
+        '    $ stx stack_extend 12 16pm276FpJYpm7Dv3GEaRqTVvGPTdceoY4 136ff26efa5db6f06b28f9c8c7a0216a1a52598045162abfe435d13036154a1b01\n' +
+        '```\n',
+      group: 'Account Management',
+    },
     transfer: {
       type: 'array',
       items: [
