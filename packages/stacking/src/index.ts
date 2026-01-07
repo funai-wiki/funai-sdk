@@ -1415,7 +1415,7 @@ export class StackingClient {
     const poxInfo = await this.getPoxInfo();
     const [contractAddress, contractName] = this.parseContractId(poxInfo.contract_id);
     const account = await this.getAccountStatus();
-    const functionName = 'get-stacker-info';
+    const functionName = contractName === 'pox-4' ? 'get-funai-info' : 'get-stacker-info';
 
     return fetchCallReadOnlyFunction({
       contractAddress,
