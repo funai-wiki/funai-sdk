@@ -55,6 +55,7 @@ import {
   FunaiWireType,
   InferPayloadWire,
   createLPList,
+  createLPString,
   createMessageSignature,
   createTransactionAuthField,
   deserializeLPList,
@@ -234,6 +235,7 @@ export class FunaiTransactionWire {
           hash160: '0'.repeat(40),
         }),
       };
+      // @ts-ignore
       inferPayload.outputHash = createLPString('');
     }
     const serialized = tx.serializeBytes();
