@@ -684,6 +684,15 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
   const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
   const senderAddress = getAddressFromPrivateKey(privateKey, network);
 
+  if (
+    safetyChecks &&
+    _network.coerceAddress(senderAddress) !== _network.coerceAddress(inferUserAddress)
+  ) {
+    throw new Error(
+      `The provided address ${inferUserAddress} does not match the address derived from the private key ${senderAddress}`
+    );
+  }
+
   const options: SignedInferOptions = {
     inferUserAddress: senderAddress,
     amount: amount,
@@ -713,17 +722,17 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
     network,
   });
 
-    return api
-      .submitInferenceTask({
-        privateKey,
-        userInput,
-        context,
-        modelName,
-        amount,
-        maxInferTime: 60, // Default to 60 seconds
-        fee,
-        nonce,
-      })
+  return api
+    .submitInferenceTask({
+      privateKey,
+      userInput,
+      context,
+      modelName,
+      amount,
+      maxInferTime: 60, // Default to 60 seconds
+      fee,
+      nonce,
+    })
     .then((taskId: string) => {
       return {
         task_id: taskId,
