@@ -234,6 +234,7 @@ export class FunaiTransactionWire {
           hash160: '0'.repeat(40),
         }),
       };
+      inferPayload.outputHash = createLPString('');
     }
     const serialized = tx.serializeBytes();
     return txidFromData(serialized);

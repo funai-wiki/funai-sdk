@@ -44,7 +44,9 @@ import { compressPublicKey, createFunaiPublicKey, uncompressPublicKey } from '..
 import { rightPadHexToLength } from '../utils';
 import {
   createCoinbasePayload,
-  createContractCallPayload, createInferPayload, createRegisterModelPayload,
+  createContractCallPayload,
+  createInferPayload,
+  createRegisterModelPayload,
   createLPList,
   createLPString,
   createMessageSignature,
@@ -441,6 +443,7 @@ export function serializePayloadBytes(payload: PayloadInput): Uint8Array {
       bytesArray.push(serializeFunaiWireBytes(payload.context));
       bytesArray.push(serializeCVBytes(payload.nodePrincipal));
       bytesArray.push(serializeFunaiWireBytes(payload.modelName));
+      bytesArray.push(serializeFunaiWireBytes(payload.outputHash));
       break;
     case PayloadType.RegisterModel:
       bytesArray.push(serializeFunaiWireBytes(payload.modelName));
@@ -518,7 +521,16 @@ export function deserializePayload(serialized: string | Uint8Array | BytesReader
       const context = deserializeLPString(bytesReader);
       const nodePrincipal = deserializeCV(bytesReader) as PrincipalCV;
       const modelName = deserializeLPString(bytesReader);
-      return createInferPayload(inferUserAddress, amount, userInput, context, nodePrincipal, modelName);
+      const outputHash = deserializeLPString(bytesReader);
+      return createInferPayload(
+        inferUserAddress,
+        amount,
+        userInput,
+        context,
+        nodePrincipal,
+        modelName,
+        outputHash
+      );
     }
     case PayloadType.RegisterModel: {
       const modelName = deserializeLPString(bytesReader);
