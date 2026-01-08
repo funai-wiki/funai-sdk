@@ -103,6 +103,12 @@ export class CLINetworkAdapter {
   }
 
   coerceMainnetAddress(address: string): string {
+    if (address.startsWith('S')) {
+      // For Stacks addresses, we should use c32check to convert versions if needed,
+      // but usually the CLI just needs the address as-is for comparison.
+      // For now, return as-is if it's already a Stacks address.
+      return address;
+    }
     const addressInfo = bitcoin.address.fromBase58Check(address);
     const addressHash = addressInfo.hash;
     const addressVersion = addressInfo.version;
@@ -306,6 +312,9 @@ export class CLINetworkAdapter {
   }
 
   coerceAddress(address: string) {
+    if (address.startsWith('S')) {
+      return address;
+    }
     return this.legacyNetwork.coerceAddress(address);
   }
 
