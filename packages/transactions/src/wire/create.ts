@@ -86,6 +86,7 @@ export function createInferPayload(
   context: string | LengthPrefixedStringWire,
   nodePrincipal: string | PrincipalCV | null,
   modelName: string | LengthPrefixedStringWire,
+  outputHash?: string | LengthPrefixedStringWire,
 ): InferPayloadWire {
   if (typeof inferUserAddress === 'string') {
     inferUserAddress = principalCV(inferUserAddress);
@@ -111,6 +112,11 @@ export function createInferPayload(
   if (typeof modelName === 'string') {
     modelName = createLPString(modelName);
   }
+  if (outputHash === undefined || outputHash === null) {
+    outputHash = createLPString('');
+  } else if (typeof outputHash === 'string') {
+    outputHash = createLPString(outputHash);
+  }
   return {
     type: FunaiWireType.Payload,
     payloadType: PayloadType.Infer,
@@ -120,6 +126,7 @@ export function createInferPayload(
     context,
     nodePrincipal,
     modelName,
+    outputHash,
   };
 }
 
