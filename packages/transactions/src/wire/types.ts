@@ -113,6 +113,7 @@ export interface InferPayloadWire {
   readonly context : LengthPrefixedStringWire;
   readonly nodePrincipal: PrincipalCV;
   readonly modelName: LengthPrefixedStringWire;
+  readonly outputHash: LengthPrefixedStringWire;
 }
 
 export interface RegisterModelPayloadWire {

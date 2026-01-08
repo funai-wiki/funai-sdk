@@ -682,9 +682,10 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
   const privateKey = args[7];
 
   const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
+  const senderAddress = getAddressFromPrivateKey(privateKey, network);
 
   const options: SignedInferOptions = {
-    inferUserAddress: inferUserAddress,
+    inferUserAddress: senderAddress,
     amount: amount,
     userInput: userInput,
     context: context,
