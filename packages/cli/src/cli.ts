@@ -681,7 +681,9 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
   const nonce = BigInt(args[6]);
   const privateKey = args[7];
 
-  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
+  const network = _network.isMainnet() ? { ...FUNAI_MAINNET } : { ...FUNAI_TESTNET };
+  network.client = { baseUrl: _network.nodeAPIUrl };
+
   const senderAddress = getAddressFromPrivateKey(privateKey, network);
 
   if (
@@ -768,7 +770,8 @@ async function sendTokens(_network: CLINetworkAdapter, args: string[]): Promise<
     memo = args[5];
   }
 
-  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
+  const network = _network.isMainnet() ? { ...FUNAI_MAINNET } : { ...FUNAI_TESTNET };
+  network.client = { baseUrl: _network.nodeAPIUrl };
 
   const options: SignedTokenTransferOptions = {
     recipient: recipientAddress,
@@ -825,7 +828,8 @@ async function contractDeploy(_network: CLINetworkAdapter, args: string[]): Prom
 
   const source = fs.readFileSync(sourceFile).toString();
 
-  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
+  const network = _network.isMainnet() ? { ...FUNAI_MAINNET } : { ...FUNAI_TESTNET };
+  network.client = { baseUrl: _network.nodeAPIUrl };
 
   const options: SignedContractDeployOptions = {
     contractName,
@@ -843,6 +847,7 @@ async function contractDeploy(_network: CLINetworkAdapter, args: string[]): Prom
     return fetchFeeEstimateTransaction({
       payload: serializePayload(tx.payload),
       estimatedLength: estimateTransactionByteLength(tx),
+      network,
     }).then(costs => costs[1].fee.toString(10));
   }
 
@@ -850,7 +855,7 @@ async function contractDeploy(_network: CLINetworkAdapter, args: string[]): Prom
     return Promise.resolve(tx.serialize());
   }
 
-  return broadcastTransaction({ transaction: tx })
+  return broadcastTransaction({ transaction: tx, network })
     .then(response => {
       if (response.hasOwnProperty('error')) {
         return response;
@@ -883,8 +888,8 @@ async function contractFunctionCall(_network: CLINetworkAdapter, args: string[])
   const nonce = BigInt(args[4]);
   const privateKey = args[5];
 
-  // temporary hack to use network config from stacks-transactions lib
-  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
+  const network = _network.isMainnet() ? { ...FUNAI_MAINNET } : { ...FUNAI_TESTNET };
+  network.client = { baseUrl: _network.nodeAPIUrl };
 
   let abi: ClarityAbi;
   let abiArgs: ClarityFunctionArg[];
@@ -968,7 +973,8 @@ async function readOnlyContractFunctionCall(
   const functionName = args[2];
   const senderAddress = args[3];
 
-  const network = _network.isMainnet() ? FUNAI_MAINNET : FUNAI_TESTNET;
+  const network = _network.isMainnet() ? { ...FUNAI_MAINNET } : { ...FUNAI_TESTNET };
+  network.client = { baseUrl: _network.nodeAPIUrl };
 
   let abi: ClarityAbi;
   let abiArgs: ClarityFunctionArg[];
