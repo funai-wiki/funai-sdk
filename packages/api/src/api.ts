@@ -1,4 +1,4 @@
-import { FetchFn, Hex, createFetchFn } from '@funai/common';
+import { FetchFn, Hex, createFetchFn, bytesToHex } from '@funai/common';
 import {
   NetworkParam,
   FUNAI_MAINNET,
@@ -26,15 +26,19 @@ import {
   fetchNonce,
   makeInfer,
   getAddressFromPrivateKey,
+  signMessageHashRsv,
+  privateKeyToPublic,
 } from '@funai/transactions';
 import {
   ApiResponse,
+  AuthenticatedTaskStatusRequest,
   BaseErrorResponse,
   CompleteTaskRequest,
   ExtendedAccountBalances,
   HeartbeatRequest,
   InferenceNodeResponse,
   PaginationOptions,
+  QueryTaskOptions,
   RegisterNodeRequest,
   StatsResponse,
   SubmitTaskRequest,
@@ -411,6 +415,133 @@ export class FunaiNodeApi {
       return result.data;
     } else {
       throw new Error(result.error || 'Failed to get inference nodes');
+    }
+  }
+
+  /**
+   * Query inference task status with authentication.
+   * Only the user who submitted the task can query its status and result.
+   * 
+   * @param options - The task ID and user's private key
+   * @returns A promise that resolves to the task status including result if completed
+   * 
+   * @example
+   * ```typescript
+   * const api = new FunaiNodeApi({ baseUrl: 'http://localhost:8080' });
+   * const status = await api.queryInferenceTaskStatus({
+   *   taskId: 'api-12345-abcde',
+   *   privateKey: 'your-private-key-hex',
+   * });
+   * console.log('Status:', status.status);
+   * if (status.result) {
+   *   console.log('Output:', status.result.output);
+   * }
+   * ```
+   */
+  async queryInferenceTaskStatus(options: QueryTaskOptions): Promise<TaskStatusResponse> {
+    const { taskId, privateKey } = options;
+    
+    // Get current timestamp in seconds
+    const timestamp = Math.floor(Date.now() / 1000);
+    
+    // Create message to sign: "query_task:{task_id}:{timestamp}"
+    const message = `query_task:${taskId}:${timestamp}`;
+    
+    // Hash the message
+    const encoder = new TextEncoder();
+    const messageBytes = encoder.encode(message);
+    const messageHashBytes = await crypto.subtle.digest('SHA-256', messageBytes);
+    const messageHash = bytesToHex(new Uint8Array(messageHashBytes));
+    
+    // Sign the message hash
+    const signature = signMessageHashRsv({ messageHash, privateKey });
+    
+    // Get public key from private key
+    const publicKey = privateKeyToPublic(privateKey);
+    const publicKeyHex = typeof publicKey === 'string' ? publicKey : bytesToHex(publicKey);
+    
+    // Build request body
+    const requestBody: AuthenticatedTaskStatusRequest = {
+      task_id: taskId,
+      public_key: publicKeyHex,
+      signature: signature,
+      timestamp: timestamp,
+    };
+
+    const url = `${this.baseUrl}/api/v1/tasks/status`;
+    const response = await this.fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (response.status === 401) {
+      throw new Error('Authentication failed: signature verification failed or request expired');
+    }
+    if (response.status === 403) {
+      throw new Error('Forbidden: you are not the owner of this task');
+    }
+    if (response.status === 404) {
+      throw new Error('Task not found');
+    }
+
+    const result: ApiResponse<TaskStatusResponse> = await response.json();
+    if (result.success && result.data) {
+      return result.data;
+    } else {
+      throw new Error(result.error || 'Failed to get inference task status');
+    }
+  }
+
+  /**
+   * Wait for an inference task to complete, polling periodically.
+   * 
+   * @param options - The task ID, private key, and optional polling settings
+   * @returns A promise that resolves to the completed task status with result
+   * 
+   * @example
+   * ```typescript
+   * const api = new FunaiNodeApi({ baseUrl: 'http://localhost:8080' });
+   * const result = await api.waitForInferenceResult({
+   *   taskId: 'api-12345-abcde',
+   *   privateKey: 'your-private-key-hex',
+   *   pollIntervalMs: 2000,  // Poll every 2 seconds
+   *   timeoutMs: 60000,      // Timeout after 60 seconds
+   * });
+   * console.log('Inference output:', result.result?.output);
+   * ```
+   */
+  async waitForInferenceResult(options: QueryTaskOptions & {
+    pollIntervalMs?: number;
+    timeoutMs?: number;
+  }): Promise<TaskStatusResponse> {
+    const { taskId, privateKey, pollIntervalMs = 2000, timeoutMs = 300000 } = options;
+    const startTime = Date.now();
+
+    while (true) {
+      const status = await this.queryInferenceTaskStatus({ taskId, privateKey });
+      
+      if (status.status === 'completed' || status.status === 'Completed') {
+        return status;
+      }
+      
+      if (status.status === 'failed' || status.status === 'Failed') {
+        throw new Error(`Inference task failed: ${taskId}`);
+      }
+      
+      if (status.status === 'timeout' || status.status === 'Timeout') {
+        throw new Error(`Inference task timed out: ${taskId}`);
+      }
+
+      // Check if we've exceeded the timeout
+      if (Date.now() - startTime > timeoutMs) {
+        throw new Error(`Timed out waiting for inference result after ${timeoutMs}ms`);
+      }
+
+      // Wait before polling again
+      await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
     }
   }
 }

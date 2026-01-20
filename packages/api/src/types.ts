@@ -1,5 +1,8 @@
 import type { ContractIdString } from '@funai/transactions';
 
+// Re-export for convenience
+export type { ContractIdString };
+
 export interface V2CoreInfoResponse {
   burn_block_height: number;
   stable_pox_consensus: string;
@@ -160,10 +163,36 @@ export interface TaskStatusResponse {
   model_name: string;
   max_infer_time: number;
   infer_fee: number;
+  created_at: number;
   result?: {
     output: string;
     confidence: number;
     completed_at: number;
     inference_node_id: string;
   };
+}
+
+/**
+ * Authenticated task status request
+ * Used by users to query their own inference task status with signature verification
+ */
+export interface AuthenticatedTaskStatusRequest {
+  /** Task ID to query */
+  task_id: string;
+  /** User's public key (hex-encoded, compressed format) */
+  public_key: string;
+  /** Signature of the message: "query_task:{task_id}:{timestamp}" */
+  signature: string;
+  /** Unix timestamp (in seconds) when signature was created */
+  timestamp: number;
+}
+
+/**
+ * Options for querying task status with authentication
+ */
+export interface QueryTaskOptions {
+  /** The task ID to query */
+  taskId: string;
+  /** The user's private key for signing the request */
+  privateKey: string;
 }
