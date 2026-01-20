@@ -747,6 +747,75 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
     });
 }
 
+/**
+ * Query the status and result of an inference task.
+ * args:
+ * @task_id (string) the task ID returned from the infer command
+ * @private_key (string) the private key used to submit the task (for authentication)
+ */
+async function inferStatus(_network: CLINetworkAdapter, args: string[]): Promise<string> {
+  const taskId = args[0];
+  const privateKey = args[1];
+
+  const network = _network.isMainnet() ? { ...FUNAI_MAINNET } : { ...FUNAI_TESTNET };
+  network.client = { baseUrl: _network.nodeAPIUrl };
+
+  const api = new FunaiNodeApi({
+    baseUrl: _network.signerAPIUrl || _network.nodeAPIUrl,
+    network,
+  });
+
+  return api
+    .queryInferenceTaskStatus({
+      taskId,
+      privateKey,
+    })
+    .then(status => {
+      return JSONStringify(status);
+    })
+    .catch(error => {
+      return JSONStringify({ error: error.message || error.toString() });
+    });
+}
+
+/**
+ * Wait for an inference task to complete, polling periodically.
+ * args:
+ * @task_id (string) the task ID returned from the infer command
+ * @private_key (string) the private key used to submit the task (for authentication)
+ * @timeout_seconds (number) optional timeout in seconds (default: 300)
+ */
+async function inferWait(_network: CLINetworkAdapter, args: string[]): Promise<string> {
+  const taskId = args[0];
+  const privateKey = args[1];
+  const timeoutSeconds = args.length > 2 ? parseInt(args[2]) : 300;
+
+  const network = _network.isMainnet() ? { ...FUNAI_MAINNET } : { ...FUNAI_TESTNET };
+  network.client = { baseUrl: _network.nodeAPIUrl };
+
+  const api = new FunaiNodeApi({
+    baseUrl: _network.signerAPIUrl || _network.nodeAPIUrl,
+    network,
+  });
+
+  console.log(`Waiting for inference task ${taskId} to complete (timeout: ${timeoutSeconds}s)...`);
+
+  return api
+    .waitForInferenceResult({
+      taskId,
+      privateKey,
+      pollIntervalMs: 3000, // Poll every 3 seconds
+      timeoutMs: timeoutSeconds * 1000,
+    })
+    .then(result => {
+      console.log('Inference task completed!');
+      return JSONStringify(result);
+    })
+    .catch(error => {
+      return JSONStringify({ error: error.message || error.toString() });
+    });
+}
+
 /*
  * Send tokens from one account private key to another account's address.
  * args:
@@ -2201,6 +2270,8 @@ const COMMANDS: Record<string, CommandFunction> = {
   tx_preorder: preorder,
   send_tokens: sendTokens,
   infer: infer,
+  infer_status: inferStatus,
+  infer_wait: inferWait,
   stack: stack,
   stack_extend: stackExtend,
   migrate_subdomains: migrateSubdomains,

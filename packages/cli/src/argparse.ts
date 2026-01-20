@@ -2552,6 +2552,92 @@ export const CLI_ARGS = {
         '```\n',
       group: 'Account Management',
     },
+    infer_status: {
+      type: 'array',
+      items: [
+        {
+          name: 'task_id',
+          type: 'string',
+          realtype: 'string',
+          pattern: '^.+$',
+        },
+        {
+          name: 'private_key',
+          type: 'string',
+          realtype: 'private_key',
+          pattern: `${PRIVATE_KEY_PATTERN_ANY}`,
+        },
+      ],
+      minItems: 2,
+      maxItems: 2,
+      help:
+        'Query the status and result of an inference task. The private key is required to authenticate ' +
+        'the request - only the user who submitted the task can query its status.\n' +
+        '\n' +
+        'Returns the task status (pending, in_progress, completed, failed) and the inference result ' +
+        'if the task is completed.\n' +
+        '\n' +
+        'Example:\n' +
+        '```console\n' +
+        '    $ export PRIVATE_KEY="your-private-key-hex"\n' +
+        '    $ funai-cli infer_status api-12345-abcde "$PRIVATE_KEY"\n' +
+        '    {\n' +
+        '      "task_id": "api-12345-abcde",\n' +
+        '      "status": "completed",\n' +
+        '      "user_input": "What is blockchain?",\n' +
+        '      "result": {\n' +
+        '        "output": "Blockchain is a distributed ledger technology...",\n' +
+        '        "confidence": 0.95,\n' +
+        '        "completed_at": 1737300000\n' +
+        '      }\n' +
+        '    }\n' +
+        '```\n',
+      group: 'Account Management',
+    },
+    infer_wait: {
+      type: 'array',
+      items: [
+        {
+          name: 'task_id',
+          type: 'string',
+          realtype: 'string',
+          pattern: '^.+$',
+        },
+        {
+          name: 'private_key',
+          type: 'string',
+          realtype: 'private_key',
+          pattern: `${PRIVATE_KEY_PATTERN_ANY}`,
+        },
+        {
+          name: 'timeout_seconds',
+          type: 'string',
+          realtype: 'integer',
+          pattern: '^[0-9]+$',
+        },
+      ],
+      minItems: 2,
+      maxItems: 3,
+      help:
+        'Wait for an inference task to complete, polling periodically until the task is done or timeout.\n' +
+        '\n' +
+        'The optional timeout_seconds parameter specifies how long to wait (default: 300 seconds).\n' +
+        '\n' +
+        'Example:\n' +
+        '```console\n' +
+        '    $ export PRIVATE_KEY="your-private-key-hex"\n' +
+        '    $ # Wait up to 60 seconds for task to complete\n' +
+        '    $ funai-cli infer_wait api-12345-abcde "$PRIVATE_KEY" 60\n' +
+        '    {\n' +
+        '      "task_id": "api-12345-abcde",\n' +
+        '      "status": "completed",\n' +
+        '      "result": {\n' +
+        '        "output": "Blockchain is a distributed ledger technology..."\n' +
+        '      }\n' +
+        '    }\n' +
+        '```\n',
+      group: 'Account Management',
+    },
     stack: {
       type: 'array',
       items: [
