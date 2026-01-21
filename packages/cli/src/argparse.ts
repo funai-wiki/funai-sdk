@@ -2541,14 +2541,30 @@ export const CLI_ARGS = {
           realtype: 'private_key',
           pattern: `${PRIVATE_KEY_PATTERN_ANY}`,
         },
+        {
+          name: 'encrypt',
+          type: 'string',
+          realtype: 'boolean',
+          pattern: BOOLEAN_PATTERN,
+        },
       ],
       minItems: 7,
-      maxItems: 8,
-      help: 'infer\n' +
+      maxItems: 9,
+      help:
+        'Submit an inference task to the network.\n' +
         '\n' +
-        'Example:\n' +
+        'The optional `encrypt` parameter (default: false) enables end-to-end encryption of the user input ' +
+        'and context using the Signer\'s public key. When enabled, only the assigned inference node can ' +
+        'decrypt and process the data.\n' +
+        '\n' +
+        'Example without encryption:\n' +
         '```console\n' +
-        '    $ funai-cli infer --address ST6ZMM0CX01734YMS6Q7SPJHQR9GMQPSBH6RP8RV --amount 100 --userInput "weather" --context "{}" --modelName "llama3" --fee 206 --nonce 0 --payment_key <PRIVATE_KEY>\n' +
+        '    $ funai-cli infer ST6ZMM... 100 "What is the weather?" "{}" llama3 206 0 "$PRIVATE_KEY"\n' +
+        '```\n' +
+        '\n' +
+        'Example with encryption:\n' +
+        '```console\n' +
+        '    $ funai-cli infer ST6ZMM... 100 "What is the weather?" "{}" llama3 206 0 "$PRIVATE_KEY" true\n' +
         '```\n',
       group: 'Account Management',
     },

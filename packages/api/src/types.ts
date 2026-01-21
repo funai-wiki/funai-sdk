@@ -112,6 +112,48 @@ export interface SubmitTaskRequest {
   max_infer_time: number;
   model_name: string;
   signed_tx?: string;
+  /** Whether the user_input and context are encrypted */
+  is_encrypted?: boolean;
+  /** The Signer's public key used for encryption (hex-encoded) */
+  signer_public_key?: string;
+}
+
+/**
+ * Response containing the Signer's public key for encryption
+ */
+export interface SignerPublicKeyResponse {
+  /** Signer's public key in hex format (compressed, 33 bytes) */
+  public_key: string;
+  /** Signer's address */
+  signer_address: string;
+}
+
+/**
+ * Options for submitting an encrypted inference task
+ */
+export interface EncryptedInferOptions {
+  /** The user's private key for signing the transaction */
+  privateKey: string;
+  /** The user input text to encrypt and submit */
+  userInput: string;
+  /** The context to encrypt and submit */
+  context: string;
+  /** The model name */
+  modelName: string;
+  /** Amount of tokens to pay for inference */
+  amount: number | bigint;
+  /** Maximum time for inference in seconds */
+  maxInferTime: number;
+  /** Optional specific node principal */
+  nodePrincipal?: string;
+  /** Transaction fee */
+  fee?: number | bigint;
+  /** Account nonce */
+  nonce?: number | bigint;
+  /** Optional task ID */
+  taskId?: string;
+  /** Whether to encrypt the user input and context (default: true) */
+  encrypt?: boolean;
 }
 
 export interface SubmitTaskResponse {

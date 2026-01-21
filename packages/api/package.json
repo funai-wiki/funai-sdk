@@ -25,10 +25,12 @@
   },
   "dependencies": {
     "@funai/common": "^7.0.2",
+    "@funai/encryption": "^7.0.3",
     "@funai/network": "^7.0.2",
+    "@funai/transactions": "^7.0.3",
     "@noble/hashes": "^1.3.1",
-    "@stacks/stacks-blockchain-api-types": "^0.61.0",
-    "@funai/transactions": "^7.0.3"
+    "@noble/secp256k1": "^1.7.1",
+    "@stacks/stacks-blockchain-api-types": "^0.61.0"
   },
   "devDependencies": {
     "rimraf": "^3.0.2"

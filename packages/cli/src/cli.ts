@@ -680,6 +680,8 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
   const fee = BigInt(args[5]);
   const nonce = BigInt(args[6]);
   const privateKey = args[7];
+  // Parse encrypt flag (default: false)
+  const encrypt = args.length > 8 && (args[8] === '1' || args[8].toLowerCase() === 'true');
 
   const network = _network.isMainnet() ? { ...FUNAI_MAINNET } : { ...FUNAI_TESTNET };
   network.client = { baseUrl: _network.nodeAPIUrl };
@@ -695,6 +697,39 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
     );
   }
 
+  const api = new FunaiNodeApi({
+    baseUrl: _network.signerAPIUrl || _network.nodeAPIUrl,
+    network,
+  });
+
+  // If encryption is enabled, use the encrypted submission method
+  if (encrypt) {
+    console.log('Encrypting inference task data...');
+    return api
+      .submitEncryptedInferenceTask({
+        privateKey,
+        userInput,
+        context,
+        modelName,
+        amount,
+        maxInferTime: 60,
+        fee,
+        nonce,
+        encrypt: true,
+      })
+      .then((taskId: string) => {
+        return JSONStringify({
+          task_id: taskId,
+          encrypted: true,
+          message: 'Inference task submitted with end-to-end encryption',
+        });
+      })
+      .catch((error: any) => {
+        return JSONStringify({ error: error.message || error.toString() });
+      });
+  }
+
+  // Non-encrypted submission (original behavior)
   const options: SignedInferOptions = {
     inferUserAddress: senderAddress,
     amount: amount,
@@ -718,11 +753,6 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
   if (txOnly) {
     return Promise.resolve(tx.serialize());
   }
-
-  const api = new FunaiNodeApi({
-    baseUrl: _network.signerAPIUrl || _network.nodeAPIUrl,
-    network,
-  });
 
   return api
     .submitInferenceTask({

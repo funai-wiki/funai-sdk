@@ -1,5 +1,6 @@
 import { FetchFn, Hex, createFetchFn, bytesToHex, utf8ToBytes } from '@funai/common';
 import { sha256 } from '@noble/hashes/sha256';
+import { encryptForSigner } from './encryption-utils';
 import {
   NetworkParam,
   FUNAI_MAINNET,
@@ -35,12 +36,14 @@ import {
   AuthenticatedTaskStatusRequest,
   BaseErrorResponse,
   CompleteTaskRequest,
+  EncryptedInferOptions,
   ExtendedAccountBalances,
   HeartbeatRequest,
   InferenceNodeResponse,
   PaginationOptions,
   QueryTaskOptions,
   RegisterNodeRequest,
+  SignerPublicKeyResponse,
   StatsResponse,
   SubmitTaskRequest,
   SubmitTaskResponse,
@@ -216,6 +219,104 @@ export class FunaiNodeApi {
         raw: json.data as string,
       }));
   }
+
+  // ==================== Encryption Methods ====================
+
+  /**
+   * Get the Signer's public key for encrypting inference data
+   * @returns A promise that resolves to the Signer's public key info
+   */
+  async getSignerPublicKey(): Promise<SignerPublicKeyResponse> {
+    const url = `${this.baseUrl}/api/v1/encryption/public-key`;
+    const response = await this.fetch(url);
+
+    const result: ApiResponse<SignerPublicKeyResponse> = await response.json();
+    if (result.success && result.data) {
+      return result.data;
+    } else {
+      throw new Error(result.error || 'Failed to get signer public key');
+    }
+  }
+
+  /**
+   * Encrypt data using ECIES (Elliptic Curve Integrated Encryption Scheme)
+   * Compatible with the Signer's decryption implementation using AES-256-GCM
+   * 
+   * Returns a JSON string with the EncryptedData format expected by the Signer:
+   * {
+   *   signer_public_key: string,
+   *   ephemeral_public_key: string,
+   *   ciphertext: string,
+   *   nonce: string,
+   *   signature?: string
+   * }
+   * 
+   * @param plaintext - The plaintext string to encrypt
+   * @param recipientPublicKeyHex - The recipient's public key in hex format (Signer's public key)
+   * @returns The encrypted data as a JSON string
+   */
+  async encryptWithPublicKey(plaintext: string, recipientPublicKeyHex: string): Promise<string> {
+    return encryptForSigner(plaintext, recipientPublicKeyHex);
+  }
+
+  /**
+   * Submit an encrypted inference task to the signer
+   * Automatically fetches the Signer's public key and encrypts the user input and context
+   * 
+   * @param options - The task details including encryption preference
+   * @returns A promise that resolves to the task ID
+   */
+  async submitEncryptedInferenceTask(options: EncryptedInferOptions): Promise<string> {
+    const shouldEncrypt = options.encrypt !== false; // Default to true
+    const userAddress = getAddressFromPrivateKey(options.privateKey, this.network);
+
+    let userInput = options.userInput;
+    let context = options.context;
+    let signerPublicKey: string | undefined;
+
+    if (shouldEncrypt) {
+      // Get Signer's public key
+      const signerKeyInfo = await this.getSignerPublicKey();
+      signerPublicKey = signerKeyInfo.public_key;
+      
+      // Encrypt user input and context (returns JSON strings)
+      userInput = await this.encryptWithPublicKey(options.userInput, signerPublicKey);
+      context = await this.encryptWithPublicKey(options.context, signerPublicKey);
+    }
+
+    // Create the transaction with encrypted or plain data
+    const transaction = await makeInfer({
+      inferUserAddress: userAddress,
+      amount: options.amount,
+      userInput: userInput,
+      context: context,
+      nodePrincipal: options.nodePrincipal,
+      modelName: options.modelName,
+      senderKey: options.privateKey,
+      network: this.network,
+      fee: options.fee,
+      nonce: options.nonce,
+    });
+
+    const signedTxHex = transaction.serialize();
+
+    return this.submitInferTask({
+      task_id: options.taskId,
+      user_address: userAddress,
+      user_input: userInput,
+      context: context,
+      model_name: options.modelName,
+      infer_fee: Number(options.amount),
+      max_infer_time: options.maxInferTime,
+      fee: options.fee ? Number(options.fee) : undefined,
+      nonce: options.nonce ? Number(options.nonce) : undefined,
+      signed_tx: signedTxHex,
+      is_encrypted: shouldEncrypt,
+      signer_public_key: signerPublicKey,
+    });
+  }
+
+  // ==================== Task Submission Methods ====================
 
   /**
    * Submit an inference task to the signer
