@@ -263,6 +263,10 @@ export class FunaiNodeApi {
    * Submit an encrypted inference task to the signer
    * Automatically fetches the Signer's public key and encrypts the user input and context
    * 
+   * For encrypted tasks:
+   * - The on-chain transaction contains a placeholder (hash of encrypted data)
+   * - The actual encrypted data is sent via API to the Signer
+   * 
    * @param options - The task details including encryption preference
    * @returns A promise that resolves to the task ID
    */
@@ -270,26 +274,35 @@ export class FunaiNodeApi {
     const shouldEncrypt = options.encrypt !== false; // Default to true
     const userAddress = getAddressFromPrivateKey(options.privateKey, this.network);
 
-    let userInput = options.userInput;
-    let context = options.context;
+    let apiUserInput = options.userInput;
+    let apiContext = options.context;
     let signerPublicKey: string | undefined;
+    
+    // For on-chain transaction, use shortened placeholders if encrypting
+    let txUserInput = options.userInput;
+    let txContext = options.context;
 
     if (shouldEncrypt) {
       // Get Signer's public key
       const signerKeyInfo = await this.getSignerPublicKey();
       signerPublicKey = signerKeyInfo.public_key;
       
-      // Encrypt user input and context (returns JSON strings)
-      userInput = await this.encryptWithPublicKey(options.userInput, signerPublicKey);
-      context = await this.encryptWithPublicKey(options.context, signerPublicKey);
+      // Encrypt user input and context for API transmission
+      apiUserInput = await this.encryptWithPublicKey(options.userInput, signerPublicKey);
+      apiContext = await this.encryptWithPublicKey(options.context, signerPublicKey);
+      
+      // For on-chain transaction, use a short encrypted marker
+      // The actual encrypted data is stored off-chain by the Signer
+      txUserInput = '[encrypted]';
+      txContext = '[encrypted]';
     }
 
-    // Create the transaction with encrypted or plain data
+    // Create the transaction with placeholder data for encrypted tasks
     const transaction = await makeInfer({
       inferUserAddress: userAddress,
       amount: options.amount,
-      userInput: userInput,
-      context: context,
+      userInput: txUserInput,
+      context: txContext,
       nodePrincipal: options.nodePrincipal,
       modelName: options.modelName,
       senderKey: options.privateKey,
@@ -300,11 +313,12 @@ export class FunaiNodeApi {
 
     const signedTxHex = transaction.serialize();
 
+    // Submit to API with full encrypted data
     return this.submitInferTask({
       task_id: options.taskId,
       user_address: userAddress,
-      user_input: userInput,
-      context: context,
+      user_input: apiUserInput,  // Full encrypted data sent via API
+      context: apiContext,        // Full encrypted data sent via API
       model_name: options.modelName,
       infer_fee: Number(options.amount),
       max_infer_time: options.maxInferTime,
