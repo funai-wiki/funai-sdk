@@ -742,7 +742,7 @@ async function infer(_network: CLINetworkAdapter, args: string[]): Promise<strin
         transaction: generateExplorerTxPageUrl(tx.txid(), network),
       };
     })
-    .catch(error => {
+    .catch((error: any) => {
       return error.toString();
     });
 }
@@ -770,10 +770,10 @@ async function inferStatus(_network: CLINetworkAdapter, args: string[]): Promise
       taskId,
       privateKey,
     })
-    .then(status => {
+    .then((status: any) => {
       return JSONStringify(status);
     })
-    .catch(error => {
+    .catch((error: any) => {
       return JSONStringify({ error: error.message || error.toString() });
     });
 }
@@ -807,11 +807,11 @@ async function inferWait(_network: CLINetworkAdapter, args: string[]): Promise<s
       pollIntervalMs: 3000, // Poll every 3 seconds
       timeoutMs: timeoutSeconds * 1000,
     })
-    .then(result => {
+    .then((result: any) => {
       console.log('Inference task completed!');
       return JSONStringify(result);
     })
-    .catch(error => {
+    .catch((error: any) => {
       return JSONStringify({ error: error.message || error.toString() });
     });
 }
