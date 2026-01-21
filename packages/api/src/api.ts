@@ -1,4 +1,5 @@
-import { FetchFn, Hex, createFetchFn, bytesToHex } from '@funai/common';
+import { FetchFn, Hex, createFetchFn, bytesToHex, utf8ToBytes } from '@funai/common';
+import { sha256 } from '@noble/hashes/sha256';
 import {
   NetworkParam,
   FUNAI_MAINNET,
@@ -447,11 +448,10 @@ export class FunaiNodeApi {
     // Create message to sign: "query_task:{task_id}:{timestamp}"
     const message = `query_task:${taskId}:${timestamp}`;
     
-    // Hash the message
-    const encoder = new TextEncoder();
-    const messageBytes = encoder.encode(message);
-    const messageHashBytes = await crypto.subtle.digest('SHA-256', messageBytes);
-    const messageHash = bytesToHex(new Uint8Array(messageHashBytes));
+    // Hash the message using @noble/hashes (works in both Node.js and browser)
+    const messageBytes = utf8ToBytes(message);
+    const messageHashBytes = sha256(messageBytes);
+    const messageHash = bytesToHex(messageHashBytes);
     
     // Sign the message hash
     const signature = signMessageHashRsv({ messageHash, privateKey });
