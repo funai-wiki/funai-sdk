@@ -291,10 +291,13 @@ export class FunaiNodeApi {
       apiUserInput = await this.encryptWithPublicKey(options.userInput, signerPublicKey);
       apiContext = await this.encryptWithPublicKey(options.context, signerPublicKey);
       
-      // For on-chain transaction, use a short encrypted marker
-      // The actual encrypted data is stored off-chain by the Signer
-      txUserInput = '[encrypted]';
-      txContext = '[encrypted]';
+      // For on-chain transaction, use hash of encrypted data
+      // Format: "enc:{first16bytes_of_sha256}" - total 20 chars to fit in tx size limits
+      // This allows verification that the encrypted data matches what's on-chain
+      const inputHash = bytesToHex(sha256(utf8ToBytes(apiUserInput))).slice(0, 16);
+      const contextHash = bytesToHex(sha256(utf8ToBytes(apiContext))).slice(0, 16);
+      txUserInput = `enc:${inputHash}`;
+      txContext = `enc:${contextHash}`;
     }
 
     // Create the transaction with placeholder data for encrypted tasks
