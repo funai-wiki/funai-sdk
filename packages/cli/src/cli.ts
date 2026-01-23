@@ -899,6 +899,14 @@ async function inferStake(_network: CLINetworkAdapter, args: string[]): Promise<
       nonce,
     })
     .then((result: any) => {
+      // Check if broadcast was rejected
+      if (result.error || result.reason) {
+        return JSONStringify({
+          error: result.error || result.reason,
+          reason_data: result.reason_data,
+          txid: result.txid,
+        });
+      }
       return JSONStringify({
         txid: result.txid,
         message: 'Stake transaction submitted successfully',
