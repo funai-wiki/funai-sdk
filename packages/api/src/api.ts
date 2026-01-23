@@ -29,7 +29,7 @@ import {
   makeInfer,
   makeContractCall,
   uintCV,
-  stringAsciiCV,
+  bufferCV,
   getAddressFromPrivateKey,
   signMessageHashRsv,
   privateKeyToPublic,
@@ -714,25 +714,30 @@ export class FunaiNodeApi {
    * @returns Transaction broadcast result
    */
   async stakeAsInferNode(options: InferStakeOptions): Promise<TxBroadcastResult> {
-    // Build the contract call transaction options
-    const txOptions: any = {
+    // Build the contract call transaction
+    // Use default fee if not specified (avoid fee estimation which may fail)
+    const fee = options.fee ?? BigInt(100000); // Default 0.1 STX fee
+    
+    // Convert nodeId string to 32-byte buffer (pad with zeros if needed)
+    const nodeIdBytes = new Uint8Array(32);
+    const encoder = new TextEncoder();
+    const encoded = encoder.encode(options.nodeId);
+    nodeIdBytes.set(encoded.slice(0, 32)); // Truncate if too long, padded with zeros otherwise
+    
+    const tx = await makeContractCall({
       contractAddress: 'ST000000000000000000002AMW42H', // Boot contract address
       contractName: 'pox-4',
       functionName: 'infer-stake-stx',
       functionArgs: [
+        bufferCV(nodeIdBytes),                // node-id (buff 32)
         uintCV(options.amountUstx),           // amount-ustx
         uintCV(options.lockPeriod),           // lock-period (in blocks)
-        stringAsciiCV(options.nodeId),        // node-id
       ],
       senderKey: options.senderKey,
+      fee,
+      nonce: options.nonce,
       network: this.network,
-    };
-    
-    // Only include fee and nonce if they are defined
-    if (options.fee != null) txOptions.fee = options.fee;
-    if (options.nonce != null) txOptions.nonce = options.nonce;
-    
-    const tx = await makeContractCall(txOptions);
+    });
 
     // Broadcast the transaction
     return broadcastTransaction({ transaction: tx, network: this.network });
@@ -746,7 +751,9 @@ export class FunaiNodeApi {
    * @returns Transaction broadcast result
    */
   async increaseInferStake(options: InferIncreaseStakeOptions): Promise<TxBroadcastResult> {
-    const txOptions: any = {
+    const fee = options.fee ?? BigInt(100000); // Default 0.1 STX fee
+    
+    const tx = await makeContractCall({
       contractAddress: 'ST000000000000000000002AMW42H',
       contractName: 'pox-4',
       functionName: 'infer-increase-stake',
@@ -754,13 +761,10 @@ export class FunaiNodeApi {
         uintCV(options.additionalAmountUstx),
       ],
       senderKey: options.senderKey,
+      fee,
+      nonce: options.nonce,
       network: this.network,
-    };
-    
-    if (options.fee != null) txOptions.fee = options.fee;
-    if (options.nonce != null) txOptions.nonce = options.nonce;
-    
-    const tx = await makeContractCall(txOptions);
+    });
 
     return broadcastTransaction({ transaction: tx, network: this.network });
   }
@@ -773,7 +777,9 @@ export class FunaiNodeApi {
    * @returns Transaction broadcast result
    */
   async extendInferLock(options: InferExtendLockOptions): Promise<TxBroadcastResult> {
-    const txOptions: any = {
+    const fee = options.fee ?? BigInt(100000); // Default 0.1 STX fee
+    
+    const tx = await makeContractCall({
       contractAddress: 'ST000000000000000000002AMW42H',
       contractName: 'pox-4',
       functionName: 'infer-extend-lock',
@@ -781,13 +787,10 @@ export class FunaiNodeApi {
         uintCV(options.additionalPeriod),
       ],
       senderKey: options.senderKey,
+      fee,
+      nonce: options.nonce,
       network: this.network,
-    };
-    
-    if (options.fee != null) txOptions.fee = options.fee;
-    if (options.nonce != null) txOptions.nonce = options.nonce;
-    
-    const tx = await makeContractCall(txOptions);
+    });
 
     return broadcastTransaction({ transaction: tx, network: this.network });
   }
@@ -800,19 +803,18 @@ export class FunaiNodeApi {
    * @returns Transaction broadcast result
    */
   async unlockInferStake(options: InferUnlockOptions): Promise<TxBroadcastResult> {
-    const txOptions: any = {
+    const fee = options.fee ?? BigInt(100000); // Default 0.1 STX fee
+    
+    const tx = await makeContractCall({
       contractAddress: 'ST000000000000000000002AMW42H',
       contractName: 'pox-4',
       functionName: 'infer-unlock-stx',
       functionArgs: [],
       senderKey: options.senderKey,
+      fee,
+      nonce: options.nonce,
       network: this.network,
-    };
-    
-    if (options.fee != null) txOptions.fee = options.fee;
-    if (options.nonce != null) txOptions.nonce = options.nonce;
-    
-    const tx = await makeContractCall(txOptions);
+    });
 
     return broadcastTransaction({ transaction: tx, network: this.network });
   }
