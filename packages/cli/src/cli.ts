@@ -861,8 +861,8 @@ async function inferStake(_network: CLINetworkAdapter, args: string[]): Promise<
   const lockPeriod = parseInt(args[1]);
   const nodeId = args[2];
   const privateKey = args[3];
-  const fee = args.length > 4 ? BigInt(args[4]) : undefined;
-  const nonce = args.length > 5 ? BigInt(args[5]) : undefined;
+  const fee = args[4] != null ? BigInt(args[4]) : undefined;
+  const nonce = args[5] != null ? BigInt(args[5]) : undefined;
 
   // Validate minimum stake
   const MIN_STAKE = BigInt(100_000_000); // 100 STX
@@ -950,8 +950,8 @@ async function inferStakeInfo(_network: CLINetworkAdapter, args: string[]): Prom
  */
 async function inferUnlock(_network: CLINetworkAdapter, args: string[]): Promise<string> {
   const privateKey = args[0];
-  const fee = args.length > 1 ? BigInt(args[1]) : undefined;
-  const nonce = args.length > 2 ? BigInt(args[2]) : undefined;
+  const fee = args[1] != null ? BigInt(args[1]) : undefined;
+  const nonce = args[2] != null ? BigInt(args[2]) : undefined;
 
   const network = _network.isMainnet() ? { ...FUNAI_MAINNET } : { ...FUNAI_TESTNET };
   network.client = { baseUrl: _network.nodeAPIUrl };

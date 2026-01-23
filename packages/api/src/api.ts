@@ -714,8 +714,8 @@ export class FunaiNodeApi {
    * @returns Transaction broadcast result
    */
   async stakeAsInferNode(options: InferStakeOptions): Promise<TxBroadcastResult> {
-    // Build the contract call transaction
-    const tx = await makeContractCall({
+    // Build the contract call transaction options
+    const txOptions: any = {
       contractAddress: 'ST000000000000000000002AMW42H', // Boot contract address
       contractName: 'pox-4',
       functionName: 'infer-stake-stx',
@@ -725,10 +725,14 @@ export class FunaiNodeApi {
         stringAsciiCV(options.nodeId),        // node-id
       ],
       senderKey: options.senderKey,
-      fee: options.fee,
-      nonce: options.nonce,
       network: this.network,
-    });
+    };
+    
+    // Only include fee and nonce if they are defined
+    if (options.fee != null) txOptions.fee = options.fee;
+    if (options.nonce != null) txOptions.nonce = options.nonce;
+    
+    const tx = await makeContractCall(txOptions);
 
     // Broadcast the transaction
     return broadcastTransaction({ transaction: tx, network: this.network });
@@ -742,7 +746,7 @@ export class FunaiNodeApi {
    * @returns Transaction broadcast result
    */
   async increaseInferStake(options: InferIncreaseStakeOptions): Promise<TxBroadcastResult> {
-    const tx = await makeContractCall({
+    const txOptions: any = {
       contractAddress: 'ST000000000000000000002AMW42H',
       contractName: 'pox-4',
       functionName: 'infer-increase-stake',
@@ -750,10 +754,13 @@ export class FunaiNodeApi {
         uintCV(options.additionalAmountUstx),
       ],
       senderKey: options.senderKey,
-      fee: options.fee,
-      nonce: options.nonce,
       network: this.network,
-    });
+    };
+    
+    if (options.fee != null) txOptions.fee = options.fee;
+    if (options.nonce != null) txOptions.nonce = options.nonce;
+    
+    const tx = await makeContractCall(txOptions);
 
     return broadcastTransaction({ transaction: tx, network: this.network });
   }
@@ -766,7 +773,7 @@ export class FunaiNodeApi {
    * @returns Transaction broadcast result
    */
   async extendInferLock(options: InferExtendLockOptions): Promise<TxBroadcastResult> {
-    const tx = await makeContractCall({
+    const txOptions: any = {
       contractAddress: 'ST000000000000000000002AMW42H',
       contractName: 'pox-4',
       functionName: 'infer-extend-lock',
@@ -774,10 +781,13 @@ export class FunaiNodeApi {
         uintCV(options.additionalPeriod),
       ],
       senderKey: options.senderKey,
-      fee: options.fee,
-      nonce: options.nonce,
       network: this.network,
-    });
+    };
+    
+    if (options.fee != null) txOptions.fee = options.fee;
+    if (options.nonce != null) txOptions.nonce = options.nonce;
+    
+    const tx = await makeContractCall(txOptions);
 
     return broadcastTransaction({ transaction: tx, network: this.network });
   }
@@ -790,16 +800,19 @@ export class FunaiNodeApi {
    * @returns Transaction broadcast result
    */
   async unlockInferStake(options: InferUnlockOptions): Promise<TxBroadcastResult> {
-    const tx = await makeContractCall({
+    const txOptions: any = {
       contractAddress: 'ST000000000000000000002AMW42H',
       contractName: 'pox-4',
       functionName: 'infer-unlock-stx',
       functionArgs: [],
       senderKey: options.senderKey,
-      fee: options.fee,
-      nonce: options.nonce,
       network: this.network,
-    });
+    };
+    
+    if (options.fee != null) txOptions.fee = options.fee;
+    if (options.nonce != null) txOptions.nonce = options.nonce;
+    
+    const tx = await makeContractCall(txOptions);
 
     return broadcastTransaction({ transaction: tx, network: this.network });
   }
