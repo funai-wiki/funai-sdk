@@ -33,6 +33,7 @@ import {
   getAddressFromPrivateKey,
   signMessageHashRsv,
   privateKeyToPublic,
+  PostConditionMode,
 } from '@funai/transactions';
 import {
   ApiResponse,
@@ -737,6 +738,7 @@ export class FunaiNodeApi {
       fee,
       nonce: options.nonce,
       network: this.network,
+      postConditionMode: PostConditionMode.Allow, // Allow STX transfer inside contract
     });
 
     // Broadcast the transaction
@@ -764,6 +766,7 @@ export class FunaiNodeApi {
       fee,
       nonce: options.nonce,
       network: this.network,
+      postConditionMode: PostConditionMode.Allow,
     });
 
     return broadcastTransaction({ transaction: tx, network: this.network });
@@ -814,6 +817,7 @@ export class FunaiNodeApi {
       fee,
       nonce: options.nonce,
       network: this.network,
+      postConditionMode: PostConditionMode.Allow,
     });
 
     return broadcastTransaction({ transaction: tx, network: this.network });
