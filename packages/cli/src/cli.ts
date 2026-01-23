@@ -847,6 +847,140 @@ async function inferWait(_network: CLINetworkAdapter, args: string[]): Promise<s
 }
 
 /*
+ * Stake STX as an inference node.
+ * args:
+ * @amount (number) amount to stake in micro-STX (minimum 100 STX = 100,000,000 micro-STX)
+ * @lock_period (number) lock period in blocks (minimum 2100, maximum 52500)
+ * @node_id (string) unique identifier for the inference node
+ * @private_key (string) the private key to sign the transaction
+ * @fee (number) optional transaction fee in micro-STX
+ * @nonce (number) optional transaction nonce
+ */
+async function inferStake(_network: CLINetworkAdapter, args: string[]): Promise<string> {
+  const amount = BigInt(args[0]);
+  const lockPeriod = parseInt(args[1]);
+  const nodeId = args[2];
+  const privateKey = args[3];
+  const fee = args.length > 4 ? BigInt(args[4]) : undefined;
+  const nonce = args.length > 5 ? BigInt(args[5]) : undefined;
+
+  // Validate minimum stake
+  const MIN_STAKE = BigInt(100_000_000); // 100 STX
+  if (amount < MIN_STAKE) {
+    return JSONStringify({
+      error: `Minimum stake is 100 STX (${MIN_STAKE} micro-STX). You provided ${amount} micro-STX.`,
+    });
+  }
+
+  // Validate lock period
+  if (lockPeriod < 2100 || lockPeriod > 52500) {
+    return JSONStringify({
+      error: `Lock period must be between 2100 and 52500 blocks. You provided ${lockPeriod}.`,
+    });
+  }
+
+  const network = _network.isMainnet() ? { ...FUNAI_MAINNET } : { ...FUNAI_TESTNET };
+  network.client = { baseUrl: _network.nodeAPIUrl };
+
+  const api = new FunaiNodeApi({
+    baseUrl: _network.signerAPIUrl || _network.nodeAPIUrl,
+    network,
+  });
+
+  console.log(`Staking ${amount} micro-STX for ${lockPeriod} blocks as node "${nodeId}"...`);
+
+  return api
+    .stakeAsInferNode({
+      amountUstx: amount,
+      lockPeriod,
+      nodeId,
+      senderKey: privateKey,
+      fee,
+      nonce,
+    })
+    .then((result: any) => {
+      return JSONStringify({
+        txid: result.txid,
+        message: 'Stake transaction submitted successfully',
+      });
+    })
+    .catch((error: any) => {
+      return JSONStringify({ error: error.message || error.toString() });
+    });
+}
+
+/*
+ * Query stake info for an inference node.
+ * args:
+ * @address (string) the Funai address of the node to query
+ */
+async function inferStakeInfo(_network: CLINetworkAdapter, args: string[]): Promise<string> {
+  const address = args[0];
+
+  const network = _network.isMainnet() ? { ...FUNAI_MAINNET } : { ...FUNAI_TESTNET };
+  network.client = { baseUrl: _network.nodeAPIUrl };
+
+  const api = new FunaiNodeApi({
+    baseUrl: _network.signerAPIUrl || _network.nodeAPIUrl,
+    network,
+  });
+
+  return api
+    .getInferStakeInfo(address)
+    .then((result: any) => {
+      if (result === null) {
+        return JSONStringify({
+          is_staked: false,
+          message: 'No stake found for this address',
+        });
+      }
+      return JSONStringify(result);
+    })
+    .catch((error: any) => {
+      return JSONStringify({ error: error.message || error.toString() });
+    });
+}
+
+/*
+ * Unlock staked STX after lock period expires.
+ * args:
+ * @private_key (string) the private key of the staker
+ * @fee (number) optional transaction fee in micro-STX
+ * @nonce (number) optional transaction nonce
+ */
+async function inferUnlock(_network: CLINetworkAdapter, args: string[]): Promise<string> {
+  const privateKey = args[0];
+  const fee = args.length > 1 ? BigInt(args[1]) : undefined;
+  const nonce = args.length > 2 ? BigInt(args[2]) : undefined;
+
+  const network = _network.isMainnet() ? { ...FUNAI_MAINNET } : { ...FUNAI_TESTNET };
+  network.client = { baseUrl: _network.nodeAPIUrl };
+
+  const api = new FunaiNodeApi({
+    baseUrl: _network.signerAPIUrl || _network.nodeAPIUrl,
+    network,
+  });
+
+  console.log('Unlocking staked STX...');
+
+  return api
+    .unlockInferStake({
+      senderKey: privateKey,
+      fee,
+      nonce,
+    })
+    .then((result: any) => {
+      return JSONStringify({
+        txid: result.txid,
+        message: 'Unlock transaction submitted successfully',
+      });
+    })
+    .catch((error: any) => {
+      return JSONStringify({ error: error.message || error.toString() });
+    });
+}
+
+/*
  * Send tokens from one account private key to another account's address.
  * args:
  * @recipientAddress (string) the recipient's account address
@@ -2302,6 +2436,9 @@ const COMMANDS: Record<string, CommandFunction> = {
   infer: infer,
   infer_status: inferStatus,
   infer_wait: inferWait,
+  infer_stake: inferStake,
+  infer_stake_info: inferStakeInfo,
+  infer_unlock: inferUnlock,
   stack: stack,
   stack_extend: stackExtend,
   migrate_subdomains: migrateSubdomains,

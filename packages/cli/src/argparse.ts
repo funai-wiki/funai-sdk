@@ -2654,6 +2654,137 @@ export const CLI_ARGS = {
         '```\n',
       group: 'Account Management',
     },
+    infer_stake: {
+      type: 'array',
+      items: [
+        {
+          name: 'amount',
+          type: 'string',
+          realtype: 'integer',
+          pattern: '^[0-9]+$',
+        },
+        {
+          name: 'lock_period',
+          type: 'string',
+          realtype: 'integer',
+          pattern: '^[0-9]+$',
+        },
+        {
+          name: 'node_id',
+          type: 'string',
+          realtype: 'string',
+          pattern: '^.+$',
+        },
+        {
+          name: 'private_key',
+          type: 'string',
+          realtype: 'private_key',
+          pattern: `${PRIVATE_KEY_PATTERN_ANY}`,
+        },
+        {
+          name: 'fee',
+          type: 'string',
+          realtype: 'integer',
+          pattern: '^[0-9]+$',
+        },
+        {
+          name: 'nonce',
+          type: 'string',
+          realtype: 'integer',
+          pattern: '^[0-9]+$',
+        },
+      ],
+      minItems: 4,
+      maxItems: 6,
+      help:
+        'Stake STX tokens as an inference node. This locks your tokens for the specified period ' +
+        'and registers you as an inference provider on the network.\n' +
+        '\n' +
+        'Arguments:\n' +
+        '  amount       - Amount of STX to stake in micro-STX (minimum 100,000,000 = 100 STX)\n' +
+        '  lock_period  - Lock period in blocks (minimum 2100, maximum 52500)\n' +
+        '  node_id      - Unique identifier for your inference node\n' +
+        '  private_key  - Your private key\n' +
+        '  fee          - (optional) Transaction fee in micro-STX\n' +
+        '  nonce        - (optional) Transaction nonce\n' +
+        '\n' +
+        'Example:\n' +
+        '```console\n' +
+        '    $ export PRIVATE_KEY="your-private-key-hex"\n' +
+        '    $ # Stake 100 STX for 2100 blocks\n' +
+        '    $ funai-cli infer_stake 100000000 2100 my-node-1 "$PRIVATE_KEY"\n' +
+        '    {\n' +
+        '      "txid": "0x...",\n' +
+        '      "message": "Stake transaction submitted successfully"\n' +
+        '    }\n' +
+        '```\n',
+      group: 'Inference Node Management',
+    },
+    infer_stake_info: {
+      type: 'array',
+      items: [
+        {
+          name: 'address',
+          type: 'string',
+          realtype: 'address',
+          pattern: `${STACKS_ADDRESS_PATTERN}`,
+        },
+      ],
+      minItems: 1,
+      maxItems: 1,
+      help:
+        'Query the stake info for an inference node address.\n' +
+        '\n' +
+        'Example:\n' +
+        '```console\n' +
+        '    $ funai-cli infer_stake_info ST...\n' +
+        '    {\n' +
+        '      "is_staked": true,\n' +
+        '      "amount_ustx": 100000000,\n' +
+        '      "lock_period": 2100,\n' +
+        '      "unlock_height": 50000\n' +
+        '    }\n' +
+        '```\n',
+      group: 'Inference Node Management',
+    },
+    infer_unlock: {
+      type: 'array',
+      items: [
+        {
+          name: 'private_key',
+          type: 'string',
+          realtype: 'private_key',
+          pattern: `${PRIVATE_KEY_PATTERN_ANY}`,
+        },
+        {
+          name: 'fee',
+          type: 'string',
+          realtype: 'integer',
+          pattern: '^[0-9]+$',
+        },
+        {
+          name: 'nonce',
+          type: 'string',
+          realtype: 'integer',
+          pattern: '^[0-9]+$',
+        },
+      ],
+      minItems: 1,
+      maxItems: 3,
+      help:
+        'Unlock staked STX after the lock period has expired.\n' +
+        '\n' +
+        'Example:\n' +
+        '```console\n' +
+        '    $ export PRIVATE_KEY="your-private-key-hex"\n' +
+        '    $ funai-cli infer_unlock "$PRIVATE_KEY"\n' +
+        '    {\n' +
+        '      "txid": "0x...",\n' +
+        '      "message": "Unlock transaction submitted successfully"\n' +
+        '    }\n' +
+        '```\n',
+      group: 'Inference Node Management',
+    },
     stack: {
       type: 'array',
       items: [

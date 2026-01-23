@@ -27,6 +27,9 @@ import {
   fetchFeeEstimateTransaction,
   fetchNonce,
   makeInfer,
+  makeContractCall,
+  uintCV,
+  stringAsciiCV,
   getAddressFromPrivateKey,
   signMessageHashRsv,
   privateKeyToPublic,
@@ -662,4 +665,199 @@ export class FunaiNodeApi {
       await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
     }
   }
+
+  // ==================== Infer Node Staking Methods ====================
+
+  /**
+   * Query infer node stake info from on-chain contract
+   * @param nodeAddress - The principal address of the infer node
+   * @returns Stake info or null if not staked
+   */
+  async getInferStakeInfo(nodeAddress: string): Promise<InferStakeInfo | null> {
+    const url = `${this.baseUrl}/v2/contracts/call-read/ST000000000000000000002AMW42H/pox-4/infer-get-stake-info`;
+    
+    const response = await this.fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sender: nodeAddress,
+        arguments: [`0x0516${nodeAddress.slice(2)}`], // principal CV
+      }),
+    });
+
+    const result = await response.json();
+    if (result.okay && result.result !== '0x09') { // 0x09 = none
+      // Parse the result - this is a simplified version
+      return {
+        isStaked: true,
+        rawResult: result.result,
+      };
+    }
+    return null;
+  }
+
+  /**
+   * Check if an infer node is staked
+   * @param nodeAddress - The principal address of the infer node
+   * @returns true if staked, false otherwise
+   */
+  async isInferNodeStaked(nodeAddress: string): Promise<boolean> {
+    const info = await this.getInferStakeInfo(nodeAddress);
+    return info !== null && info.isStaked;
+  }
+
+  /**
+   * Create and broadcast a stake transaction for an inference node
+   * Calls pox-4.infer-stake-stx on-chain
+   * 
+   * @param options - Staking options
+   * @returns Transaction broadcast result
+   */
+  async stakeAsInferNode(options: InferStakeOptions): Promise<TxBroadcastResult> {
+    // Build the contract call transaction
+    const tx = await makeContractCall({
+      contractAddress: 'ST000000000000000000002AMW42H', // Boot contract address
+      contractName: 'pox-4',
+      functionName: 'infer-stake-stx',
+      functionArgs: [
+        uintCV(options.amountUstx),           // amount-ustx
+        uintCV(options.lockPeriod),           // lock-period (in blocks)
+        stringAsciiCV(options.nodeId),        // node-id
+      ],
+      senderKey: options.senderKey,
+      fee: options.fee,
+      nonce: options.nonce,
+      network: this.network,
+    });
+
+    // Broadcast the transaction
+    return broadcastTransaction({ transaction: tx, network: this.network });
+  }
+
+  /**
+   * Increase stake for an already-staked inference node
+   * Calls pox-4.infer-increase-stake on-chain
+   * 
+   * @param options - Options for increasing stake
+   * @returns Transaction broadcast result
+   */
+  async increaseInferStake(options: InferIncreaseStakeOptions): Promise<TxBroadcastResult> {
+    const tx = await makeContractCall({
+      contractAddress: 'ST000000000000000000002AMW42H',
+      contractName: 'pox-4',
+      functionName: 'infer-increase-stake',
+      functionArgs: [
+        uintCV(options.additionalAmountUstx),
+      ],
+      senderKey: options.senderKey,
+      fee: options.fee,
+      nonce: options.nonce,
+      network: this.network,
+    });
+
+    return broadcastTransaction({ transaction: tx, network: this.network });
+  }
+
+  /**
+   * Extend lock period for an already-staked inference node
+   * Calls pox-4.infer-extend-lock on-chain
+   * 
+   * @param options - Options for extending lock
+   * @returns Transaction broadcast result
+   */
+  async extendInferLock(options: InferExtendLockOptions): Promise<TxBroadcastResult> {
+    const tx = await makeContractCall({
+      contractAddress: 'ST000000000000000000002AMW42H',
+      contractName: 'pox-4',
+      functionName: 'infer-extend-lock',
+      functionArgs: [
+        uintCV(options.additionalPeriod),
+      ],
+      senderKey: options.senderKey,
+      fee: options.fee,
+      nonce: options.nonce,
+      network: this.network,
+    });
+
+    return broadcastTransaction({ transaction: tx, network: this.network });
+  }
+
+  /**
+   * Unlock staked STX after lock period expires
+   * Calls pox-4.infer-unlock-stx on-chain
+   * 
+   * @param options - Unlock options
+   * @returns Transaction broadcast result
+   */
+  async unlockInferStake(options: InferUnlockOptions): Promise<TxBroadcastResult> {
+    const tx = await makeContractCall({
+      contractAddress: 'ST000000000000000000002AMW42H',
+      contractName: 'pox-4',
+      functionName: 'infer-unlock-stx',
+      functionArgs: [],
+      senderKey: options.senderKey,
+      fee: options.fee,
+      nonce: options.nonce,
+      network: this.network,
+    });
+
+    return broadcastTransaction({ transaction: tx, network: this.network });
+  }
+}
+
+// Infer staking types
+export interface InferStakeInfo {
+  isStaked: boolean;
+  rawResult: string;
+  nodeId?: string;
+  amountUstx?: bigint;
+  lockStart?: number;
+  lockPeriod?: number;
+  unlockHeight?: number;
+}
+
+export interface InferStakeOptions {
+  /** Amount to stake in micro-STX (1 STX = 1,000,000 uSTX) */
+  amountUstx: bigint;
+  /** Lock period in blocks (minimum 2100, maximum 52500) */
+  lockPeriod: number;
+  /** Unique node identifier */
+  nodeId: string;
+  /** Sender's private key */
+  senderKey: string;
+  /** Transaction fee in micro-STX */
+  fee?: bigint;
+  /** Transaction nonce */
+  nonce?: bigint;
+}
+
+export interface InferIncreaseStakeOptions {
+  /** Additional amount to stake in micro-STX */
+  additionalAmountUstx: bigint;
+  /** Sender's private key */
+  senderKey: string;
+  /** Transaction fee in micro-STX */
+  fee?: bigint;
+  /** Transaction nonce */
+  nonce?: bigint;
+}
+
+export interface InferExtendLockOptions {
+  /** Additional lock period in blocks */
+  additionalPeriod: number;
+  /** Sender's private key */
+  senderKey: string;
+  /** Transaction fee in micro-STX */
+  fee?: bigint;
+  /** Transaction nonce */
+  nonce?: bigint;
+}
+
+export interface InferUnlockOptions {
+  /** Sender's private key */
+  senderKey: string;
+  /** Transaction fee in micro-STX */
+  fee?: bigint;
+  /** Transaction nonce */
+  nonce?: bigint;
 }
